@@ -12,7 +12,7 @@ export class UserService {
       createUserDto.password,
     );
     createUserDto.password = hashedPassword;
-    const createdUser = await this.prismaService.user.create({
+    await this.prismaService.user.create({
       data: createUserDto,
       select: {
         email: true,
@@ -21,8 +21,6 @@ export class UserService {
         password: false,
       },
     });
-
-    console.log(createdUser);
   }
 
   findAll() {

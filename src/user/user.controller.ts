@@ -19,8 +19,6 @@ export class UserController {
   @UsePipes(ValidationPipe)
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
-    console.log(createUserDto);
-
     return await this.userService.create(createUserDto);
   }
 
