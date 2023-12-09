@@ -24,7 +24,8 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Para rodar a aplicação Nest e usar o banco de dados, é necessário ter o docker instalado 
+em seu computador.
 
 ## Installation
 
@@ -36,7 +37,12 @@ $ npm install
 
 ```bash
 
+
 # Banco de dados
+# OBS: certifique-se de estar no diretório do projeto no seu terminal
+
+$ docker compose up -d # esse comando vai rodar o postgres no docker.
+
 $ npm run prisma-dev
 
 # development
@@ -47,7 +53,22 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
+
+# Estúdio do prisma para ver o banco de dados no navegador
+$ npm run prisma-studio
+
 ```
+
+## Stopping the app
+
+```bash
+# Para parar o Postgres no docker é só rodar o comando abaixo
+$ docker compose down
+
+# OBS: certifique-se de estar no diretório do projeto no seu terminal
+
+```
+
 
 ## Test
 
