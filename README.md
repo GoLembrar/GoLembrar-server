@@ -35,6 +35,10 @@ $ npm install
 ## Running the app
 
 ```bash
+
+# Banco de dados
+$ npm run prisma-dev
+
 # development
 $ npm run start
 
