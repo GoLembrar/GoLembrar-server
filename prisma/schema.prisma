@@ -9,3 +9,18 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique @db.VarChar(128)
+  password  String   @db.VarChar(128)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  // Reminder  Reminder[]
+}
+
+// model Reminder {
+//   id     Int  @id @default(autoincrement())
+//   owner  User @relation(fields: [userId], references: [id])
+//   userId Int
+// }
