@@ -25,7 +25,7 @@ export class UserController {
 
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: string) {
-    const user: User | null = await this.userService.findOne(+id);
+    const user: Partial<User> | null = await this.userService.findOne(+id);
     if (!user)
       throw new NotFoundException(`Usuário com id ${id} não foi encontrado.`);
     return user;
