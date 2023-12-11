@@ -1,3 +1,5 @@
+### create one user account
+
 POST http://localhost:3000/user HTTP/1.1
 Content-type: application/json
 
@@ -5,3 +7,11 @@ Content-type: application/json
   "email" : "test@email.com",
   "password" : "senhaForte"
 }
+
+### delete one user account
+
+DELETE http://localhost:3000/user/11
+
+### get one user account
+
+GET http://localhost:3000/user/12
