@@ -2,6 +2,6 @@ POST http://localhost:3000/user HTTP/1.1
 Content-type: application/json
 
 {
-  "email" : "eseeeemail.com",
+  "email" : "test@email.com",
   "password" : "senhaForte"
 }
