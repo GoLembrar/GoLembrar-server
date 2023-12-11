@@ -11,3 +11,7 @@ Content-type: application/json
 ### delete one user account
 
 DELETE http://localhost:3000/user/11
+
+### get one user account
+
+GET http://localhost:3000/user/12

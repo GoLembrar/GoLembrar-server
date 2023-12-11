@@ -3,6 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { HashUtil } from 'src/common/utils/hashUtil';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -19,12 +20,12 @@ export class UserService {
     });
   }
 
-  findAll() {
-    return `This action returns all user`;
-  }
+  async findOne(id: number): Promise<User | null> {
+    const foundUser: User | null = await this.prismaService.user.findFirst({
+      where: { id },
+    });
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+    return foundUser;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
