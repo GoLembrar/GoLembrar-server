@@ -7,10 +7,12 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  NotFoundException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from '@prisma/client';
 
 @Controller('user')
 export class UserController {
@@ -21,14 +23,12 @@ export class UserController {
     return await this.userService.create(createUserDto);
   }
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
-  }
-
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: string) {
+    const user: User | null = await this.userService.findOne(+id);
+    if (!user)
+      throw new NotFoundException(`Usuário com id ${id} não foi encontrado.`);
+    return user;
   }
 
   @Patch(':id')
