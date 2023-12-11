@@ -8,7 +8,7 @@ export class UserService {
   constructor(readonly prismaService: PrismaService) {}
 
   async create(createUserDto: CreateUserDto) {
-    const hashedPassword = await HashUtil.hash(createUserDto.password, 12);
+    const hashedPassword = await HashUtil.hash(createUserDto.password);
     createUserDto.password = hashedPassword;
 
     await this.prismaService.user.create({

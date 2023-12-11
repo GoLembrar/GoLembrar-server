@@ -1,14 +1,8 @@
 import * as bcrypt from 'bcrypt';
 
 export class HashUtil {
-  static async hash(
-    text: string,
-    saltOrRounds: number | string,
-  ): Promise<string> {
-    const salt =
-      typeof saltOrRounds === 'number'
-        ? await bcrypt.genSalt(saltOrRounds)
-        : saltOrRounds;
+  static async hash(text: string): Promise<string> {
+    const salt = 12;
     return await bcrypt.hash(text, salt);
   }
 
