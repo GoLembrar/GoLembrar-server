@@ -24,8 +24,8 @@ export class UserService {
     const foundUser: User | null = await this.prismaService.user.findFirst({
       where: { id },
     });
-    delete foundUser.password;
-    return foundUser;
+    const { password, ...secureUserData } = foundUser;
+    return secureUserData;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
