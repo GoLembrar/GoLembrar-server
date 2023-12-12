@@ -20,12 +20,12 @@ export class UserService {
     });
   }
 
-  async findOne(id: number): Promise<User | null> {
+  async findOne(id: number): Promise<Partial<User> | null> {
     const foundUser: User | null = await this.prismaService.user.findFirst({
       where: { id },
     });
-
-    return foundUser;
+    const { password, ...secureUserData } = foundUser;
+    return secureUserData;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
