@@ -5,6 +5,13 @@ export default defineConfig({
   test: {
     globals: true,
     root: './',
+    coverage: {
+      provider: 'v8',
+    },
+    outputFile: {
+      json: 'vitest/output/json/test.json',
+      junit: 'vitest/output/junit/test.xml',
+    },
   },
   plugins: [
     // This is required to build the test files with SWC

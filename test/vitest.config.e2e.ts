@@ -6,6 +6,13 @@ export default defineConfig({
     include: ['**/*.e2e-spec.ts'],
     globals: true,
     root: './',
+    coverage: {
+      provider: 'v8',
+    },
+    outputFile: {
+      json: 'vitest/output/json/test.json',
+      junit: 'vitest/output/junit/test.xml',
+    },
   },
   plugins: [swc.vite()],
 });
