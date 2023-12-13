@@ -2,7 +2,7 @@ import { PrismaService } from './../prisma/prisma.service';
 import { Injectable, Logger } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { HashUtil } from 'src/common/utils/hashUtil';
+import { HashUtil } from '../common/utils/hashUtil';
 import { User } from '@prisma/client';
 
 @Injectable()
