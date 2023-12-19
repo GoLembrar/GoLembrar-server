@@ -43,6 +43,7 @@ $ npm install
 
 $ docker compose up -d # esse comando vai rodar o postgres no docker.
 
+# OBRIGATÓRIO PARA SINCRONIZAR O BANCO DE DADOS EM DESENVOLVIMENTO
 $ npm run prisma-dev
 
 # development
