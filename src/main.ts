@@ -5,7 +5,10 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  app.enableCors({
+    origin: '*',
+    methods: ['GET', 'HEAD', 'POST', 'PATCH', 'DELETE'],
+  });
   const config = new DocumentBuilder()
     .setTitle('API Routes')
     .setDescription('Descrição das rotas da API')
