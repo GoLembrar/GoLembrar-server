@@ -25,7 +25,7 @@ Content-Type: application/json
   "email" : "test@email.com",
   "password" : "senhaForte"
 }
-=======
+
 ### get all users account
 
 GET http://localhost:3000/user
