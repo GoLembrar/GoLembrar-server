@@ -13,7 +13,7 @@ export class AuthService {
     private readonly jwt: JwtService,
   ) {}
 
-  async login(credentials: CredentialsDto): Promise<string> {
+  async login(credentials: CredentialsDto): Promise<{ token: string }> {
     const foundUser: User = await this.prisma.user.findFirst({
       where: {
         email: credentials.email,
@@ -32,6 +32,9 @@ export class AuthService {
     const jwtPayloadData: JwtPayload = {
       id: foundUser.id,
     };
-    return this.jwt.sign(jwtPayloadData);
+
+    const token = this.jwt.sign(jwtPayloadData);
+
+    return { token };
   }
 }
