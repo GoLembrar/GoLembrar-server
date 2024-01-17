@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
+  IsMobilePhone,
   IsNotEmpty,
   IsString,
   IsStrongPassword,
@@ -13,7 +14,6 @@ const passwordDecoratorOptions: IsStrongPasswordOptions = {
   minSymbols: 0,
   minUppercase: 1,
 };
-
 export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
@@ -25,4 +25,9 @@ export class CreateUserDto {
   @IsEmail()
   @ApiProperty()
   email: string;
+  @IsNotEmpty()
+  @IsString()
+  @IsMobilePhone('pt-BR')
+  @ApiProperty()
+  phone: string;
 }

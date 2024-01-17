@@ -5,6 +5,7 @@ Content-type: application/json
 
 {
   "email" : "test@email.com",
+  "phone" : "19987851001",
   "password" : "senhaForte"
 }
 
