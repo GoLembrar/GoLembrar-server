@@ -3,7 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { HashUtil } from '../common/utils/hashUtil';
-import { User } from '@prisma/client';
+import { Users } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -15,21 +15,21 @@ export class UserService {
     const hashedPassword = await HashUtil.hash(createUserDto.password);
     createUserDto.password = hashedPassword;
 
-    await this.prismaService.user.create({
+    await this.prismaService.users.create({
       data: createUserDto,
     });
   }
 
-  async findOne(id: number): Promise<Partial<User> | null> {
-    const foundUser: User | null = await this.prismaService.user.findFirst({
+  async findOne(id: number): Promise<Partial<Users> | null> {
+    const foundUser: Users | null = await this.prismaService.users.findFirst({
       where: { id },
     });
     const { password, ...secureUserData } = foundUser;
     return secureUserData;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    const user = this.prismaService.user.update({
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<void> {
+    const user = await this.prismaService.users.update({
       where: {
         id,
       },
@@ -39,7 +39,7 @@ export class UserService {
 
   async remove(id: number): Promise<void> {
     try {
-      await this.prismaService.user.delete({
+      await this.prismaService.users.delete({
         where: {
           id,
         },

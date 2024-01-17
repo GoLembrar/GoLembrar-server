@@ -12,7 +12,7 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from '@prisma/client';
+import { Users } from '@prisma/client';
 
 @Controller('user')
 export class UserController {
@@ -25,7 +25,7 @@ export class UserController {
 
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: string) {
-    const user: Partial<User> | null = await this.userService.findOne(+id);
+    const user: Partial<Users> | null = await this.userService.findOne(+id);
     if (!user)
       throw new NotFoundException(`Usuário com id ${id} não foi encontrado.`);
     return user;
