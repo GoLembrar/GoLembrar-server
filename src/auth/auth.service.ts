@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CredentialsDto } from './dto/credentials.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { HashUtil } from '../common/utils/hashUtil';
-import { User } from '@prisma/client';
+import { Users } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 
@@ -14,7 +14,7 @@ export class AuthService {
   ) {}
 
   async login(credentials: CredentialsDto): Promise<{ token: string }> {
-    const foundUser: User = await this.prisma.user.findFirst({
+    const foundUser: Users = await this.prisma.users.findFirst({
       where: {
         email: credentials.email,
       },

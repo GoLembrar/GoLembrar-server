@@ -10,17 +10,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique @db.VarChar(128)
-  password  String   @db.VarChar(128)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  // Reminder  Reminder[]
+model Users {
+  id              Int               @id @default(autoincrement())
+  email           String            @unique @db.VarChar(128)
+  password        String            @db.VarChar(128)
+  phone           String            @unique @db.VarChar(64)
+  reminder        Reminders[]
+  usersToReminder UsersToReminder[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
 }
 
-// model Reminder {
-//   id     Int  @id @default(autoincrement())
-//   owner  User @relation(fields: [userId], references: [id])
-//   userId Int
-// }
+model Reminders {
+  id              Int               @id @default(autoincrement())
+  title           String            @db.VarChar(128)
+  description     String
+  platform        String            @db.VarChar(12)
+  scheduled       DateTime
+  isActivated     Boolean           @default(true)
+  owner           Users             @relation(fields: [ownerId], references: [id])
+  ownerId         Int
+  usersToReminder UsersToReminder[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+model UsersToReminder {
+  id         Int       @id @default(autoincrement())
+  user       Users     @relation(fields: [userId], references: [id])
+  userId     Int
+  reminder   Reminders @relation(fields: [reminderId], references: [id])
+  reminderId Int
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
