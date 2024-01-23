@@ -1,0 +1,12 @@
+### Create reminder
+
+POST http://localhost:3000/reminder HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzA1OTcyMjQzLCJleHAiOjE3MDU5NzU4NDN9.z9dfcAoHII6lhoI88d7KBdnHshjuytnm5EhPpv51-vk
+
+{
+  "title" : "Lembrar de codar",
+  "description" : "Lembrete para codar TypeScript pela manhã",
+  "platform" : "Whatsapp",
+  "scheduled" : "2024-02-23T01:06:18.179Z"
+}

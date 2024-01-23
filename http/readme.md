@@ -1,0 +1,1 @@
+Pasta destinada aos arquivos com extensão .http para testar rotas
