@@ -24,7 +24,7 @@ model Users {
 model Reminders {
   id              Int               @id @default(autoincrement())
   title           String            @db.VarChar(128)
-  description     String            @db.Text
+  description     String
   platform        String            @db.VarChar(12)
   scheduled       DateTime
   activate        Boolean           @default(true)
