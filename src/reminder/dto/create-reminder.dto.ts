@@ -26,6 +26,5 @@ export class CreateReminderDto {
   scheduled: Date;
   @IsNotEmpty()
   @IsInt()
-  @ApiProperty()
   ownerId: number;
 }
