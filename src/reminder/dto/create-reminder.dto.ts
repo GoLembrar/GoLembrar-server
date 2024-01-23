@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsInt, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsDateString,
+  IsInt,
+  IsNotEmpty,
+  IsString,
+} from 'class-validator';
 
 export class CreateReminderDto {
   @IsNotEmpty()
@@ -15,7 +21,7 @@ export class CreateReminderDto {
   @ApiProperty()
   platform: string;
   @IsNotEmpty()
-  @IsDate()
+  @IsDateString()
   @ApiProperty()
   scheduled: Date;
   @IsNotEmpty()
