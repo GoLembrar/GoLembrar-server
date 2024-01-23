@@ -23,7 +23,9 @@ export class AuthorizationGuard implements CanActivate {
 
     const token: string = authorizationHeader.split('Bearer ')[1];
     const decoded = this.jwt.verify(token);
-
-    return !!decoded;
+    if (decoded) {
+      request['user'] = decoded;
+      return !!decoded;
+    }
   }
 }
