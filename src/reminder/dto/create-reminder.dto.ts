@@ -27,4 +27,7 @@ export class CreateReminderDto {
   @IsNotEmpty()
   @IsInt()
   ownerId: number;
+  @IsNotEmpty()
+  @IsInt()
+  categoryId: number;
 }
