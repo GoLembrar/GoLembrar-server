@@ -18,16 +18,18 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   @IsStrongPassword(passwordDecoratorOptions)
-  @ApiProperty()
+  @ApiProperty({ example: '123456'})
   password: string;
+
   @IsNotEmpty()
   @IsString()
   @IsEmail()
-  @ApiProperty()
+  @ApiProperty({ example: 'user@email.com'})
   email: string;
+
   @IsNotEmpty()
   @IsString()
   @IsMobilePhone('pt-BR')
-  @ApiProperty()
+  @ApiProperty({ example: '999999999'})
   phone: string;
 }

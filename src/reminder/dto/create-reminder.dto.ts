@@ -10,24 +10,31 @@ import {
 export class CreateReminderDto {
   @IsNotEmpty()
   @IsString()
-  @ApiProperty()
+  @ApiProperty({ example: 'Reminder title'})
   title: string;
+
   @IsNotEmpty()
   @IsString()
-  @ApiProperty()
+  @ApiProperty({example: 'Reminder description'})
   description: string;
+
   @IsNotEmpty()
   @IsString()
-  @ApiProperty()
+  @ApiProperty({example: 'Reminder platform'})
   platform: string;
+
   @IsNotEmpty()
   @IsDateString()
-  @ApiProperty()
+  @ApiProperty({example: '2021-09-01T00:00:00.000Z'})
   scheduled: Date;
+
   @IsNotEmpty()
   @IsInt()
+  @ApiProperty({example: 1})
   ownerId: number;
+
   @IsNotEmpty()
   @IsInt()
+  @ApiProperty({example: 1})
   categoryId: number;
 }
