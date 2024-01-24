@@ -10,6 +10,7 @@ async function bootstrap() {
     methods: ['GET', 'HEAD', 'POST', 'PATCH', 'DELETE'],
   });
   const config = new DocumentBuilder()
+  .addBearerAuth()
     .setTitle('API Routes')
     .setDescription('Descrição das rotas da API')
     .setVersion('1.0')
