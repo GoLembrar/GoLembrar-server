@@ -17,6 +17,7 @@ model Users {
   phone           String            @unique @db.VarChar(64)
   reminder        Reminders[]
   usersToReminder UsersToReminder[]
+  categories      Category[]
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
 }
@@ -29,6 +30,8 @@ model Reminders {
   scheduled       DateTime
   isActivated     Boolean           @default(true)
   owner           Users             @relation(fields: [ownerId], references: [id])
+  category        Category          @relation(fields: [categoryId], references: [id])
+  categoryId      Int
   ownerId         Int
   usersToReminder UsersToReminder[]
   createdAt       DateTime          @default(now())
@@ -41,6 +44,16 @@ model UsersToReminder {
   userId     Int
   reminder   Reminders @relation(fields: [reminderId], references: [id])
   reminderId Int
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Category {
+  id        Int         @id @default(autoincrement())
+  name      String      @db.VarChar(64)
+  reminders Reminders[]
+  users     Users      @relation(fields: [usersId], references: [id])
+  usersId   Int
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 }
