@@ -3,7 +3,7 @@ import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { AuthorizationGuard } from '../common/guards/authorization.guard';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Unauthorized } from '../swagger/decorators/unauthorized.decorators';
 import { CreateCategoryResponse } from './swagger/createCategoryResponse.swagger';
 import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
@@ -19,6 +19,7 @@ export class CategoryController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Create category' })
   @CreateCategoryResponse()
   @Unauthorized()
   async create(@Body() createCategoryDto: CreateCategoryDto) {
@@ -26,6 +27,7 @@ export class CategoryController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all categories' })
   @OkResponse([OkResponseModel])
   @Unauthorized()
   async findAll() {
@@ -33,6 +35,7 @@ export class CategoryController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get one category' })
   @OkResponse(OkResponseModel)
   @Unauthorized()
   @NotFoundResponse()
@@ -41,6 +44,7 @@ export class CategoryController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update category' })
   @OkResponse(OkResponseModel)
   @Unauthorized()
   @NotFoundResponse()
@@ -49,6 +53,7 @@ export class CategoryController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete category' })
   @Unauthorized()
   @NotFoundResponse()
   async remove(@Param('id') id: string) {
