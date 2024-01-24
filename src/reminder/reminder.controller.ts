@@ -3,7 +3,7 @@ import { ReminderService } from './reminder.service';
 import { CreateReminderDto } from './dto/create-reminder.dto';
 import { AuthorizationGuard } from '../common/guards/authorization.guard';
 import { AddOwnerToBodyGuard } from './guards';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OkResponse } from '../swagger/decorators/ok.decorator';
 import { createReminderResponse } from './swagger/createReminderResponse.swagger';
 import { Unauthorized } from '../swagger/decorators/unauthorized.decorators';
@@ -15,6 +15,7 @@ export class ReminderController {
 
   @UseGuards(AuthorizationGuard, AddOwnerToBodyGuard)
   @Post('')
+  @ApiOperation({ summary: 'Create a new reminder.' })
   @OkResponse(createReminderResponse)
   @Unauthorized()
   createReminder(@Body() createReminderDto: CreateReminderDto) {
