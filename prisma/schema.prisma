@@ -52,6 +52,8 @@ model Category {
   id        Int         @id @default(autoincrement())
   name      String      @db.VarChar(64)
   reminders Reminders[]
-  Users     Users      @relation(fields: [usersId], references: [id])
+  users     Users      @relation(fields: [usersId], references: [id])
   usersId   Int
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
