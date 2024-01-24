@@ -17,6 +17,7 @@ model Users {
   phone           String            @unique @db.VarChar(64)
   reminder        Reminders[]
   usersToReminder UsersToReminder[]
+  categories      Category[]
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
 }
@@ -51,4 +52,6 @@ model Category {
   id        Int         @id @default(autoincrement())
   name      String      @db.VarChar(64)
   reminders Reminders[]
+  Users     Users      @relation(fields: [usersId], references: [id])
+  usersId   Int
 }

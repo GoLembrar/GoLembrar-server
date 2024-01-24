@@ -3,6 +3,7 @@ import {
   IsEmail,
   IsMobilePhone,
   IsNotEmpty,
+  IsNumber,
   IsString,
   IsStrongPassword,
   IsStrongPasswordOptions,
