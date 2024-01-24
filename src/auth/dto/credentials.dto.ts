@@ -13,10 +13,10 @@ const passwordDecoratorOptions: IsStrongPasswordOptions = {
 };
 
 export class CredentialsDto {
-  @ApiProperty()
+  @ApiProperty({ example: 'user@email.com'})
   @IsEmail()
   email: string;
-  @ApiProperty()
+  @ApiProperty({ example: '123456'})
   @IsStrongPassword(passwordDecoratorOptions)
   password: string;
 }

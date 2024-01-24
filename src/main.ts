@@ -10,8 +10,9 @@ async function bootstrap() {
     methods: ['GET', 'HEAD', 'POST', 'PATCH', 'DELETE'],
   });
   const config = new DocumentBuilder()
-    .setTitle('API Routes')
-    .setDescription('Descrição das rotas da API')
+  .addBearerAuth()
+    .setTitle('Go lembrar API')
+    .setDescription('GO Lembrar é uma aplicação para gerenciar lembretes.')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
