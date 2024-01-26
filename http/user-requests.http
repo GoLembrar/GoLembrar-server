@@ -15,7 +15,7 @@ DELETE http://localhost:3000/user/11
 
 ### get one user account
 
-GET http://localhost:3000/user/12
+GET http://localhost:3000/user/1
 
 ### user login
 
