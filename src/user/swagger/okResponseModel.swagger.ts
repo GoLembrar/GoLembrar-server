@@ -1,19 +1,18 @@
-import { ApiProperty } from "@nestjs/swagger"
+import { ApiProperty } from '@nestjs/swagger';
 
 export class okResponseModel {
-    @ApiProperty()
-    id: number
+  @ApiProperty()
+  id: number;
 
-    @ApiProperty()
-    email: string
+  @ApiProperty()
+  email: string;
 
-    @ApiProperty()
-    phone: string
+  @ApiProperty()
+  phone: string;
 
-    @ApiProperty()
-    createdAt: string
+  @ApiProperty()
+  createdAt: string;
 
-    @ApiProperty()
-    updatedAt: string
-  }
-  
+  @ApiProperty()
+  updatedAt: string;
+}

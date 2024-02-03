@@ -9,7 +9,13 @@ import { ReminderModule } from './reminder/reminder.module';
 import { CategoryModule } from './category/category.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), UserModule, AuthModule, ReminderModule, CategoryModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    UserModule,
+    AuthModule,
+    ReminderModule,
+    CategoryModule,
+  ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })

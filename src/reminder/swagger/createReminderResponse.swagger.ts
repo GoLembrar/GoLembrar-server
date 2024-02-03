@@ -1,33 +1,33 @@
-import { ApiProperty } from "@nestjs/swagger"
+import { ApiProperty } from '@nestjs/swagger';
 
 export class createReminderResponse {
-    @ApiProperty()
-    id: number
+  @ApiProperty()
+  id: number;
 
-    @ApiProperty()
-    title: string
+  @ApiProperty()
+  title: string;
 
-    @ApiProperty()
-    description: string
+  @ApiProperty()
+  description: string;
 
-    @ApiProperty()
-    platform: string
+  @ApiProperty()
+  platform: string;
 
-    @ApiProperty()
-    scheduled: string
+  @ApiProperty()
+  scheduled: string;
 
-    @ApiProperty()
-    isActivated: boolean
+  @ApiProperty()
+  isActivated: boolean;
 
-    @ApiProperty()
-    categoryId: number
+  @ApiProperty()
+  categoryId: number;
 
-    @ApiProperty()
-    ownerId: number
+  @ApiProperty()
+  ownerId: number;
 
-    @ApiProperty()
-    createdAt: string
+  @ApiProperty()
+  createdAt: string;
 
-    @ApiProperty()
-    updatedAt: string
+  @ApiProperty()
+  updatedAt: string;
 }
