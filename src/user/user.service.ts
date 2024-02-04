@@ -29,7 +29,7 @@ export class UserService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<void> {
-    const user = await this.prismaService.users.update({
+    await this.prismaService.users.update({
       where: {
         id,
       },
