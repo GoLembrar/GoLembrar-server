@@ -10,7 +10,7 @@ async function bootstrap() {
     methods: ['GET', 'HEAD', 'POST', 'PATCH', 'DELETE'],
   });
   const config = new DocumentBuilder()
-  .addBearerAuth()
+    .addBearerAuth()
     .setTitle('Go lembrar API')
     .setDescription('GO Lembrar é uma aplicação para gerenciar lembretes.')
     .setVersion('1.0')

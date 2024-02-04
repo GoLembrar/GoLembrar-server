@@ -1,10 +1,10 @@
-import { ApiProperty } from "@nestjs/swagger"
+import { ApiProperty } from '@nestjs/swagger';
 
 export class DefaultException {
-    @ApiProperty()
-    message: string
-    @ApiProperty()
-    error: string
-    @ApiProperty({default: 401})
-    statusCode: number
+  @ApiProperty()
+  message: string;
+  @ApiProperty()
+  error: string;
+  @ApiProperty({ default: 401 })
+  statusCode: number;
 }

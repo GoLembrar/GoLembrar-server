@@ -1,11 +1,11 @@
-import { applyDecorators } from "@nestjs/common";
-import { ApiResponse } from "@nestjs/swagger";
+import { applyDecorators } from '@nestjs/common';
+import { ApiResponse } from '@nestjs/swagger';
 
 export function CreateCategoryResponse() {
-    return applyDecorators(
-        ApiResponse({
-            status: 201,
-            description: 'category created',
-          }),
-    );
+  return applyDecorators(
+    ApiResponse({
+      status: 201,
+      description: 'category created',
+    }),
+  );
 }
