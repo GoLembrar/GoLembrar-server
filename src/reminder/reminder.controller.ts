@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  Get,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
@@ -17,12 +19,26 @@ import { UpdateReminderDto } from './dto/update-reminder.dto';
 import { CreatedResponse } from '../swagger/decorators/created.decorator';
 import { OkResponse } from '../swagger/decorators/ok.decorator';
 import { Forbidden } from '../swagger/decorators/forbidden.decorator';
+import { getReminderResponse } from './swagger/getReminderResponse.swagger';
+import { NotFound } from '../swagger/decorators/not-found.decorator';
 
 @Controller('reminder')
 @ApiTags('reminder')
 @UseGuards(AuthorizationGuard, AddOwnerToBodyGuard)
 export class ReminderController {
   constructor(private readonly reminderService: ReminderService) {}
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a reminder by id' })
+  @OkResponse(getReminderResponse)
+  @Unauthorized()
+  @NotFound()
+  async getReminderById(@Param('id', ParseIntPipe) id: number) {
+    const reminder = await this.reminderService.getReminderById(id);
+    if (!reminder)
+      throw new NotFoundException('Não foi possível encontrar o lembrete');
+    return reminder;
+  }
 
   @Post('')
   @ApiOperation({ summary: 'Create a new reminder.' })

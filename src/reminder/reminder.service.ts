@@ -2,10 +2,17 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateReminderDto } from './dto/create-reminder.dto';
 import { UpdateReminderDto } from './dto/update-reminder.dto';
+import { Reminders } from '@prisma/client';
 
 @Injectable()
 export class ReminderService {
   constructor(private readonly prismaService: PrismaService) {}
+
+  async getReminderById(id: number): Promise<Reminders> {
+    return await this.prismaService.reminders.findFirst({
+      where: { id: id },
+    });
+  }
 
   async createReminder(reminderDto: CreateReminderDto): Promise<void> {
     await this.prismaService.reminders.create({
