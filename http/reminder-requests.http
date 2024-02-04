@@ -2,11 +2,31 @@
 
 POST http://localhost:3000/reminder HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzA1OTcyMjQzLCJleHAiOjE3MDU5NzU4NDN9.z9dfcAoHII6lhoI88d7KBdnHshjuytnm5EhPpv51-vk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzA3MDExMzU1LCJleHAiOjE3MDcwMTQ5NTV9.vQb7Skpu9mZYRjm5RBoSB5MjprwCoOyAVbnlx-4IO9M
 
 {
   "title" : "Lembrar de codar",
   "description" : "Lembrete para codar TypeScript pela manhã",
   "platform" : "Whatsapp",
-  "scheduled" : "2024-02-23T01:06:18.179Z"
+  "scheduled" : "2024-02-23T01:06:18.179Z",
+  "categoryId" : 1
+}
+
+### Get reminder by id
+
+GET http://localhost:3000/reminder/1 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzA3MDExMzU1LCJleHAiOjE3MDcwMTQ5NTV9.vQb7Skpu9mZYRjm5RBoSB5MjprwCoOyAVbnlx-4IO9M
+
+### Update reminder
+
+PATCH http://localhost:3000/reminder/1 HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzA3MDExMzU1LCJleHAiOjE3MDcwMTQ5NTV9.vQb7Skpu9mZYRjm5RBoSB5MjprwCoOyAVbnlx-4IO9M
+
+{
+  "title" : "Lembrar de estudar",
+  "description" : "Lembrete para estudar TypeScript pela manhã",
+  "platform" : "Telegram",
+  "scheduled" : "2024-02-22T01:06:18.179Z",
+  "categoryId" : 1
 }
