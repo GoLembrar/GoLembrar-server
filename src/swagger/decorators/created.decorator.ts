@@ -1,11 +1,11 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 
-export function OkResponse(body?: any) {
+export function CreatedResponse(body?: any) {
   return applyDecorators(
     ApiResponse({
-      status: 200,
-      description: 'ok',
+      status: 201,
+      description: 'created',
       type: body,
     }),
   );
