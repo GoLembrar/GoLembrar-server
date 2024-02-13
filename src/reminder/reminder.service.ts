@@ -14,6 +14,14 @@ export class ReminderService {
     });
   }
 
+  async getUserReminders(userId: number): Promise<Reminders[]> {
+    return await this.prismaService.reminders.findMany({
+      where: {
+        ownerId: userId,
+      },
+    });
+  }
+
   async createReminder(reminderDto: CreateReminderDto): Promise<void> {
     await this.prismaService.reminders.create({
       data: reminderDto,

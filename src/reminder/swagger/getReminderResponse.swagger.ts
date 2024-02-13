@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class getReminderResponse {
+export class GetReminderResponse {
   @ApiProperty()
   id: number;
 
