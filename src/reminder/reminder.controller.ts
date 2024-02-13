@@ -24,7 +24,7 @@ import { NotFound } from '../swagger/decorators/not-found.decorator';
 
 @Controller('reminder')
 @ApiTags('reminder')
-@UseGuards(AuthorizationGuard, AddOwnerToBodyGuard)
+@UseGuards(AuthorizationGuard)
 export class ReminderController {
   constructor(private readonly reminderService: ReminderService) {}
 
@@ -41,6 +41,7 @@ export class ReminderController {
   }
 
   @Post('')
+  @UseGuards(AddOwnerToBodyGuard)
   @ApiOperation({ summary: 'Create a new reminder.' })
   @CreatedResponse()
   @Unauthorized()
