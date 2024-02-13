@@ -2,7 +2,7 @@
 
 POST http://localhost:3000/reminder HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzA3MDExMzU1LCJleHAiOjE3MDcwMTQ5NTV9.vQb7Skpu9mZYRjm5RBoSB5MjprwCoOyAVbnlx-4IO9M
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzA3ODYzMjYwLCJleHAiOjE3MDc4NjY4NjB9.fF3EATw2HSYCV2W9EZqyaEMY2GVurj6xcxtJ1UH2s88
 
 {
   "title" : "Lembrar de codar",
@@ -12,16 +12,21 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxN
   "categoryId" : 1
 }
 
+### Get my user reminders
+
+GET http://localhost:3000/reminder HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzA3ODYzMjYwLCJleHAiOjE3MDc4NjY4NjB9.fF3EATw2HSYCV2W9EZqyaEMY2GVurj6xcxtJ1UH2s88
+
 ### Get reminder by id
 
 GET http://localhost:3000/reminder/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzA3MDExMzU1LCJleHAiOjE3MDcwMTQ5NTV9.vQb7Skpu9mZYRjm5RBoSB5MjprwCoOyAVbnlx-4IO9M
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzA3ODYzMjYwLCJleHAiOjE3MDc4NjY4NjB9.fF3EATw2HSYCV2W9EZqyaEMY2GVurj6xcxtJ1UH2s88
 
 ### Update reminder
 
 PATCH http://localhost:3000/reminder/1 HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzA3MDExMzU1LCJleHAiOjE3MDcwMTQ5NTV9.vQb7Skpu9mZYRjm5RBoSB5MjprwCoOyAVbnlx-4IO9M
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzA3ODYzMjYwLCJleHAiOjE3MDc4NjY4NjB9.fF3EATw2HSYCV2W9EZqyaEMY2GVurj6xcxtJ1UH2s88
 
 {
   "title" : "Lembrar de estudar",
