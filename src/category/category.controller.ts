@@ -15,7 +15,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { AuthorizationGuard } from '../common/guards/authorization.guard';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Unauthorized } from '../swagger/decorators/unauthorized.decorators';
+import { UnauthorizedResponse } from '../swagger/decorators/unauthorized.decorator';
 import { CreateCategoryResponse } from './swagger/createCategoryResponse.swagger';
 import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
 import { OkResponse } from '../swagger/decorators/ok.decorator';
@@ -32,7 +32,7 @@ export class CategoryController {
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create category' })
   @CreateCategoryResponse()
-  @Unauthorized()
+  @UnauthorizedResponse()
   async create(@Body() createCategoryDto: CreateCategoryDto) {
     return await this.categoryService.create(createCategoryDto);
   }
@@ -40,7 +40,7 @@ export class CategoryController {
   @Get()
   @ApiOperation({ summary: 'Get all categories' })
   @OkResponse([OkResponseModel])
-  @Unauthorized()
+  @UnauthorizedResponse()
   async findAll() {
     return await this.categoryService.findAll();
   }
@@ -48,7 +48,7 @@ export class CategoryController {
   @Get(':id')
   @ApiOperation({ summary: 'Get one category' })
   @OkResponse(OkResponseModel)
-  @Unauthorized()
+  @UnauthorizedResponse()
   @NotFoundResponse()
   async findOne(@Param('id') id: string) {
     return await this.categoryService.findOne(+id);
@@ -57,7 +57,7 @@ export class CategoryController {
   @Patch(':id')
   @ApiOperation({ summary: 'Update category' })
   @OkResponse(OkResponseModel)
-  @Unauthorized()
+  @UnauthorizedResponse()
   @NotFoundResponse()
   async update(
     @Param('id') id: string,
@@ -68,7 +68,7 @@ export class CategoryController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete category' })
-  @Unauthorized()
+  @UnauthorizedResponse()
   @NotFoundResponse()
   async remove(@Param('id') id: string) {
     await this.categoryService.remove(+id);
