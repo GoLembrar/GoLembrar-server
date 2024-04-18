@@ -19,4 +19,5 @@ import { CategoryModule } from './category/category.module';
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })
+//test
 export class AppModule {}
