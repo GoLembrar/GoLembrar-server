@@ -10,3 +10,26 @@ services:
       - POSTGRESQL_DATABASE=golembrar
     volumes:
       - ./.docker/db/data:/var/lib/postgresql/:delegated
+    healthcheck:
+      test: [ "CMD-SHELL", "psql -h localhost -U admin -d rinha -c 'SELECT 1;'" ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  api:
+    depends_on:
+      db:
+        condition: service_healthy
+    build: .
+    environment:
+      - DATABASE_URL="postgresql://test:test@db:5432/golembrar?schema=publicvalue"
+      - JWT_SECRET="variosnumerosletrasesimbolosmisturadosparasegurançadosecret"
+      - JWT_EXP="1h"
+    ports:
+    - "3000:3000"
+
+networks:
+  default:
+    driver: bridge
+    name: golembrar
