@@ -58,16 +58,30 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Support
+![BANNER](https://i.ibb.co/Hr6GrvF/golembrar.png)
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## 💭 Oque é o projeto?
 
-## Stay in touch
+O GoLembrar é uma plataforma web desenvolvida para simplificar o gerenciamento de lembretes e mensagens, proporcionando aos usuários uma maneira eficiente de organizar suas tarefas diárias, compromissos e eventos importantes. Com integração a diversas plataformas de mensagens, como WhatsApp, E-mail, Telegram e Discord, o sistema automatiza o processo de entrega de lembretes, oferecendo uma experiência de usuário fluida e eficaz. Além disso, os usuários têm a capacidade de personalizar a data, hora e destinatário de cada lembrete, garantindo uma experiência de uso totalmente adaptada às suas necessidades individuais. Seja para lembrar-se de compromissos profissionais ou pessoais, o GoLembrar oferece uma solução abrangente e conveniente para manter os usuários sempre atualizados e organizados.
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## 💡 Características principais do GoLembrar
 
-## License
+- **Lembretes Personalizados**: Os usuários podem criar lembretes personalizados para uma ampla variedade de atividades, permitindo a configuração de datas, horas e destinatários específicos para cada lembrete. Isso proporciona uma experiência altamente adaptável e organizada.
 
-Nest is [MIT licensed](LICENSE).
+- **Integração com Plataformas de Mensagens**: Integra-se perfeitamente com plataformas populares de mensagens, como WhatsApp, E-mail, Telegram e Discord, oferecendo aos usuários a flexibilidade de receber lembretes em seus aplicativos de escolha.
+
+- **Gerenciamento de Lembretes**: Facilita o gerenciamento completo dos lembretes, incluindo criação, edição, exclusão e listagem, garantindo que os usuários possam manter seus compromissos organizados e atualizados.
+
+- **Sincronização entre Dispositivos**: Garante a sincronização perfeita dos lembretes em diferentes dispositivos, permitindo que os usuários acessem e gerenciem suas tarefas em qualquer lugar e a qualquer momento.
+
+## 🖥️ Tecnologias Usadas
+
+- **NestJs**: É um framework progressivo para Node.js para a construção de aplicações eficientes, confiáveis e escaláveis no lado do servidor1. Ele fornece flexibilidade incomparável através de sua arquitetura modular meticulosamente elaborada1. O NestJs introduz padrões de design e soluções bem estabelecidas na paisagem do Node.js1. Ele é construído com e suporta totalmente TypeScript, mas ainda permite que os desenvolvedores codifiquem em JavaScript puro.
+
+- **PostgreSQL**: PostgreSQL é um poderoso sistema de banco de dados objeto-relacional de código aberto que usa e estende a linguagem SQL combinada com muitos recursos que armazenam com segurança e dimensionam as cargas de trabalho de dados mais complicadas3. Ele tem uma reputação forte por sua arquitetura comprovada, confiabilidade, integridade de dados, robusto conjunto de recursos, extensibilidade e a dedicação da comunidade de código aberto por trás do software para entregar consistentemente soluções performantes e inovadoras
+
+- **Swagger**: é um conjunto de ferramentas de código aberto que permite descrever a estrutura de suas APIs para que as máquinas possam lê-las4. Ele pode gerar automaticamente documentação interativa de API, bibliotecas de clientes, código stub de servidor e muito mais, facilitando o desenvolvimento, teste e implantação de APIs5. O Swagger faz isso pedindo à sua API para retornar um arquivo YAML ou JSON que contém uma descrição detalhada de toda a sua API
+
+- **Prisma**: Uma ferramenta de ORM (Object-Relational Mapping) para Node.js e TypeScript, que simplifica a interação com bancos de dados relacionais. Prisma permite definir modelos de dados usando uma linguagem declarativa e, em seguida, gera consultas SQL eficientes automaticamente. Ele oferece recursos avançados, como migrações de esquema, controle transacional e geração de APIs CRUD (Create, Read, Update, Delete) prontas para uso.
+
+- **JWT (JSON Web Token)**: Um padrão aberto (RFC 7519) para criar tokens de acesso seguros e autenticados, usados principalmente para autenticação e autorização em aplicativos web e APIs RESTful. JWT permite que informações (claims) sejam codificadas em um objeto JSON assinado digitalmente, que pode ser verificado e confiável. Ele é amplamente utilizado devido à sua simplicidade, eficiência e suporte multiplataforma.
