@@ -47,11 +47,11 @@ jobs:
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/go_lembrar_server .
       
       - name: Tag Docker image
-        run:|
+        run: |
          docker tag ${{ secrets.DOCKER_USERNAME }}/go_lembrar_server ${{ secrets.DOCKER_USERNAME }}/go_lembrar_server:latest
          docker tag ${{ secrets.DOCKER_USERNAME }}/go_lembrar_server ${{ secrets.DOCKER_USERNAME }}/go_lembrar_server:${{ github.run_id }}
 
       - name: Push Docker image
         run: |
-        docker push ${{ secrets.DOCKER_USERNAME }}/go_lembrar_server:${{ github.run_id }}
-        docker push ${{ secrets.DOCKER_USERNAME }}/go_lembrar_server:latest
+         docker push ${{ secrets.DOCKER_USERNAME }}/go_lembrar_server:${{ github.run_id }}
+         docker push ${{ secrets.DOCKER_USERNAME }}/go_lembrar_server:latest
