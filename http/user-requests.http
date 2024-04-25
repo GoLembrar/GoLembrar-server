@@ -1,3 +1,5 @@
+@host = http://localhost:3000
+
 ### create one user account
 
 POST http://localhost:3000/user HTTP/1.1
@@ -10,6 +12,16 @@ Content-Type: application/json
 }
 
 ### delete one user account
+
+PATCH {{host}}/user HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzEzODEzNjMyLCJleHAiOjE3MTM4MTcyMzJ9.1PiVvLtTjm5cTNKZ1-QEkKXqM4Bjx2Oc9tecADnEhaE
+
+{
+  "password": "senhaAtualizada"
+}
+
+###
 
 DELETE http://localhost:3000/user/11
 
