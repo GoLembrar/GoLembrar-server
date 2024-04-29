@@ -6,8 +6,11 @@ import { PrismaService } from '../prisma/prisma.service';
 @Injectable()
 export class ContactService {
   constructor(private readonly prismaService: PrismaService) {}
-  create(createContactDto: CreateContactDto) {
-    return 'This action adds a new contact';
+  async create(createContactDto: CreateContactDto) {
+    const contact = await this.prismaService.contact.create({
+      data: ...createContactDto,
+    });
+    return contact;
   }
 
   async findAll(userId: number) {
@@ -19,15 +22,39 @@ export class ContactService {
     return contacts;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} contact`;
+  async findOne(id: number, userId: number) {
+    const contact = await this.prismaService.contact.findFirst({
+      where: {
+        id: id,
+        userId: userId,
+      },
+    });
+    return contact;
   }
 
-  update(id: number, updateContactDto: UpdateContactDto) {
-    return `This action updates a #${id} contact`;
+  async update(id: number, updateContactDto: UpdateContactDto) {
+    const contact = await this.prismaService.contact.update({
+      where: {
+        id: id,
+      },
+      data: {
+        ...updateContactDto,
+      },
+    });
+
+    return contact;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} contact`;
+  async remove(id: number, userId: number): boolean {
+    const contact = await this.prismaService.contact.delete({
+      where: {
+        id: id,
+        userId: userId,
+      },
+    });
+    if (!contact) {
+      return false;
+    }
+    return true;
   }
 }

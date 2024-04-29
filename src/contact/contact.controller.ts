@@ -1,4 +1,3 @@
-import { request } from 'supertest';
 import { Request } from 'express';
 import {
   Controller,
@@ -21,28 +20,36 @@ export class ContactController {
   constructor(private readonly contactService: ContactService) {}
 
   @Post()
-  create(@Body() createContactDto: CreateContactDto) {
+  create(@Body() createContactDto: CreateContactDto, request: Request | any) {
+    createContactDto.userId = Number(request.user.id);
     return this.contactService.create(createContactDto);
   }
 
   @Get()
-  findAll(request: Request) {
-    const userId = request.user.id;
+  findAll(request: Request | any) {
+    const userId = Number(request.user.id);
     return this.contactService.findAll(userId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.contactService.findOne(+id);
+  findOne(@Param('id') id: string, request: Request | any) {
+    const userId = Number(request.user.id);
+    return this.contactService.findOne(+id, userId);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateContactDto: UpdateContactDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateContactDto: UpdateContactDto,
+    request: Request | any,
+  ) {
+    updateContactDto.userId = Number(request.user.id);
     return this.contactService.update(+id, updateContactDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.contactService.remove(+id);
+  remove(@Param('id') id: string, request: Request | any) {
+    const userId = Number(request.user.id);
+    return this.contactService.remove(+id, userId);
   }
 }
