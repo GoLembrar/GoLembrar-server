@@ -46,6 +46,7 @@ export class ContactController {
     return this.contactService.findOne(+id, userId);
   }
 
+  @UseGuards(PreventDuplicateContactGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
