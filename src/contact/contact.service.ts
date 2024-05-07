@@ -2,14 +2,23 @@ import { Injectable } from '@nestjs/common';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { Platforms } from '@prisma/client';
 
 @Injectable()
 export class ContactService {
   constructor(private readonly prismaService: PrismaService) {}
   async create(createContactDto: CreateContactDto) {
-    console.log(createContactDto);
+    const { userId, ...createData } = createContactDto;
+
+    const platform = Platforms[createData.platform.toUpperCase()];
     const contact = await this.prismaService.contact.create({
-      data: createContactDto,
+      data: {
+        ...createData,
+        user: {
+          connect: { id: userId },
+        },
+        platform,
+      },
     });
     return contact;
   }
@@ -34,16 +43,21 @@ export class ContactService {
   }
 
   async update(id: number, updateContactDto: UpdateContactDto) {
-    /* const contact = await this.prismaService.contact.update({
+    const { userId, ...updateData } = updateContactDto;
+
+    const platform = Platforms[updateData.platform.toUpperCase()];
+    const contact = await this.prismaService.contact.update({
       where: {
         id: id,
       },
       data: {
-        ...updateContactDto,
+        ...updateData,
+        user: { connect: { id: userId } },
+        platform,
       },
     });
 
-    return contact; */
+    return contact;
   }
 
   async remove(id: number, userId: number): Promise<boolean> {

@@ -14,6 +14,7 @@ import { ContactService } from './contact.service';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
 import { AuthorizationGuard } from '../common/guards/authorization.guard';
+import { PreventDuplicateContactGuard } from './guards/preventDuplicateContact.guard';
 
 @UseGuards(AuthorizationGuard)
 @Controller('contact')
@@ -21,6 +22,7 @@ export class ContactController {
   constructor(private readonly contactService: ContactService) {}
 
   @Post()
+  @UseGuards(PreventDuplicateContactGuard)
   create(@Body() createContactDto: CreateContactDto, @Req() request: Request) {
     if (
       'user' in request &&
