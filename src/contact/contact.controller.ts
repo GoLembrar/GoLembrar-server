@@ -8,6 +8,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { ContactService } from './contact.service';
 import { CreateContactDto } from './dto/create-contact.dto';
@@ -20,8 +21,14 @@ export class ContactController {
   constructor(private readonly contactService: ContactService) {}
 
   @Post()
-  create(@Body() createContactDto: CreateContactDto, request: Request | any) {
-    createContactDto.userId = Number(request.user.id);
+  create(@Body() createContactDto: CreateContactDto, @Req() request: Request) {
+    if (
+      'user' in request &&
+      typeof request.user === 'object' &&
+      'id' in request.user &&
+      typeof request.user.id === 'string'
+    )
+      createContactDto.userId = Number(request.user.id);
     return this.contactService.create(createContactDto);
   }
 

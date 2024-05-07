@@ -6,9 +6,9 @@ POST http://localhost:3000/user HTTP/1.1
 Content-Type: application/json
 
 {
-  "email" : "test@email.com",
-  "phone" : "19987851001",
-  "password" : "senhaForte"
+  "email" : "test1@email.com",
+  "phone" : "19987851003",
+  "password" : "senhaForte1"
 }
 
 ### delete one user account

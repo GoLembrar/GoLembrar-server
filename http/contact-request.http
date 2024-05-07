@@ -1,12 +1,19 @@
 #Rota para criaçãoo de contato com um usuario logado
 @host = http://localhost:3000
-@token = "ey...."
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzE1MDM5MjI4LCJleHAiOjE3MTUwNDI4Mjh9.g8uL4mZ4_bNzEsq2FjUKU7RMjkSJpf2gxcvwMxTOaOM
+###
+
 POST {{host}}/contact HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{token}}
-{
 
+{
+    "name": "teste",
+    "identify": "123456789",
+    "platform": "whatsapp",
+    "userId": 1
 }
+
 ###
 
 ###Rota para pegar todos os contacts do usuario logado
