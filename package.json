@@ -33,6 +33,7 @@
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/serve-static": "^4.0.2",
     "@nestjs/swagger": "^7.1.17",
     "@prisma/client": "^5.7.0",
     "bcrypt": "^5.1.1",

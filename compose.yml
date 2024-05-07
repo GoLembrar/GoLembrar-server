@@ -3,7 +3,7 @@ services:
   db:
     image: bitnami/postgresql
     ports:
-      - 5432:5432
+      - 5431:5432
     environment:
       - POSTGRESQL_USERNAME=test
       - POSTGRESQL_PASSWORD=test
