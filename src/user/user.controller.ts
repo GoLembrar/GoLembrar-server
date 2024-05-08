@@ -4,19 +4,18 @@ import {
   Post,
   Body,
   Patch,
-  Param,
   Delete,
-  ParseIntPipe,
-  NotFoundException,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Users } from '@prisma/client';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OkResponse } from '../swagger/decorators/ok.decorator';
 import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
 import { okResponseModel } from './swagger/okResponseModel.swagger';
+import { AuthorizationGuard } from '../common/guards/authorization.guard';
 
 @Controller('user')
 @ApiTags('user')
@@ -30,33 +29,34 @@ export class UserController {
     return await this.userService.create(createUserDto);
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Find a user by id.' })
+  @Get('')
+  @ApiOperation({ summary: 'Find a user by token' })
   @OkResponse([okResponseModel])
   @NotFoundResponse()
-  async findOne(@Param('id', ParseIntPipe) id: string) {
-    const user: Partial<Users> | null = await this.userService.findOne(+id);
-    if (!user)
-      throw new NotFoundException(`Usuário com id ${id} não foi encontrado.`);
+  @UseGuards(AuthorizationGuard)
+  async findOne(@Req() request: Request | any) {
+    const user = await this.userService.findOne(request.user.id);
     return user;
   }
 
-  @Patch(':id')
+  @Patch('')
   @ApiOperation({ summary: 'Update a user by id.' })
   @OkResponse(okResponseModel)
   @NotFoundResponse()
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @UseGuards(AuthorizationGuard)
+  async update(
+    @Req() request: Request | any,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.userService.update(request.user.id, updateUserDto);
   }
 
-  @Delete(':id')
+  @Delete()
   @ApiOperation({ summary: 'Remove a user by id.' })
   @OkResponse(okResponseModel)
   @NotFoundResponse()
-  remove(
-    @Param('id', ParseIntPipe)
-    id: number,
-  ) {
-    return this.userService.remove(id);
+  @UseGuards(AuthorizationGuard)
+  async remove(@Req() request: Request | any) {
+    return this.userService.remove(request.user.id);
   }
 }
