@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { ReminderModule } from './reminder/reminder.module';
 import { CategoryModule } from './category/category.module';
+import { ContactModule } from './contact/contact.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 
@@ -21,6 +22,7 @@ import { join } from 'path';
     AuthModule,
     ReminderModule,
     CategoryModule,
+    ContactModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

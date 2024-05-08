@@ -1,3 +1,5 @@
+@host = http://localhost:3000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzEzODEzNjMyLCJleHAiOjE3MTM4MTcyMzJ9.1PiVvLtTjm5cTNKZ1-QEkKXqM4Bjx2Oc9tecADnEhaE
 ### create one user account
 
 POST http://localhost:3000/user HTTP/1.1
@@ -5,11 +7,21 @@ Content-Type: application/json
 
 {
   "email" : "test@email.com",
-  "phone" : "19987851001",
-  "password" : "senhaForte"
+  "phone" : "19987851003",
+  "password" : "senhaForte1"
 }
 
 ### delete one user account
+
+PATCH {{host}}/user HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "password": "senhaAtualizada"
+}
+
+###
 
 DELETE http://localhost:3000/user/11
 
@@ -24,7 +36,7 @@ Content-Type: application/json
 
 {
   "email" : "test@email.com",
-  "password" : "senhaForte"
+  "password" : "senhaForte1"
 }
 
 ### get all users account
