@@ -68,7 +68,7 @@ model Contact {
   id       Int       @id @default(autoincrement())
   name     String    @db.VarChar(128)
   identify String    @db.VarChar(64)
-  platform Platforms
+  platform Platform
   user     Users     @relation(fields: [userId], references: [id])
   userId   Int
 
@@ -78,7 +78,7 @@ model Contact {
   @@map("contacts")
 }
 
-enum Platforms {
+enum Platform {
   WHATSAPP
   TELEGRAM
   DISCORD

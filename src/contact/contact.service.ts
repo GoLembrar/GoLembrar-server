@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { Platforms } from '@prisma/client';
+import { Platform } from '@prisma/client';
 
 @Injectable()
 export class ContactService {
@@ -10,7 +10,7 @@ export class ContactService {
   async create(createContactDto: CreateContactDto) {
     const { userId, ...createData } = createContactDto;
 
-    const platform = Platforms[createData.platform.toUpperCase()];
+    const platform = Platform[createData.platform.toUpperCase()];
     const contact = await this.prismaService.contact.create({
       data: {
         ...createData,
@@ -45,7 +45,7 @@ export class ContactService {
   async update(id: number, updateContactDto: UpdateContactDto) {
     const { userId, ...updateData } = updateContactDto;
 
-    const platform = Platforms[updateData.platform.toUpperCase()];
+    const platform = Platform[updateData.platform.toUpperCase()];
     const contact = await this.prismaService.contact.update({
       where: {
         id: id,
