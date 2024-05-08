@@ -78,7 +78,7 @@ model Contact {
   @@map("contacts")
 }
 
-enum Platform {
+enum Platforms {
   WHATSAPP
   TELEGRAM
   DISCORD
