@@ -16,7 +16,7 @@ import { join } from 'path';
     ConfigModule.forRoot({ isGlobal: true }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'swagger-static'),
-      serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/docs'
+      serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/docs',
     }),
     UserModule,
     AuthModule,
