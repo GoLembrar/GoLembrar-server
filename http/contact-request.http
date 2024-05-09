@@ -1,6 +1,6 @@
 #Rota para criaçãoo de contato com um usuario logado
 @host = http://localhost:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE1MDQyMDIzLCJleHAiOjE3MTUwNDU2MjN9.AHEsVI24S9xoWLbXnegpwx0XICvvirWQhOe7Qyi8f8k
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE1MjE0MDEzLCJleHAiOjE3MTUyMTc2MTN9.HA6rMVe5e4O8nwHOLaNF5a7UcN-EcbBRfHoktpwoxz8
 ###
 
 POST {{host}}/contact HTTP/1.1

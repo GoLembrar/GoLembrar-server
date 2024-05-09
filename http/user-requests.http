@@ -8,7 +8,7 @@ Content-Type: application/json
 {
   "email" : "test@email.com",
   "phone" : "19987851003",
-  "password" : "senhaForte1"
+  "password" : "senhaForte"
 }
 
 ### delete one user account
