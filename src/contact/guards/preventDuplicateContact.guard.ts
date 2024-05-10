@@ -6,23 +6,24 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { PrismaService } from '../../prisma/prisma.service';
-import { concat } from 'rxjs';
 
 @Injectable()
 export class PreventDuplicateContactGuard implements CanActivate {
   constructor(private readonly prisma: PrismaService) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request: Request = context.switchToHttp().getRequest();
+    const request: Request | any = context.switchToHttp().getRequest();
     const { identify } = request.body;
+    const userId = request.user.id; //melhorar a busca do id do user, evitar o uso do tipo any
 
-    const contact = await this.prisma.contact
-      .findFirst({
-        where: {
-          identify,
-        },
-      })
-      .catch(console.log);
-    if (concat) throw new ConflictException('Contato já cadastrado');
+    const contact = await this.prisma.contact.findFirst({
+      where: {
+        identify,
+        userId,
+      },
+    });
+    /* dessa forma garante que quando for fazer o filtro se existe ou não
+    um contato, verifique somente para o usuario atual logado e não para todos os contatos existentes */
+    if (contact) throw new ConflictException('Contato já cadastrado');
     return true;
   }
 }
