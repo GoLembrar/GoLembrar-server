@@ -11,7 +11,7 @@ services:
     volumes:
       - ./.docker/db/data:/var/lib/postgresql/:delegated
     healthcheck:
-      test: [ "CMD-SHELL", "psql -h localhost -U admin -d rinha -c 'SELECT 1;'" ]
+      test: [ "CMD-SHELL", "psql -h localhost -U test -d golembrar -c 'SELECT 1;'" ]
       interval: 5s
       timeout: 5s
       retries: 20
