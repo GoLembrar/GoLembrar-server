@@ -2,11 +2,22 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { Transport } from '@nestjs/microservices';
 import { resolve } from 'path';
 import { writeFileSync, createWriteStream } from 'fs';
 import { get } from 'https';
 
 async function bootstrap() {
+  await NestFactory.createMicroservice(AppModule, {
+    transport: Transport.RMQ,
+    options: {
+      urls: ['amqp://localhost:5672'],
+      queue: 'cats_queue',
+      queueOptions: {
+        durable: false,
+      },
+    },
+  });
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: '*',
@@ -22,6 +33,8 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
 
   app.useGlobalPipes(new ValidationPipe());
+
+  // Configurando conexão com RabbitMQ
   const port = 3000;
   app.listen(port).then(() => {
     const logger = new Logger(bootstrap.name);
@@ -30,12 +43,8 @@ async function bootstrap() {
 
   const serverUrl = 'https://api-golembrar.vercel.app';
 
-
-
   // write swagger ui files
-  get(
-    `${serverUrl}/swagger/swagger-ui-bundle.js`, function
-    (response) {
+  get(`${serverUrl}/swagger/swagger-ui-bundle.js`, function (response) {
     response.pipe(createWriteStream('swagger-static/swagger-ui-bundle.js'));
     console.log(
       `Swagger UI bundle file written to: '/swagger-static/swagger-ui-bundle.js'`,
@@ -58,7 +67,8 @@ async function bootstrap() {
       console.log(
         `Swagger UI standalone preset file written to: '/swagger-static/swagger-ui-standalone-preset.js'`,
       );
-    });
+    },
+  );
 
   get(`${serverUrl}/swagger/swagger-ui.css`, function (response) {
     response.pipe(createWriteStream('swagger-static/swagger-ui.css'));
@@ -66,9 +76,6 @@ async function bootstrap() {
       `Swagger UI css file written to: '/swagger-static/swagger-ui.css'`,
     );
   });
-
 }
 
 bootstrap();
-
-

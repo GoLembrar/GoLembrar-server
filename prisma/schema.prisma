@@ -18,8 +18,10 @@ model Users {
   reminder        Reminders[]
   usersToReminder UsersToReminder[]
   categories      Category[]
+  contacts        Contact[]
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
+
 }
 
 model Reminders {
@@ -36,12 +38,15 @@ model Reminders {
   usersToReminder UsersToReminder[]
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
+
+  @@index([title])
 }
 
 model UsersToReminder {
   id         Int       @id @default(autoincrement())
   user       Users     @relation(fields: [userId], references: [id])
   userId     Int
+  platform   Platform // Adicionando o campo platform
   reminder   Reminders @relation(fields: [reminderId], references: [id])
   reminderId Int
   createdAt  DateTime  @default(now())
@@ -52,8 +57,30 @@ model Category {
   id        Int         @id @default(autoincrement())
   name      String      @db.VarChar(64)
   reminders Reminders[]
-  users     Users      @relation(fields: [usersId], references: [id])
+  users     Users       @relation(fields: [usersId], references: [id])
   usersId   Int
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+
+model Contact {
+  id       Int       @id @default(autoincrement())
+  name     String    @db.VarChar(128)
+  identify String    @db.VarChar(64)
+  platform Platform
+  user     Users     @relation(fields: [userId], references: [id])
+  userId   Int
+
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  @@index([name, identify])
+  @@map("contacts")
+}
+
+enum Platform {
+  WHATSAPP
+  TELEGRAM
+  DISCORD
+  EMAIL
 }

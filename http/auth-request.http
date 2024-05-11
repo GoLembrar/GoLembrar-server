@@ -1,0 +1,15 @@
+
+@host = http://localhost:3000
+POST {{host}}/auth HTTP/1.1
+Content-Type: application/json
+
+{
+    "email": "test@email.com",
+    "password": "senhaForte"
+}
+
+###
+
+GET {{host}}/user HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzEzODEzNjMyLCJleHAiOjE3MTM4MTcyMzJ9.1PiVvLtTjm5cTNKZ1-QEkKXqM4Bjx2Oc9tecADnEhaE|

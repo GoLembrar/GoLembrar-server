@@ -1,13 +1,15 @@
-version: '3'
+version: '3.8'
 services:
   db:
     image: bitnami/postgresql
     ports:
-      - 5431:5432
+      - 5432:5432
     environment:
       - POSTGRESQL_USERNAME=test
       - POSTGRESQL_PASSWORD=test
       - POSTGRESQL_DATABASE=golembrar
+    extra_hosts:
+      - host.docker.internal:host-gateway
     volumes:
       - ./.docker/db/data:/var/lib/postgresql/:delegated
     healthcheck:
@@ -16,7 +18,15 @@ services:
       timeout: 5s
       retries: 20
       start_period: 10s
-
+      
+  rabbitmq:
+   image: rabbitmq:3-management-alpine
+    ports:
+     - 5672:5672
+     - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=test
+      - RABBITMQ_DEFAULT_PASS=test
   api:
     depends_on:
       db:
