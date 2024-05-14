@@ -16,6 +16,7 @@ import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
 import { AuthorizationGuard } from '../common/guards/authorization.guard';
 import { PreventDuplicateContactGuard } from './guards/preventDuplicateContact.guard';
+import { RequestWithUser } from '../common/utils/types/RequestWithUser';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateCategoryResponse } from '../category/swagger/createCategoryResponse.swagger';
 import { OkResponse } from '../swagger/decorators/ok.decorator';
@@ -51,7 +52,7 @@ export class ContactController {
   @ApiOperation({ summary: 'Get all contacts' })
   @UnauthorizedResponse()
   @OkResponse([OkResponseModel])
-  findAll(request: Request | any) {
+  findAll(@Req() request: RequestWithUser) {
     const userId = Number(request.user.id);
     return this.contactService.findAll(userId);
   }
