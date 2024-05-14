@@ -15,6 +15,7 @@ import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
 import { AuthorizationGuard } from '../common/guards/authorization.guard';
 import { PreventDuplicateContactGuard } from './guards/preventDuplicateContact.guard';
+import { RequestWithUser } from '../common/utils/types/RequestWithUser';
 
 @UseGuards(AuthorizationGuard)
 @Controller('contact')
@@ -35,7 +36,7 @@ export class ContactController {
   }
 
   @Get()
-  findAll(request: Request | any) {
+  findAll(@Req() request: RequestWithUser) {
     const userId = Number(request.user.id);
     return this.contactService.findAll(userId);
   }

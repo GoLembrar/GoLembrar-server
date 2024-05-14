@@ -43,12 +43,8 @@ async function bootstrap() {
 
   const serverUrl = 'https://api-golembrar.vercel.app';
 
-
-
   // write swagger ui files
-  get(
-    `${serverUrl}/swagger/swagger-ui-bundle.js`, function
-    (response) {
+  get(`${serverUrl}/swagger/swagger-ui-bundle.js`, function (response) {
     response.pipe(createWriteStream('swagger-static/swagger-ui-bundle.js'));
     console.log(
       `Swagger UI bundle file written to: '/swagger-static/swagger-ui-bundle.js'`,
@@ -71,7 +67,8 @@ async function bootstrap() {
       console.log(
         `Swagger UI standalone preset file written to: '/swagger-static/swagger-ui-standalone-preset.js'`,
       );
-    });
+    },
+  );
 
   get(`${serverUrl}/swagger/swagger-ui.css`, function (response) {
     response.pipe(createWriteStream('swagger-static/swagger-ui.css'));
@@ -79,9 +76,6 @@ async function bootstrap() {
       `Swagger UI css file written to: '/swagger-static/swagger-ui.css'`,
     );
   });
-
 }
 
 bootstrap();
-
-
