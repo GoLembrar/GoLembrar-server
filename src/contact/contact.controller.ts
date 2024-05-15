@@ -72,7 +72,7 @@ export class ContactController {
   update(
     @Param('id') id: string,
     @Body() @AddRequestUserId() updateContactDto: UpdateContactDto,
-    request: RequestWithUser,
+    @Req() request: RequestWithUser,
   ) {
     updateContactDto.userId = request.user.id;
     return this.contactService.update(+id, updateContactDto);
