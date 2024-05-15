@@ -23,6 +23,7 @@ import { OkResponse } from '../swagger/decorators/ok.decorator';
 import { OkResponseModel } from '../auth/swagger/okResponseModel.swagger';
 import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
 import { UnauthorizedResponse } from '../swagger/decorators/unauthorized.decorator';
+import { AddRequestUserId } from '../common/decorators/add-request-user-id.decorator';
 
 @UseGuards(AuthorizationGuard)
 @Controller('contact')
@@ -37,14 +38,11 @@ export class ContactController {
   @UnauthorizedResponse()
   @CreateCategoryResponse()
   @UseGuards(PreventDuplicateContactGuard)
-  create(@Body() createContactDto: CreateContactDto, @Req() request: Request) {
-    if (
-      'user' in request &&
-      typeof request.user === 'object' &&
-      'id' in request.user &&
-      typeof request.user.id === 'string'
-    )
-      createContactDto.userId = Number(request.user.id);
+  create(
+    @Body() @AddRequestUserId() createContactDto: CreateContactDto,
+    @Req() request: RequestWithUser,
+  ) {
+    createContactDto.userId = request.user.id;
     return this.contactService.create(createContactDto);
   }
 
