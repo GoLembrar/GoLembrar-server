@@ -59,8 +59,8 @@ export class ContactController {
   @ApiOperation({ summary: 'Get one contact' })
   @UnauthorizedResponse()
   @NotFoundResponse()
-  findOne(@Param('id') id: string, request: Request | any) {
-    const userId = Number(request.user.id);
+  findOne(@Param('id') id: string, request: RequestWithUser) {
+    const userId = request.user.id;
     return this.contactService.findOne(+id, userId);
   }
 
@@ -71,10 +71,10 @@ export class ContactController {
   @NotFoundResponse()
   update(
     @Param('id') id: string,
-    @Body() updateContactDto: UpdateContactDto,
-    request: Request | any,
+    @Body() @AddRequestUserId() updateContactDto: UpdateContactDto,
+    request: RequestWithUser,
   ) {
-    updateContactDto.userId = Number(request.user.id);
+    updateContactDto.userId = request.user.id;
     return this.contactService.update(+id, updateContactDto);
   }
 
