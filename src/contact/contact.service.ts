@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
 import { PrismaService } from '../prisma/prisma.service';
@@ -46,30 +46,50 @@ export class ContactService {
     const { userId, ...updateData } = updateContactDto;
 
     const platform = Platform[updateData.platform.toUpperCase()];
-    const contact = await this.prismaService.contact.update({
-      where: {
-        id: id,
-      },
-      data: {
-        ...updateData,
-        user: { connect: { id: userId } },
-        platform,
-      },
-    });
-
-    return contact;
-  }
-
-  async remove(id: number, userId: number): Promise<boolean> {
-    const contact = await this.prismaService.contact.delete({
+    const contact = await this.prismaService.contact.findUnique({
       where: {
         id: id,
         userId: userId,
       },
     });
+
+    if (!contact) {
+      //retornar um Expception
+      return new NotFoundException('Contato não encontrado');
+    }
+
+    const updatedContact = await this.prismaService.contact.update({
+      where: {
+        id: contact.id,
+        userId: contact.userId,
+        name: contact.name,
+        identify: contact.identify,
+      },
+      data: {
+        ...updateData,
+        platform,
+      },
+    });
+
+    return updatedContact;
+  }
+
+  async remove(id: number, userId: number): Promise<boolean> {
+    const contact = await this.prismaService.contact.findFirst({
+      where: {
+        id,
+        userId,
+      },
+    });
+
     if (!contact) {
       return false;
     }
+
+    await this.prismaService.contact.delete({
+      where: { ...contact },
+    });
+
     return true;
   }
 }

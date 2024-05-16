@@ -1,8 +1,7 @@
 #Rota para criaçãoo de contato com um usuario logado
 @host = http://localhost:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE1NzM3NTMxLCJleHAiOjE3MTU3NDExMzF9.1rAtyVgnBUrqYX6AWH7sZI41Mv05vV1eCn9Ka9xnYbQ
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzE1ODkxMzcxLCJleHAiOjE3MTU4OTQ5NzF9.CwTOK0yQWZwB8sNiWPDgDXUhu76PbVKKBWRC98TSnjY
 ###
-
 
 POST {{host}}/contact HTTP/1.1
 Content-Type: application/json
@@ -10,7 +9,7 @@ Authorization: Bearer {{token}}
 
 {
     "name": "teste",
-    "identify": "123456783",
+    "identify": "123456787",
     "platform": "whatsapp"
 }
 
@@ -24,24 +23,25 @@ Authorization: Bearer {{token}}
 ###
 
 ### pegar um contact especifico de um usuario logado
-GET {{host}}/contact/1 HTTP/1.1
+GET {{host}}/contact/9 HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ###
 
-DELETE {{host}}/contact/1 HTTP/1.1
-Content-Type: application/json
+DELETE {{host}}/contact/9 HTTP/1.1
 Authorization: Bearer {{token}}
 
 ###
 
-PUT {{host}}/contact/1 HTTP/1.1
+PATCH {{host}}/contact/10 HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{token}}
+
 {
-    "name": "teste",
-    "identify": "123456789",
+    "name": "testeeeee",
+    "identify": "123456713",
     "platform": "whatsapp"
 }
+
 ###

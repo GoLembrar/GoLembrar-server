@@ -1,4 +1,3 @@
-import { Request } from 'express';
 import {
   Controller,
   Get,
@@ -10,6 +9,7 @@ import {
   UseGuards,
   Req,
   HttpCode,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ContactService } from './contact.service';
 import { CreateContactDto } from './dto/create-contact.dto';
@@ -59,12 +59,11 @@ export class ContactController {
   @ApiOperation({ summary: 'Get one contact' })
   @UnauthorizedResponse()
   @NotFoundResponse()
-  findOne(@Param('id') id: string, request: RequestWithUser) {
+  findOne(@Param('id') id: string, @Req() request: RequestWithUser) {
     const userId = request.user.id;
     return this.contactService.findOne(+id, userId);
   }
 
-  @UseGuards(PreventDuplicateContactGuard)
   @Patch(':id')
   @ApiOperation({ summary: 'Update contact' })
   @UnauthorizedResponse()
@@ -72,9 +71,7 @@ export class ContactController {
   update(
     @Param('id') id: string,
     @Body() @AddRequestUserId() updateContactDto: UpdateContactDto,
-    @Req() request: RequestWithUser,
   ) {
-    updateContactDto.userId = request.user.id;
     return this.contactService.update(+id, updateContactDto);
   }
 
@@ -82,8 +79,11 @@ export class ContactController {
   @ApiOperation({ summary: 'Delete contact' })
   @UnauthorizedResponse()
   @NotFoundResponse()
-  remove(@Param('id') id: string, request: Request | any) {
-    const userId = Number(request.user.id);
-    return this.contactService.remove(+id, userId);
+  remove(
+    @Param('id', new ParseIntPipe()) id: number,
+    @Req() request: RequestWithUser,
+  ) {
+    const userId = request.user.id;
+    return this.contactService.remove(id, userId);
   }
 }

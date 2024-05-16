@@ -65,16 +65,17 @@ model Category {
 
 
 model Contact {
-  id       Int       @id @default(autoincrement())
-  name     String    @db.VarChar(128)
-  identify String    @db.VarChar(64)
+  id       Int      @id @default(autoincrement())
+  name     String   @db.VarChar(128)
+  identify String   @db.VarChar(64)
   platform Platform
-  user     Users     @relation(fields: [userId], references: [id])
+  user     Users    @relation(fields: [userId], references: [id])
   userId   Int
 
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  @@index([name, identify])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, name, identify])
   @@map("contacts")
 }
 
