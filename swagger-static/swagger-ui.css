@@ -1,3 +1,3 @@
-A server error has occurred
+The deployment could not be found on Vercel.
 
-FUNCTION_INVOCATION_FAILED
+DEPLOYMENT_NOT_FOUND
