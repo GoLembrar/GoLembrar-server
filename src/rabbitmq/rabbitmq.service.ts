@@ -34,4 +34,15 @@ export class RabbitmqService {
       console.error('Erro ao enviar mensagem:', error);
     }
   }
+
+
+  async enqueueTask(task: any, queue: string = 'task_queue') {
+    try {
+      await this.client.send(queue, task);
+      this.logger.log(`Task enqueued: ${JSON.stringify(task)}`);
+    } catch (error) {
+      this.logger.error(`Error enqueueing task: ${error}`);
+    }
+  }
+
 }
