@@ -1,3 +1,4 @@
+import { SendEmailService } from './../Email/sendEmail.service';
 import {
   Controller,
   Get,
@@ -17,16 +18,22 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OkResponse } from '../swagger/decorators/ok.decorator';
 import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
 import { okResponseModel } from './swagger/okResponseModel.swagger';
+import { RabbitmqService } from '../rabbitmq/rabbitmq.service';
 
 @Controller('user')
 @ApiTags('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly rabbitMq: RabbitmqService,
+    private readonly emailService: SendEmailService
+  ) {}
 
   @Post()
   @OkResponse(okResponseModel)
   @ApiOperation({ summary: 'Create a new user.' })
   async create(@Body() createUserDto: CreateUserDto) {
+    this.rabbitMq.enqueueTask();
     return await this.userService.create(createUserDto);
   }
 
