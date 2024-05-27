@@ -7,11 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { ReminderModule } from './reminder/reminder.module';
 import { CategoryModule } from './category/category.module';
-import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
-
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
-import { sendEmailModule } from './Email/sendEmail.module';
+import { EmailModule } from './email/email.module';
+import { EmailQueueModule } from './queue/email-queue/emailQueue.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -19,8 +16,6 @@ import { sendEmailModule } from './Email/sendEmail.module';
     AuthModule,
     ReminderModule,
     CategoryModule,
-    RabbitmqModule,
-    sendEmailModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

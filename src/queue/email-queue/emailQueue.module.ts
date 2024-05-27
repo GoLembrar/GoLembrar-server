@@ -1,21 +1,20 @@
 import 'dotenv/config';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { RabbitmqService } from './rabbitmq.service';
-import { RabbitmqController } from './rabbitmq.controller';
+import { EmailQueueService } from './emailQueue.service';
 
 @Module({
   imports: [
     ClientsModule.register([
       {
-        name: 'rabbitmq-service',
+        name: 'EMAIL-SERVICE',
         transport: Transport.RMQ,
         options: {
           urls: [
             `amqp://${process.env.USER_RABBITMQ}:${process.env.PASSWORD_RABBITMQ}@localhost:5672`,
           ],
 
-          queue: 'GoLembrar',
+          queue: 'Email',
           queueOptions: {
             durable: true,
           },
@@ -23,7 +22,7 @@ import { RabbitmqController } from './rabbitmq.controller';
       },
     ]),
   ],
-  controllers: [RabbitmqController],
-  providers: [RabbitmqService],
+  providers: [EmailQueueService],
+  exports: [EmailQueueService],
 })
-export class RabbitmqModule {}
+export class EmailQueueModule {}

@@ -1,17 +1,21 @@
+import { config } from 'dotenv';
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class SendEmailService {
+export class EmailService {
   constructor(private readonly mailerService: MailerService) {}
 
-  async sendEmail(): Promise<void> {
+  async sendEmail(
+    email: string,
+    subject: string,
+    context: string,
+  ): Promise<void> {
     await this.mailerService.sendMail({
-      to: 'victor.sena186@gmail.com',
-      from: 'victor.sena186@gmail.com',
-      subject: 'Testing Nest MailerModule',
-      text: 'Bem Vindo',
-      html: '<b>Bem vindo ao GoLembrar</b>',
+      to: email,
+      from: process.env.EMAIL_USER,
+      subject: subject,
+      html: `<b>${context}</b>`,
     });
     console.log('mensagem enviada com sucesso');
   }
