@@ -7,8 +7,6 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { ReminderModule } from './reminder/reminder.module';
 import { CategoryModule } from './category/category.module';
-import { EmailModule } from '../consumer-queue-email/email/email.module';
-import { EmailQueueModule } from './queue/email-queue/emailQueue.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -20,7 +18,4 @@ import { EmailQueueModule } from './queue/email-queue/emailQueue.module';
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })
-//test
 export class AppModule {}
-
-//EHURMCVGHRJ6NNSNQ4LK3N1L;
