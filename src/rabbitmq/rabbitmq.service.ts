@@ -1,13 +1,12 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
-export class RabbitmqService {
+export class RabbitmqService implements OnModuleInit {
   private readonly logger = new Logger();
-  constructor(@Inject('rabbitmq-service') private client: ClientProxy) {
-    this.initialize();
-  }
-  async initialize() {
+  constructor(@Inject('rabbitmq-service') private client: ClientProxy) { }
+
+  async onModuleInit() {
     try {
       await this.client.connect();
       this.logger.log('Conexão com RabbitMQ estabelecida com sucesso.');
