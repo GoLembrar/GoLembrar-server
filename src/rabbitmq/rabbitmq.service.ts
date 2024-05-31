@@ -18,7 +18,8 @@ export class RabbitmqService {
     }
   }
 
-  async sendMessage() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async sendMessage(pattern: string, data: any) {
     try {
       const menssge = {
         id: `${Math.random() * 100}}`,
@@ -35,7 +36,6 @@ export class RabbitmqService {
     }
   }
 
-
   async enqueueTask(task: any, queue: string = 'task_queue') {
     try {
       await this.client.send(queue, task);
@@ -44,5 +44,4 @@ export class RabbitmqService {
       this.logger.error(`Error enqueueing task: ${error}`);
     }
   }
-
 }

@@ -24,6 +24,7 @@ export class UserService {
     const foundUser: Users | null = await this.prismaService.users.findFirst({
       where: { id },
     });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...secureUserData } = foundUser;
     return secureUserData;
   }
