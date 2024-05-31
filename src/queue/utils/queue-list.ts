@@ -2,5 +2,5 @@
 
 export enum QueueList {
   EMAIL = 'Email',
-  DEFAULT = 'default',
+  DEFAULT = 'Default',
 }
