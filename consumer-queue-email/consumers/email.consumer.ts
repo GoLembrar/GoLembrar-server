@@ -1,6 +1,6 @@
 import { ClientRMQ, MessagePattern } from '@nestjs/microservices';
 import { EmailService } from '../email/email.service';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as amqp from 'amqplib';
 import { QueueList } from '../../src/queue/utils/queue-list';
 @Injectable()
@@ -33,11 +33,12 @@ export class EmailConsumer {
         ); */
 
         new Promise((resolve, reject) => {
-          setTimeout(() => {
-            resolve(
-              console.log(`EMAIL ENVIADO COM SUCESSO PARA: ${email}`),
-            );
-          }, 2000);
+          setTimeout(
+            () => {
+              resolve(console.log(`EMAIL ENVIADO COM SUCESSO PARA: ${email}`));
+            },
+            Math.floor(Math.random() * 5000 + 1000),
+          );
         });
 
         // Acknowledge the message
