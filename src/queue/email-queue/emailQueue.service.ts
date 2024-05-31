@@ -4,7 +4,7 @@ import { QueueList } from '../utils/queue-list';
 
 @Injectable()
 export class EmailQueueService implements OnModuleInit {
-  constructor(@Inject('EMAIL-SERVICE') private client: ClientRMQ) { }
+  constructor(@Inject('EMAIL-SERVICE') private client: ClientRMQ) {}
 
   async onModuleInit() {
     try {
