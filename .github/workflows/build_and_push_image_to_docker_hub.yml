@@ -1,0 +1,56 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Copy .env.example to .env
+        run: cp .env.example .env
+
+      - name: Log in to Docker hub
+        uses: docker/login-action@v2.2.0
+        with:
+          username: matheusvictorhenrique
+          password: Familia26
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Docker image
+        run: docker build -t matheusvictorhenrique/go_lembrar_server .
+      
+      - name: Tag Docker image
+        run: |
+         docker tag matheusvictorhenrique/go_lembrar_server matheusvictorhenrique/go_lembrar_server:latest
+         docker tag matheusvictorhenrique/go_lembrar_server matheusvictorhenrique/go_lembrar_server:${{ github.run_id }}
+
+      - name: Push Docker image
+        run: |
+         docker push matheusvictorhenrique/go_lembrar_server:${{ github.run_id }}
+         docker push matheusvictorhenrique/go_lembrar_server:latest

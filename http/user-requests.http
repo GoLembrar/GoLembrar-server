@@ -1,17 +1,27 @@
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNzE3MTg0MzI3LCJleHAiOjE3MTcxODc5Mjd9.b_wlaybmoGG0UMipmONbU2U_RGUDhe1-fmJGod7prJo
-
+@host = http://localhost:3000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzEzODEzNjMyLCJleHAiOjE3MTM4MTcyMzJ9.1PiVvLtTjm5cTNKZ1-QEkKXqM4Bjx2Oc9tecADnEhaE
 ### create one user account
 
 POST http://localhost:3000/user HTTP/1.1
 Content-Type: application/json
 
 {
-  "email" : "victor.sena186@gmail.com",
+  "email" : "test@email.com",
   "phone" : "19987851001",
-  "password" : "senhaForte123"
+  "password" : "senhaForte"
 }
 
 ### delete one user account
+
+PATCH {{host}}/user HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "password": "senhaAtualizada"
+}
+
+###
 
 DELETE http://localhost:3000/user
 Authorization: Bearer {{token}}
@@ -21,7 +31,7 @@ Content-Type: application/json
 
 ### get one user account
 
-GET http://localhost:3000/user/1
+GET http://localhost:3000/user
 
 ### user login
 
@@ -29,8 +39,8 @@ POST http://localhost:3000/auth HTTP/1.1
 Content-Type: application/json
 
 {
-  "email" : "victor.sena186@gmail.com",
-  "password" : "senhaForte123"
+  "email" : "test@email.com",
+  "password" : "senhaForte"
 }
 
 ### get all users account

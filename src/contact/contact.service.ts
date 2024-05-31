@@ -1,0 +1,95 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateContactDto } from './dto/create-contact.dto';
+import { UpdateContactDto } from './dto/update-contact.dto';
+import { PrismaService } from '../prisma/prisma.service';
+import { Platform } from '@prisma/client';
+
+@Injectable()
+export class ContactService {
+  constructor(private readonly prismaService: PrismaService) {}
+  async create(createContactDto: CreateContactDto) {
+    const { userId, ...createData } = createContactDto;
+
+    const platform = Platform[createData.platform.toUpperCase()];
+    const contact = await this.prismaService.contact.create({
+      data: {
+        ...createData,
+        user: {
+          connect: { id: userId },
+        },
+        platform,
+      },
+    });
+    return contact;
+  }
+
+  async findAll(userId: number) {
+    const contacts = await this.prismaService.contact.findMany({
+      where: {
+        userId: userId,
+      },
+    });
+    return contacts;
+  }
+
+  async findOne(id: number, userId: number) {
+    const contact = await this.prismaService.contact.findFirst({
+      where: {
+        id: id,
+        userId: userId,
+      },
+    });
+    return contact;
+  }
+
+  async update(id: number, updateContactDto: UpdateContactDto) {
+    const { userId, ...updateData } = updateContactDto;
+
+    const platform = Platform[updateData.platform.toUpperCase()];
+    const contact = await this.prismaService.contact.findUnique({
+      where: {
+        id: id,
+        userId: userId,
+      },
+    });
+
+    if (!contact) {
+      //retornar um Expception
+      return new NotFoundException('Contato não encontrado');
+    }
+
+    const updatedContact = await this.prismaService.contact.update({
+      where: {
+        id: contact.id,
+        userId: contact.userId,
+        name: contact.name,
+        identify: contact.identify,
+      },
+      data: {
+        ...updateData,
+        platform,
+      },
+    });
+
+    return updatedContact;
+  }
+
+  async remove(id: number, userId: number): Promise<boolean> {
+    const contact = await this.prismaService.contact.findFirst({
+      where: {
+        id,
+        userId,
+      },
+    });
+
+    if (!contact) {
+      return false;
+    }
+
+    await this.prismaService.contact.delete({
+      where: { ...contact },
+    });
+
+    return true;
+  }
+}

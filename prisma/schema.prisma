@@ -19,6 +19,7 @@ model Users {
   reminder        Reminders[]
   usersToReminder UsersToReminder[]
   categories      Category[]
+  contacts        Contact[]
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
 
@@ -61,6 +62,22 @@ model Category {
   usersId   Int
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
+}
+
+
+model Contact {
+  id       Int      @id @default(autoincrement())
+  name     String   @db.VarChar(128)
+  identify String   @db.VarChar(64)
+  platform Platform
+  user     Users    @relation(fields: [userId], references: [id])
+  userId   Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, name, identify])
+  @@map("contacts")
 }
 
 enum Platform {

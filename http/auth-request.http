@@ -1,11 +1,17 @@
-@localhost = http://localhost:3000
 
-POST {{localhost}}/auth HTTP/1.1
+@host = http://localhost:3000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzE1ODkwMTg0LCJleHAiOjE3MTU4OTM3ODR9.z8T264ygfLuiDy4lxa-M6oCkOPovjI-uMzaJfxKzgBM
+
+POST {{host}}/auth HTTP/1.1
 Content-Type: application/json
 
 {
-  "email" : "victor.sena186@gmail.com",
-  "password" : "senhaForte123"
+    "email": "test@email.com",
+    "password": "senhaForte"
 }
 
 ###
+
+GET {{host}}/user HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {{token}}
