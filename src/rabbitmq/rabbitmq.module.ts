@@ -23,4 +23,4 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
   ],
   exports: [RabbitmqService],
 })
-export class RabbitmqModule { }
+export class RabbitmqModule {}
