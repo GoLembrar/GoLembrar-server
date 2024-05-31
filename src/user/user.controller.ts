@@ -16,7 +16,6 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OkResponse } from '../swagger/decorators/ok.decorator';
 import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
 import { okResponseModel } from './swagger/okResponseModel.swagger';
-import { RabbitmqService } from '../rabbitmq/rabbitmq.service';
 import { EmailQueueService } from '../queue/email-queue/emailQueue.service';
 import { AuthorizationGuard } from '../common/guards/authorization.guard';
 
@@ -25,7 +24,7 @@ import { AuthorizationGuard } from '../common/guards/authorization.guard';
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    private readonly emailQueue: EmailQueueService
+    private readonly emailQueue: EmailQueueService,
   ) {}
 
   @Post()
