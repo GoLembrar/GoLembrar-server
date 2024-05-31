@@ -19,14 +19,14 @@ import { OkResponse } from '../swagger/decorators/ok.decorator';
 import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
 import { okResponseModel } from './swagger/okResponseModel.swagger';
 import { RabbitmqService } from '../rabbitmq/rabbitmq.service';
+import { EmailQueueService } from '../queue/email-queue/emailQueue.service';
 
 @Controller('user')
 @ApiTags('user')
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    //private readonly rabbitMq: RabbitmqService,
-    //private readonly emailService: SendEmailService,
+    private readonly emailQueue: EmailQueueService
   ) {}
 
   @Post()
@@ -34,6 +34,7 @@ export class UserController {
   @ApiOperation({ summary: 'Create a new user.' })
   async create(@Body() createUserDto: CreateUserDto) {
     //this.rabbitMq.enqueueTask();
+    this.emailQueue.emailQueue(createUserDto.email);
     return await this.userService.create(createUserDto);
   }
 

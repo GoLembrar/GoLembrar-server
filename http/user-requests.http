@@ -1,3 +1,5 @@
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNzE3MTg0MzI3LCJleHAiOjE3MTcxODc5Mjd9.b_wlaybmoGG0UMipmONbU2U_RGUDhe1-fmJGod7prJo
+
 ### create one user account
 
 POST http://localhost:3000/user HTTP/1.1
@@ -11,7 +13,11 @@ Content-Type: application/json
 
 ### delete one user account
 
-DELETE http://localhost:3000/user/11
+DELETE http://localhost:3000/user
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+
 
 ### get one user account
 

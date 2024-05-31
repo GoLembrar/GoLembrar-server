@@ -1,12 +1,12 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientRMQ } from '@nestjs/microservices';
+import { QueueList } from '../utils/queue-list';
 
 @Injectable()
-export class EmailQueueService {
-  constructor(@Inject('EMAIL-SERVICE') private client: ClientRMQ) {
-    this.initialize();
-  }
-  async initialize() {
+export class EmailQueueService implements OnModuleInit {
+  constructor(@Inject('EMAIL-SERVICE') private client: ClientRMQ) { }
+
+  async onModuleInit() {
     try {
       await this.client.connect();
       console.log('Canal RabbitMQ logado com sucesso.');
@@ -18,7 +18,7 @@ export class EmailQueueService {
 
   async emailQueue(email: string) {
     try {
-      this.client.emit('send_email', { email });
+      this.client.emit(QueueList.EMAIL, { email });
       return {
         message: `Email ao destinatario ${email}, adicionado a fila `,
       };
