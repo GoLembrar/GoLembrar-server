@@ -1,4 +1,4 @@
-import { SendEmailService } from './../Email/sendEmail.service';
+//import { SendEmailService } from './../Email/sendEmail.service';
 import {
   Controller,
   Get,
@@ -25,15 +25,15 @@ import { RabbitmqService } from '../rabbitmq/rabbitmq.service';
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    private readonly rabbitMq: RabbitmqService,
-    private readonly emailService: SendEmailService
+    //private readonly rabbitMq: RabbitmqService,
+    //private readonly emailService: SendEmailService,
   ) {}
 
   @Post()
   @OkResponse(okResponseModel)
   @ApiOperation({ summary: 'Create a new user.' })
   async create(@Body() createUserDto: CreateUserDto) {
-    this.rabbitMq.enqueueTask();
+    //this.rabbitMq.enqueueTask();
     return await this.userService.create(createUserDto);
   }
 

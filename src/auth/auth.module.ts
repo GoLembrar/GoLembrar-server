@@ -4,7 +4,7 @@ import { AuthController } from './auth.controller';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { EmailQueueModule } from '../queue/email-queue/emailQueue.module';
-import { EmailModule } from '../email/email.module';
+import { EmailModule } from '../../consumer-queue-email/email/email.module';
 
 @Module({
   imports: [

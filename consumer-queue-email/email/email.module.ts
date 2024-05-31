@@ -2,9 +2,8 @@ import { config } from 'dotenv';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { EmailService } from './email.service';
-import { EmailConsumer } from './consumers/email.consumer';
 import { ConfigModule } from '@nestjs/config';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { EmailConsumer } from '../consumers/email.consumer';
 config();
 @Module({
   imports: [
@@ -19,20 +18,8 @@ config();
         },
       },
     }),
-    ClientsModule.register([
-      {
-        name: 'EMAIL_SERVICE',
-        transport: Transport.RMQ,
-        options: {
-          urls: [
-            `amqp://${process.env.USER_RABBITMQ}:${process.env.PASSWORD_RABBITMQ}@localhost:5672`,
-          ],
-          queue: 'Email',
-        },
-      },
-    ]),
   ],
-  providers: [EmailService, EmailConsumer],
-  exports: [EmailService, EmailConsumer],
+  providers: [EmailService],
+  exports: [EmailService],
 })
 export class EmailModule {}

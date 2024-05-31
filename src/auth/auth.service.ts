@@ -6,8 +6,6 @@ import { Users } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { EmailQueueService } from '../queue/email-queue/emailQueue.service';
-import { EmailService } from '../email/email.service';
-import { EmailConsumer } from '../email/consumers/email.consumer';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +13,6 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwt: JwtService,
     private readonly emailQueue: EmailQueueService,
-    private readonly emailConsumer: EmailConsumer,
   ) {}
 
   async login(credentials: CredentialsDto): Promise<{ token: string }> {
@@ -39,7 +36,6 @@ export class AuthService {
     };
 
     await this.emailQueue.emailQueue(foundUser.email);
-    await this.emailConsumer.receiveEmail(foundUser.email);
     const token = this.jwt.sign(jwtPayloadData);
     return { token };
   }

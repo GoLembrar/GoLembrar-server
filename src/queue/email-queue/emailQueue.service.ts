@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy, ClientRMQ } from '@nestjs/microservices';
+import { ClientRMQ } from '@nestjs/microservices';
 
 @Injectable()
 export class EmailQueueService {
@@ -9,7 +9,7 @@ export class EmailQueueService {
   async initialize() {
     try {
       await this.client.connect();
-      console.log('Canal RabbitMQ criado com sucesso.');
+      console.log('Canal RabbitMQ logado com sucesso.');
     } catch (error) {
       console.error('Erro ao conectar ao RabbitMQ:', error);
       // Trate o erro conforme necessário

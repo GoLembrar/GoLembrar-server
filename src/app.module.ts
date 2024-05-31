@@ -7,7 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { ReminderModule } from './reminder/reminder.module';
 import { CategoryModule } from './category/category.module';
-import { EmailModule } from './email/email.module';
+import { EmailModule } from '../consumer-queue-email/email/email.module';
 import { EmailQueueModule } from './queue/email-queue/emailQueue.module';
 @Module({
   imports: [
