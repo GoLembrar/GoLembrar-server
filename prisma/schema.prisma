@@ -1,4 +1,3 @@
-
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
@@ -16,13 +15,13 @@ model Users {
   email           String            @unique @db.VarChar(128)
   password        String            @db.VarChar(128)
   phone           String            @unique @db.VarChar(64)
+  name            String?           @db.VarChar(255)
   reminder        Reminders[]
   usersToReminder UsersToReminder[]
   categories      Category[]
   contacts        Contact[]
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
-
 }
 
 model Reminders {
@@ -64,7 +63,6 @@ model Category {
   updatedAt DateTime    @updatedAt
 }
 
-
 model Contact {
   id       Int      @id @default(autoincrement())
   name     String   @db.VarChar(128)
@@ -72,6 +70,7 @@ model Contact {
   platform Platform
   user     Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   Int
+  favorite Boolean  @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
