@@ -32,4 +32,7 @@ export class CreateUserDto {
   @IsMobilePhone('pt-BR')
   @ApiProperty({ example: '999999999' })
   phone: string;
+
+  @IsNotEmpty()
+  name: string;
 }
