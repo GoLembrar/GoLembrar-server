@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { PrismaService } from './../prisma/prisma.service';
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { HashUtil } from '../common/utils/hashUtil';
@@ -13,6 +13,14 @@ export class UserService {
   private readonly logger: Logger = new Logger(UserService.name);
 
   async create(createUserDto: CreateUserDto) {
+    const existingUser = await this.prismaService.users.findUnique({
+      where: { email: createUserDto.email },
+    });
+
+    if (existingUser) {
+      throw new HttpException('Email ja cadastrado', HttpStatus.CONFLICT);
+    }
+
     const hashedPassword = await HashUtil.hash(createUserDto.password);
     createUserDto.password = hashedPassword;
 
