@@ -23,9 +23,10 @@ export class CreateReminderDto {
   scheduled: Date;
 
   @IsNotEmpty()
-  @IsInt()
-  @ApiProperty({ example: 1 })
-  ownerId: number;
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ example: 'abc...' })
+  ownerId: string;
 
   @IsNotEmpty()
   @IsInt()

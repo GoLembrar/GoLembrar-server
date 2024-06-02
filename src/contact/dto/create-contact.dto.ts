@@ -14,6 +14,5 @@ export class CreateContactDto {
   platform: string;
 
   @IsNotEmpty()
-  @IsInt()
-  userId: number;
+  userId: string;
 }

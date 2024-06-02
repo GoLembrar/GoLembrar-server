@@ -8,13 +8,13 @@ import { Reminders } from '@prisma/client';
 export class ReminderService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getReminderById(id: number): Promise<Reminders> {
+  async getReminderById(id: string): Promise<Reminders> {
     return await this.prismaService.reminders.findFirst({
       where: { id: id },
     });
   }
 
-  async getUserReminders(userId: number): Promise<Reminders[]> {
+  async getUserReminders(userId: string): Promise<Reminders[]> {
     return await this.prismaService.reminders.findMany({
       where: {
         ownerId: userId,
@@ -29,7 +29,7 @@ export class ReminderService {
   }
 
   async updateReminder(
-    id: number,
+    id: string,
     reminderDto: UpdateReminderDto,
   ): Promise<void> {
     if (Object.keys(reminderDto).length === 1)

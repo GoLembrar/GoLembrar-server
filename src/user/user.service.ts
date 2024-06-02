@@ -29,16 +29,16 @@ export class UserService {
     });
   }
 
-  async findOne(id: number): Promise<Partial<Users> | null> {
+  async findOne(id: string): Promise<Partial<Users> | null> {
     const foundUser: Users | null = await this.prismaService.users.findFirst({
-      where: { id },
+      where: { id: id.toString() },
     });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...secureUserData } = foundUser;
     return secureUserData;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<void> {
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<void> {
     await this.prismaService.users.update({
       where: {
         id,
@@ -47,7 +47,7 @@ export class UserService {
     });
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     try {
       await this.prismaService.users.delete({
         where: {

@@ -23,7 +23,7 @@ export class ContactService {
     return contact;
   }
 
-  async findAll(userId: number) {
+  async findAll(userId: string) {
     const contacts = await this.prismaService.contact.findMany({
       where: {
         userId: userId,
@@ -32,7 +32,7 @@ export class ContactService {
     return contacts;
   }
 
-  async findOne(id: number, userId: number) {
+  async findOne(id: string, userId: string) {
     const contact = await this.prismaService.contact.findFirst({
       where: {
         id: id,
@@ -42,7 +42,7 @@ export class ContactService {
     return contact;
   }
 
-  async update(id: number, updateContactDto: UpdateContactDto) {
+  async update(id: string, updateContactDto: UpdateContactDto) {
     const { userId, ...updateData } = updateContactDto;
 
     const platform = Platform[updateData.platform.toUpperCase()];
@@ -74,7 +74,7 @@ export class ContactService {
     return updatedContact;
   }
 
-  async remove(id: number, userId: number): Promise<boolean> {
+  async remove(id: string, userId: string): Promise<boolean> {
     const contact = await this.prismaService.contact.findFirst({
       where: {
         id,
