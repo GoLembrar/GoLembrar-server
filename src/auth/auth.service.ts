@@ -29,12 +29,15 @@ export class AuthService {
 
     if (!isPasswordMatching)
       throw new UnauthorizedException('Credenciais inválidas');
+
     const jwtPayloadData: JwtPayload = {
       id: foundUser.id,
+      email: foundUser.email,
+      name: foundUser.name,
+      phone: foundUser.phone,
     };
 
     const token = this.jwt.sign(jwtPayloadData);
-
     return { token };
   }
 }

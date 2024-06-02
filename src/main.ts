@@ -2,22 +2,10 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { Transport } from '@nestjs/microservices';
-import { resolve } from 'path';
-import { writeFileSync, createWriteStream } from 'fs';
+import { createWriteStream } from 'fs';
 import { get } from 'https';
 
 async function bootstrap() {
-  await NestFactory.createMicroservice(AppModule, {
-    transport: Transport.RMQ,
-    options: {
-      urls: ['amqp://localhost:5672'],
-      queue: 'cats_queue',
-      queueOptions: {
-        durable: false,
-      },
-    },
-  });
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: '*',

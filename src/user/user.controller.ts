@@ -1,3 +1,4 @@
+//import { SendEmailService } from './../Email/sendEmail.service';
 import {
   Controller,
   Get,
@@ -15,17 +16,22 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OkResponse } from '../swagger/decorators/ok.decorator';
 import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
 import { okResponseModel } from './swagger/okResponseModel.swagger';
+import { EmailQueueService } from '../queue/email-queue/emailQueue.service';
 import { AuthorizationGuard } from '../common/guards/authorization.guard';
 
 @Controller('user')
 @ApiTags('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly emailQueue: EmailQueueService,
+  ) {}
 
   @Post()
   @OkResponse(okResponseModel)
   @ApiOperation({ summary: 'Create a new user.' })
-  async create(@Body() createUserDto: CreateUserDto) {
+  public async create(@Body() createUserDto: CreateUserDto) {
+    this.emailQueue.emailQueue(createUserDto.email);
     return await this.userService.create(createUserDto);
   }
 
@@ -34,7 +40,7 @@ export class UserController {
   @OkResponse([okResponseModel])
   @NotFoundResponse()
   @UseGuards(AuthorizationGuard)
-  async findOne(@Req() request: Request | any) {
+  public async findOne(@Req() request: Request | any) {
     const user = await this.userService.findOne(request.user.id);
     return user;
   }
@@ -44,7 +50,7 @@ export class UserController {
   @OkResponse(okResponseModel)
   @NotFoundResponse()
   @UseGuards(AuthorizationGuard)
-  async update(
+  public async update(
     @Req() request: Request | any,
     @Body() updateUserDto: UpdateUserDto,
   ) {
@@ -56,7 +62,7 @@ export class UserController {
   @OkResponse(okResponseModel)
   @NotFoundResponse()
   @UseGuards(AuthorizationGuard)
-  async remove(@Req() request: Request | any) {
+  public async remove(@Req() request: Request | any) {
     return this.userService.remove(request.user.id);
   }
 }

@@ -20,10 +20,13 @@ services:
       start_period: 10s
       
   rabbitmq:
-   image: rabbitmq:3-management-alpine
+    image: rabbitmq:3-management
+    container_name: rabbitmq-service
     ports:
-     - 5672:5672
-     - 15672:15672
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
     environment:
       - RABBITMQ_DEFAULT_USER=test
       - RABBITMQ_DEFAULT_PASS=test
@@ -43,3 +46,6 @@ networks:
   default:
     driver: bridge
     name: golembrar
+
+volumes:
+  rabbitmq_data:

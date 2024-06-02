@@ -1,7 +1,7 @@
 {
   "name": "go-lembrar-server",
   "version": "0.0.1",
-  "description": "",
+  "description": "<p align=\"center\">\r   <a href=\"http://nestjs.com/\" target=\"blank\"><img src=\"https://nestjs.com/img/logo-small.svg\" width=\"200\" alt=\"Nest Logo\" /></a>\r </p>",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
@@ -12,6 +12,7 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
+    "start:worker": "ts-node ./consumer-queue-email/worker.ts",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -27,8 +28,9 @@
     "test:ui": "vite preview --outDir vitest/output/html --host"
   },
   "dependencies": {
+    "@nestjs-modules/mailer": "^2.0.2",
     "@nestjs/common": "^10.0.0",
-    "@nestjs/config": "^3.1.1",
+    "@nestjs/config": "^3.2.2",
     "@nestjs/core": "^10.0.0",
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/mapped-types": "*",
@@ -37,12 +39,17 @@
     "@nestjs/serve-static": "^4.0.2",
     "@nestjs/swagger": "^7.1.17",
     "@prisma/client": "^5.7.0",
+    "@sendgrid/mail": "^8.1.3",
     "amqp-connection-manager": "^4.1.14",
     "amqplib": "^0.10.4",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "dotenv": "^16.4.5",
     "install": "^0.13.0",
+    "mailtrap": "^3.3.0",
+    "nodemailer": "^6.9.13",
+    "nodemailer-sendgrid": "^1.0.3",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1"
   },
@@ -51,10 +58,12 @@
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.0.0",
     "@swc/core": "^1.3.100",
+    "@types/amqplib": "^0.10.5",
     "@types/bcrypt": "^5.0.2",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.2",
     "@types/node": "^20.3.1",
+    "@types/nodemailer": "^6.4.15",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
@@ -65,14 +74,27 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "prettier": "^3.0.0",
-    "prisma": "^5.7.0",
+    "prisma": "^5.12.1",
     "source-map-support": "^0.5.21",
     "supertest": "^6.3.3",
     "ts-loader": "^9.4.3",
-    "ts-node": "^10.9.1",
+    "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.1.3",
     "unplugin-swc": "^1.4.4",
     "vitest": "^1.0.4"
-  }
+  },
+  "main": ".eslintrc.js",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GoLembrar/GoLembrar-server.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/GoLembrar/GoLembrar-server/issues"
+  },
+  "homepage": "https://github.com/GoLembrar/GoLembrar-server#readme"
 }

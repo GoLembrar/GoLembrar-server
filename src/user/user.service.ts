@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { PrismaService } from './../prisma/prisma.service';
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { HashUtil } from '../common/utils/hashUtil';
@@ -13,6 +13,14 @@ export class UserService {
   private readonly logger: Logger = new Logger(UserService.name);
 
   async create(createUserDto: CreateUserDto) {
+    const existingUser = await this.prismaService.users.findUnique({
+      where: { email: createUserDto.email },
+    });
+
+    if (existingUser) {
+      throw new HttpException('Email ja cadastrado', HttpStatus.CONFLICT);
+    }
+
     const hashedPassword = await HashUtil.hash(createUserDto.password);
     createUserDto.password = hashedPassword;
 
@@ -21,15 +29,16 @@ export class UserService {
     });
   }
 
-  async findOne(id: number): Promise<Partial<Users> | null> {
+  async findOne(id: string): Promise<Partial<Users> | null> {
     const foundUser: Users | null = await this.prismaService.users.findFirst({
-      where: { id },
+      where: { id: id.toString() },
     });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...secureUserData } = foundUser;
     return secureUserData;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<void> {
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<void> {
     await this.prismaService.users.update({
       where: {
         id,
@@ -38,7 +47,7 @@ export class UserService {
     });
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     try {
       await this.prismaService.users.delete({
         where: {

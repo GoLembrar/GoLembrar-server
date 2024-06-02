@@ -51,7 +51,7 @@ export class ContactController {
   @UnauthorizedResponse()
   @OkResponse([OkResponseModel])
   findAll(@Req() request: RequestWithUser) {
-    const userId = Number(request.user.id);
+    const userId = request.user.id;
     return this.contactService.findAll(userId);
   }
 
@@ -61,7 +61,7 @@ export class ContactController {
   @NotFoundResponse()
   findOne(@Param('id') id: string, @Req() request: RequestWithUser) {
     const userId = request.user.id;
-    return this.contactService.findOne(+id, userId);
+    return this.contactService.findOne(id, userId);
   }
 
   @Patch(':id')
@@ -72,17 +72,14 @@ export class ContactController {
     @Param('id') id: string,
     @Body() @AddRequestUserId() updateContactDto: UpdateContactDto,
   ) {
-    return this.contactService.update(+id, updateContactDto);
+    return this.contactService.update(id, updateContactDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete contact' })
   @UnauthorizedResponse()
   @NotFoundResponse()
-  remove(
-    @Param('id', new ParseIntPipe()) id: number,
-    @Req() request: RequestWithUser,
-  ) {
+  remove(@Param('id') id: string, @Req() request: RequestWithUser) {
     const userId = request.user.id;
     return this.contactService.remove(id, userId);
   }

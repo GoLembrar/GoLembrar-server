@@ -7,9 +7,10 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { ReminderModule } from './reminder/reminder.module';
 import { CategoryModule } from './category/category.module';
-import { ContactModule } from './contact/contact.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
+import { EmailModule } from '../consumer-queue-email/email/email.module';
 
 @Module({
   imports: [
@@ -22,10 +23,10 @@ import { join } from 'path';
     AuthModule,
     ReminderModule,
     CategoryModule,
-    ContactModule,
+    EmailModule,
+    RabbitmqModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })
-//test
 export class AppModule {}

@@ -4,7 +4,7 @@ import { UserService } from './user.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { Users } from '@prisma/client';
-import { vi } from 'vitest'
+import { vi } from 'vitest';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -29,22 +29,27 @@ describe('UserController', () => {
       createdAt: new Date(),
       updatedAt: new Date(),
     },
-  ]
+  ];
 
-  const {password, ...withoutPass} = mockUserService[0]
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { password, ...withoutPass } = mockUserService[0];
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
-      providers: [PrismaService, JwtService, {
-        provide: UserService,
-        useValue: {
-          findOne: async () => withoutPass,
-          create: async () => mockUserService[1],
-          update: async () => mockUserService[0],
-          remove: async () => { },
+      providers: [
+        PrismaService,
+        JwtService,
+        {
+          provide: UserService,
+          useValue: {
+            findOne: async () => withoutPass,
+            create: async () => mockUserService[1],
+            update: async () => mockUserService[0],
+            remove: async () => {},
+          },
         },
-      }],
+      ],
     }).compile();
 
     controller = module.get<UserController>(UserController);
@@ -53,7 +58,7 @@ describe('UserController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
-    expect(userService).toBeDefined()
+    expect(userService).toBeDefined();
   });
 
   describe('findOne', () => {
@@ -66,7 +71,9 @@ describe('UserController', () => {
     });
 
     it('should return a 404 error', async () => {
-      vi.spyOn(UserService.prototype, 'findOne').mockImplementation(() => Promise.reject(new Error('User not found')));
+      vi.spyOn(UserService.prototype, 'findOne').mockImplementation(() =>
+        Promise.reject(new Error('User not found')),
+      );
 
       // Sim, isso funciona testando a exceção, mas não testando se a exceção foi lançada
       try {
@@ -74,9 +81,8 @@ describe('UserController', () => {
       } catch (error) {
         expect(error.message).toBe('User not found');
       }
-
-    })
-  })
+    });
+  });
 
   describe('create', () => {
     it('should create a new user', async () => {
@@ -86,13 +92,12 @@ describe('UserController', () => {
         email: 'user2@email.com',
         password: '123',
         phone: '999999999',
-      }
+      };
       const user = await controller.create(userToCreate);
-
 
       expect(user).toEqual(userExpected);
     });
-  })
+  });
 
   describe('update', () => {
     it('should update a user', async () => {
@@ -102,21 +107,22 @@ describe('UserController', () => {
         email: 'user123@email.com',
         phone: '999999998',
         password: '1234',
-      }
+      };
 
-
-      const user = await controller.update({ user: { id: userExpected.id } }, userToUpdate);
+      const user = await controller.update(
+        { user: { id: userExpected.id } },
+        userToUpdate,
+      );
       expect(user).toEqual(userExpected);
-
     });
-  })
+  });
 
   describe('remove', () => {
     it('should remove a user', async () => {
       const idExpected = mockUserService[0];
 
       const user = await controller.remove({ user: { id: idExpected } });
-      expect(user).toBeUndefined()
+      expect(user).toBeUndefined();
     });
-  })
+  });
 });
