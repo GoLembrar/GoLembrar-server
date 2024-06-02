@@ -16,7 +16,7 @@ export class EmailConsumer {
       `amqp://${process.env.USER_RABBITMQ}:${process.env.PASSWORD_RABBITMQ}@localhost`,
     );
     this.channel = await connection.createChannel();
-    console.log('conexão feita com sucesso!');
+    console.log('EmailConsumer: conexão feita com sucesso!');
     // Consume messages from the queue
     this.channel.consume(QueueList.EMAIL, async (msg: any) => {
       if (msg) {
@@ -26,20 +26,20 @@ export class EmailConsumer {
         console.log(email);
 
         // Call the email service to send email
-        /* await this.emailService.sendEmail(
+        await this.emailService.sendEmail(
           email,
           'Mensagem de boas vindas',
           'Bem vindo ao GoLembrar',
-        ); */
+        );
 
-        new Promise((resolve, reject) => {
+        /* new Promise((resolve, reject) => {
           setTimeout(
             () => {
               resolve(console.log(`EMAIL ENVIADO COM SUCESSO PARA: ${email}`));
             },
             Math.floor(Math.random() * 5000 + 1000),
           );
-        });
+        }); */
 
         // Acknowledge the message
         this.channel.ack(msg);

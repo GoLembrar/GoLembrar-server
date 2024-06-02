@@ -9,21 +9,21 @@ export class EmailQueueService implements OnModuleInit {
   async onModuleInit() {
     try {
       await this.client.connect();
-      console.log('Canal RabbitMQ logado com sucesso.');
+      console.log('emailQueue.service: Canal RabbitMQ logado com sucesso.');
     } catch (error) {
       console.error('Erro ao conectar ao RabbitMQ:', error);
       // Trate o erro conforme necessário
     }
   }
 
-  async emailQueue(email: string) {
+  emailQueue(email: string) {
     try {
       this.client.emit(QueueList.EMAIL, { email });
       return {
         message: `Email ao destinatario ${email}, adicionado a fila `,
       };
     } catch (error) {
-      console.error('Erro ao enviar fila de email:', error);
+      console.error('emailQueue.service: Erro ao enviar fila de email:', error);
     }
   }
 }

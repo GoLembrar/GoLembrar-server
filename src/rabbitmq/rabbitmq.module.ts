@@ -1,18 +1,22 @@
 import { Module } from '@nestjs/common';
-import { RabbitmqService } from './rabbitmq.service';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
+import { QueueList } from '../queue/utils/queue-list';
+import { RabbitMQService } from './rabbitmq.service';
 
 @Module({
   providers: [
-    RabbitmqService,
+    RabbitMQService,
     {
-      provide: 'rabbitmq-service',
+      provide: 'RABBITMQ-SERVICE',
       useFactory: () => {
+        console.log('CONFIGURANDO RABBITMQ');
         return ClientProxyFactory.create({
           transport: Transport.RMQ,
           options: {
-            urls: ['amqp://localhost:5672'],
-            queue: 'task_queue',
+            urls: [
+              `amqp://${process.env.USER_RABBITMQ}:${process.env.PASSWORD_RABBITMQ}@localhost:5672`,
+            ],
+            queue: QueueList.DEFAULT,
             queueOptions: {
               durable: false,
             },
@@ -21,6 +25,6 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
       },
     },
   ],
-  exports: [RabbitmqService],
+  exports: [RabbitMQService],
 })
 export class RabbitmqModule {}

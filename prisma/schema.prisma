@@ -32,7 +32,7 @@ model Reminders {
   platform        String            @db.VarChar(12)
   scheduled       DateTime
   isActivated     Boolean           @default(true)
-  owner           Users             @relation(fields: [ownerId], references: [id])
+  owner           Users             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   category        Category          @relation(fields: [categoryId], references: [id])
   categoryId      Int
   ownerId         Int
@@ -45,7 +45,7 @@ model Reminders {
 
 model UsersToReminder {
   id         Int       @id @default(autoincrement())
-  user       Users     @relation(fields: [userId], references: [id])
+  user       Users     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     Int
   platform   Platform // Adicionando o campo platform
   reminder   Reminders @relation(fields: [reminderId], references: [id])
@@ -58,7 +58,7 @@ model Category {
   id        Int         @id @default(autoincrement())
   name      String      @db.VarChar(64)
   reminders Reminders[]
-  users     Users       @relation(fields: [usersId], references: [id])
+  users     Users       @relation(fields: [usersId], references: [id], onDelete: Cascade)
   usersId   Int
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
@@ -70,7 +70,7 @@ model Contact {
   name     String   @db.VarChar(128)
   identify String   @db.VarChar(64)
   platform Platform
-  user     Users    @relation(fields: [userId], references: [id])
+  user     Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   Int
 
   createdAt DateTime @default(now())

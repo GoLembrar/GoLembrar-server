@@ -9,6 +9,8 @@ import { ReminderModule } from './reminder/reminder.module';
 import { CategoryModule } from './category/category.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
+import { EmailModule } from '../consumer-queue-email/email/email.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { join } from 'path';
     AuthModule,
     ReminderModule,
     CategoryModule,
+    EmailModule,
+    RabbitmqModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

@@ -1,46 +1,35 @@
-import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-@Injectable()
-export class RabbitmqService implements OnModuleInit {
-  private readonly logger = new Logger();
-  constructor(@Inject('rabbitmq-service') private client: ClientProxy) { }
+export enum ServicesAvailable {
+  RABBITMQ_SERVICE = 'RABBITMQ-SERVICE',
+}
 
-  async onModuleInit() {
+@Injectable()
+export class RabbitMQService implements OnModuleInit {
+  constructor(
+    @Inject('RABBITMQ-SERVICE')
+    private readonly client: ClientProxy,
+  ) {}
+
+  public async onModuleInit() {
     try {
       await this.client.connect();
-      this.logger.log('Conexão com RabbitMQ estabelecida com sucesso.');
-      console.log('Canal RabbitMQ criado com sucesso.');
+      console.log(
+        'RabbitMQService: Conexão & Canal criado e logado com sucesso',
+      );
     } catch (error) {
       console.error('Erro ao conectar ao RabbitMQ:', error);
-      // Trate o erro conforme necessário
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async sendMessage(pattern: string, data: any) {
-    try {
-      const menssge = {
-        id: `${Math.random() * 100}}`,
-        data: {
-          name: `RabbitMQ-${Math.random() * 100}}`,
-        },
-      };
-      this.client.emit('send_message', menssge);
-      return {
-        message: 'Mensagem enviada',
-      };
-    } catch (error) {
-      console.error('Erro ao enviar mensagem:', error);
-    }
+  public sendMessage(pattern: string, data: any) {
+    /* Este método irá enviar uma mensagem para a fila especificada pelo padrão. Utilize esse metodo caso queira executar de forma assincrona ou se quiser tambem de forma sincrona e esperar pelo resultado, devera configurar um callback no metodo subscribe. */
+    this.client.send(pattern, data).subscribe();
   }
 
-  async enqueueTask(task: any, queue: string = 'task_queue') {
-    try {
-      await this.client.send(queue, task);
-      this.logger.log(`Task enqueued: ${JSON.stringify(task)}`);
-    } catch (error) {
-      this.logger.error(`Error enqueueing task: ${error}`);
-    }
+  public enqueueTask(pattern: string, data: any) {
+    /* Este método irá enfileirar uma tarefa na fila especificada pelo padrão e será consumida por algum consumidor que estiver na mesma. É recomendável usar este método quando você não precisa da resposta, pois será executada de forma assíncrona. devera configurar um worker/consumer */
+    this.client.emit(pattern, data);
   }
 }
