@@ -1,8 +1,8 @@
-import 'dotenv/config';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { EmailQueueService } from './emailQueue.service';
+import 'dotenv/config';
 import { QueueList } from '../utils/queue-list';
+import { EmailQueueService } from './emailQueue.service';
 
 @Module({
   imports: [
