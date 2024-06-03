@@ -24,14 +24,12 @@ export class EmailConsumer {
         console.log(data);
         const email = data.data.email;
         console.log(email);
-
         // Call the email service to send email
         await this.emailService.sendEmail(
           email,
           'Mensagem de boas vindas',
           'Bem vindo ao GoLembrar',
         );
-
         /* new Promise((resolve, reject) => {
           setTimeout(
             () => {

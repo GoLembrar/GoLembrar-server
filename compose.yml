@@ -30,17 +30,8 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=test
       - RABBITMQ_DEFAULT_PASS=test
-  api:
     depends_on:
-      db:
-        condition: service_healthy
-    build: .
-    environment:
-      - DATABASE_URL="postgresql://test:test@db:5432/golembrar?schema=publicvalue"
-      - JWT_SECRET="variosnumerosletrasesimbolosmisturadosparasegurançadosecret"
-      - JWT_EXP="1h"
-    ports:
-    - "3000:3000"
+      - db
 
 networks:
   default:

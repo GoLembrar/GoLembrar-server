@@ -11,6 +11,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 import { EmailModule } from '../consumer-queue-email/email/email.module';
+import { ContactModule } from './contact/contact.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { EmailModule } from '../consumer-queue-email/email/email.module';
     AuthModule,
     ReminderModule,
     CategoryModule,
+    ContactModule,
     EmailModule,
     RabbitmqModule,
   ],
