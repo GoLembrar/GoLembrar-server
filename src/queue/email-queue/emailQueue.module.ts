@@ -1,8 +1,8 @@
-import 'dotenv/config';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { EmailQueueService } from './emailQueue.service';
+import 'dotenv/config';
 import { QueueList } from '../utils/queue-list';
+import { EmailQueueService } from './emailQueue.service';
 
 @Module({
   imports: [
@@ -12,7 +12,7 @@ import { QueueList } from '../utils/queue-list';
         transport: Transport.RMQ,
         options: {
           urls: [
-            `amqp://${process.env.USER_RABBITMQ}:${process.env.PASSWORD_RABBITMQ}@rabbitmq:5672`,
+            `amqp://${process.env.USER_RABBITMQ}:${process.env.PASSWORD_RABBITMQ}@localhost:5672`,
           ],
 
           queue: QueueList.EMAIL,
