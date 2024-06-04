@@ -14,7 +14,7 @@ import { RabbitMQService } from './rabbitmq.service';
           transport: Transport.RMQ,
           options: {
             urls: [
-              `amqp://${process.env.USER_RABBITMQ}:${process.env.PASSWORD_RABBITMQ}@rabbitmq:5672`,
+              `amqp://${process.env.USER_RABBITMQ}:${process.env.PASSWORD_RABBITMQ}@localhost:5672`,
             ],
             queue: QueueList.DEFAULT,
             queueOptions: {
