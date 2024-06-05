@@ -36,6 +36,7 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/microservices": "^10.3.8",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/schedule": "^4.0.2",
     "@nestjs/serve-static": "^4.0.2",
     "@nestjs/swagger": "^7.1.17",
     "@prisma/client": "^5.7.0",
