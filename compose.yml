@@ -40,3 +40,4 @@ networks:
 
 volumes:
   rabbitmq_data:
+  db_data:
