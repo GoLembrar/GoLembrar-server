@@ -60,7 +60,7 @@ export class EmailScheduledService {
                         await this.emailService.sendEmail(email.to, email.subject, email.html);
                         await this.updateEmailStatus(email.id, EmailStatus.SENT);
                         this.logger.log(`Email sent to ${email.to}`);
-                        
+
                     }
                 } catch (e) {
                     this.logger.error('Error sending email', e);
@@ -88,5 +88,13 @@ export class EmailScheduledService {
                 status
             }
         });
+    }
+
+    async updateCache() {
+        const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+
+        const newData = await this.getEmailsDueTodayFromDatabase(oneDayInMilliseconds);
+        await this.cacheManager.set('today_emails', newData, oneDayInMilliseconds);
+
     }
 }
