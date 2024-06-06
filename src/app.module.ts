@@ -17,6 +17,7 @@ import { TasksService } from './tasks/tasks.service';
 import { EmailScheduledModule } from './email/email.module';
 import { TasksModule } from './tasks/tasks.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { CacheService } from './cache/cache.service';
 
 @Module({
   imports: [
@@ -40,6 +41,6 @@ import { CacheModule } from '@nestjs/cache-manager';
     })
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService, TasksService],
+  providers: [AppService, PrismaService, TasksService, CacheService],
 })
 export class AppModule {}
