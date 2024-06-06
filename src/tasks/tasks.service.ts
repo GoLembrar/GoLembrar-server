@@ -12,8 +12,8 @@ export class TasksService {
 
     @Cron('0 0 * * *')
     getTodayEMails() {
-        this.emailScheduledService.getEmailsDueToday();
-        this.logger.debug('Called when the current hour is 00:00');
+        const todayMails = this.emailScheduledService.getEmailsDueToday();
+        this.logger.debug('Called when the current hour is 00:00. All the emails due today are: ', JSON.stringify(todayMails));
     }
 
     @Cron('* * * * *')

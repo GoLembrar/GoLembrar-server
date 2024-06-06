@@ -16,6 +16,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TasksService } from './tasks/tasks.service';
 import { EmailScheduledModule } from './email/email.module';
 import { TasksModule } from './tasks/tasks.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -33,7 +34,10 @@ import { TasksModule } from './tasks/tasks.module';
     RabbitmqModule,
     ScheduleModule.forRoot(),
     TasksModule,
-    EmailScheduledModule
+    EmailScheduledModule,
+    CacheModule.register({
+      isGlobal: true,
+    })
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, TasksService],
