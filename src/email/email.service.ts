@@ -1,39 +1,44 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
+import { CacheService } from '../cache/cache.service';
 
 @Injectable()
 export class EmailService {
     constructor(
-        @Inject(CACHE_MANAGER) private cacheManager: Cache,
+        private readonly cacheManager: CacheService,
         private readonly prismaService: PrismaService
     ) { }
 
     async getEmailsDueToday() {
-        const cachedEmails = await this.cacheManager.get('today_emails');
+        const cachedEmails = await this.cacheManager.get<any[]>('today_emails');
 
         if (cachedEmails) {
             return cachedEmails;
         }
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
         const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
 
-        const todayEmails = this.prismaService.emails.findMany({
+        const todayEmails = await this.getEmailsDueTodayFromDatabase(oneDayInMilliseconds);
+
+        await this.cacheManager.set('today_emails', todayEmails, oneDayInMilliseconds);
+
+        return todayEmails;
+    }
+
+    private async getEmailsDueTodayFromDatabase(limitDateInMilliseconds: number) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        return this.prismaService.emails.findMany({
             where: {
                 dueDate: {
                     gte: today,
-                    lt: new Date(today.getTime() + oneDayInMilliseconds)
+                    lt: new Date(today.getTime() + limitDateInMilliseconds)
                 }
             },
             orderBy: {
                 dueDate: 'asc'
             }
         })
-
-        await this.cacheManager.set('today_emails', todayEmails, oneDayInMilliseconds);
-
-        return todayEmails;
     }
 }
