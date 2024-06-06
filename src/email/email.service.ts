@@ -52,13 +52,15 @@ export class EmailScheduledService {
     async sendTodayEmails() {
         if (await this.isThereEmailToSend()) {
             const todayEmails = await this.getEmailsDueToday();
+            const today = new Date();
 
             for (const email of todayEmails) {
                 try {
-                    if (email.status === EmailStatus.PENDING) {
+                    if (email.status === EmailStatus.PENDING && email.dueDate <= today) {
                         await this.emailService.sendEmail(email.to, email.subject, email.html);
                         await this.updateEmailStatus(email.id, EmailStatus.SENT);
                         this.logger.log(`Email sent to ${email.to}`);
+                        
                     }
                 } catch (e) {
                     this.logger.error('Error sending email', e);
