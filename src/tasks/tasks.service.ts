@@ -11,14 +11,19 @@ export class TasksService {
 
 
     @Cron('0 0 * * *')
-    getTodayEMails() {
-        const todayMails = this.emailScheduledService.getEmailsDueToday();
+    async getTodayEMails() {
+        const todayMails = await this.emailScheduledService.getEmailsDueToday();
         this.logger.debug('Called when the current hour is 00:00. All the emails due today are: ', JSON.stringify(todayMails));
     }
 
     @Cron('* * * * *')
-    verifyIfTheresIsEmailToSend() {
-        this.emailScheduledService.sendTodayEmails();
+    async verifyIfTheresIsEmailToSend() {
+        await this.emailScheduledService.sendTodayEmails();
+        this.logger.debug('Called every minute');
+    }
+    @Cron('0 8,13,18 * * *')
+    async updateCache() {
+        await this.emailScheduledService.updateCache();
         this.logger.debug('Called every minute');
     }
 
