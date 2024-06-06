@@ -14,6 +14,8 @@ import { EmailModule } from '../consumer-queue-email/email/email.module';
 import { ContactModule } from './contact/contact.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksService } from './tasks/tasks.service';
+import { EmailScheduledModule } from './email/email.module';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { TasksService } from './tasks/tasks.service';
     EmailModule,
     RabbitmqModule,
     ScheduleModule.forRoot(),
+    TasksModule,
+    EmailScheduledModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, TasksService],
