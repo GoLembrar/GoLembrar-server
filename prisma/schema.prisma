@@ -20,6 +20,7 @@ model Users {
   usersToReminder UsersToReminder[]
   categories      Category[]
   contacts        Contact[]
+  emails          Emails[]
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
 }
@@ -77,6 +78,24 @@ model Contact {
 
   @@unique([userId, name, identify])
   @@map("contacts")
+}
+
+enum EmailStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+model Emails {
+  id      Int         @id @default(autoincrement())
+  ownerId String
+  owner   Users       @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  from    String      @db.VarChar(128)
+  to      String      @db.VarChar(128)
+  subject String      @db.VarChar(200)
+  html    String      @db.Text
+  dueDate DateTime
+  status  EmailStatus @default(PENDING)
 }
 
 enum Platform {
