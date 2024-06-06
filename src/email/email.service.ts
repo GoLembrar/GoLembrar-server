@@ -94,5 +94,7 @@ export class EmailScheduledService {
         await this.cacheManager.del('today_emails')
 
         await this.getEmailsDueToday();
+
+        this.logger.log("Email cache updated at: " + new Date().toISOString());
     }
 }
