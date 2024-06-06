@@ -1,11 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { EmailService } from '../email/email.service';
+import { EmailScheduledService } from '../email/email.service';
 
 @Injectable()
 export class TasksService {
 
-    constructor(private readonly emailScheduledService: EmailService) {}
+    constructor(private readonly emailScheduledService: EmailScheduledService) {}
 
     private readonly logger = new Logger(TasksService.name);
 
@@ -18,7 +18,8 @@ export class TasksService {
 
     @Cron('* * * * *')
     verifyIfTheresIsEmailToSend() {
-        this.logger.debug('Called when the current second is 45');
+        this.emailScheduledService.sendTodayEmails();
+        this.logger.debug('Called every minute');
     }
 
 }
