@@ -91,10 +91,8 @@ export class EmailScheduledService {
     }
 
     async updateCache() {
-        const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+        await this.cacheManager.del('today_emails')
 
-        const newData = await this.getEmailsDueTodayFromDatabase(oneDayInMilliseconds);
-        await this.cacheManager.set('today_emails', newData, oneDayInMilliseconds);
-
+        await this.getEmailsDueToday();
     }
 }
