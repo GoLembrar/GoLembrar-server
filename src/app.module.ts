@@ -12,6 +12,7 @@ import { join } from 'path';
 import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 import { EmailModule } from '../consumer-queue-email/email/email.module';
 import { ContactModule } from './contact/contact.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ContactModule } from './contact/contact.module';
     ContactModule,
     EmailModule,
     RabbitmqModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
