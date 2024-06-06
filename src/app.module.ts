@@ -12,6 +12,12 @@ import { join } from 'path';
 import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 import { EmailModule } from '../consumer-queue-email/email/email.module';
 import { ContactModule } from './contact/contact.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksService } from './tasks/tasks.service';
+import { EmailScheduledModule } from './email/email.module';
+import { TasksModule } from './tasks/tasks.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import { CacheService } from './cache/cache.service';
 
 @Module({
   imports: [
@@ -27,8 +33,14 @@ import { ContactModule } from './contact/contact.module';
     ContactModule,
     EmailModule,
     RabbitmqModule,
+    ScheduleModule.forRoot(),
+    TasksModule,
+    EmailScheduledModule,
+    CacheModule.register({
+      isGlobal: true,
+    })
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService, PrismaService, TasksService, CacheService],
 })
 export class AppModule {}
