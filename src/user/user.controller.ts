@@ -18,6 +18,8 @@ import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
 import { okResponseModel } from './swagger/okResponseModel.swagger';
 import { EmailQueueService } from '../queue/email-queue/emailQueue.service';
 import { AuthorizationGuard } from '../common/guards/authorization.guard';
+import { RequestWithUser } from '../common/utils/types/RequestWithUser';
+import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 
 @Controller('user')
 @ApiTags('user')
@@ -55,6 +57,21 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
   ) {
     return this.userService.update(request.user.id, updateUserDto);
+  }
+
+  @Patch('update-password')
+  @ApiOperation({ summary: 'Update a user password by id.' })
+  @OkResponse(okResponseModel)
+  @NotFoundResponse()
+  @UseGuards(AuthorizationGuard)
+  public async updatePassword(
+    @Req() request: RequestWithUser,
+    @Body() updateUserPasswordDto: UpdateUserPasswordDto,
+  ) {
+    return await this.userService.upddatePassword(
+      request.user.id,
+      updateUserPasswordDto,
+    );
   }
 
   @Delete()
