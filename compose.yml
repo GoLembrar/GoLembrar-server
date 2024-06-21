@@ -1,6 +1,5 @@
-version: '3.8'
 services:
-  db:
+  golembrar-db:
     image: bitnami/postgresql
     ports:
       - 5432:5432
@@ -11,14 +10,15 @@ services:
     extra_hosts:
       - host.docker.internal:host-gateway
     volumes:
-      - ./.docker/db/data:/var/lib/postgresql/:delegated
+      - ./.docker/golembrar-db/data:/var/lib/golembrar-db/:delegated
     healthcheck:
-      test: [ "CMD-SHELL", "psql -h localhost -U test -d golembrar -c 'SELECT 1;'" ]
+      test:
+        ['CMD-SHELL', "psql -h localhost -U test -d golembrar -c 'SELECT 1;'"]
       interval: 5s
       timeout: 5s
       retries: 20
       start_period: 10s
-      
+
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq-service
@@ -31,7 +31,7 @@ services:
       - RABBITMQ_DEFAULT_USER=test
       - RABBITMQ_DEFAULT_PASS=test
     depends_on:
-      - db
+      - golembrar-db
 
 networks:
   default:
@@ -39,5 +39,5 @@ networks:
     name: golembrar
 
 volumes:
+  golembrar-db:
   rabbitmq_data:
-  db_data:
