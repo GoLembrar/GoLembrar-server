@@ -1,6 +1,14 @@
+import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { PrismaService } from './../prisma/prisma.service';
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { HashUtil } from '../common/utils/hashUtil';
@@ -39,11 +47,55 @@ export class UserService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<void> {
+    const user = await this.prismaService.users.findUnique({
+      where: { id },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado');
+    }
+
+    if (updateUserDto.password) {
+      const hashedPassword = await HashUtil.hash(updateUserDto.password);
+      updateUserDto.password = hashedPassword;
+    }
+
     await this.prismaService.users.update({
       where: {
         id,
       },
       data: updateUserDto,
+    });
+  }
+
+  async upddatePassword(
+    id: string,
+    updateUserPasswordDto: UpdateUserPasswordDto,
+  ): Promise<void> {
+    /* esse metodo tem como principal objetivo atualizar a senha do usuario, porem antes disso
+    ele tem que verificar se a senha antiga é igual a senha atual, caso seja atualizar o campo password usando o newPassword do Dto */
+    const user = await this.prismaService.users.findUnique({
+      where: { id },
+    });
+    const isSamePassword = await HashUtil.compare(
+      user.password,
+      updateUserPasswordDto.password,
+    );
+
+    if (!isSamePassword) {
+      throw new BadRequestException('Senha antiga não é igual a nova');
+    }
+
+    const hashedPassword = await HashUtil.hash(
+      updateUserPasswordDto.newPassword,
+    );
+
+    user.password = hashedPassword;
+    await this.prismaService.users.update({
+      where: {
+        id,
+      },
+      data: user,
     });
   }
 
