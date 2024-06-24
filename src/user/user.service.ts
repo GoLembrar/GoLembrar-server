@@ -1,18 +1,18 @@
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { PrismaService } from './../prisma/prisma.service';
 import {
-  BadRequestException,
   HttpException,
   HttpStatus,
   Injectable,
   Logger,
   NotFoundException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
+import { Users } from '@prisma/client';
+import { HashUtil } from '../common/utils/hashUtil';
+import { PrismaService } from './../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { HashUtil } from '../common/utils/hashUtil';
-import { Users } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -77,20 +77,29 @@ export class UserService {
     const user = await this.prismaService.users.findUnique({
       where: { id },
     });
-    const isSamePassword = await HashUtil.compare(
-      user.password,
+
+    const currentPasswordValidation = await HashUtil.compare(
       updateUserPasswordDto.password,
+      user.password,
     );
 
-    if (!isSamePassword) {
-      throw new BadRequestException('Senha antiga não é igual a nova');
-    }
+    if (!currentPasswordValidation)
+      throw new UnprocessableEntityException('Senha atual está incorreta');
+
+    const sameAsOldPassword =
+      updateUserPasswordDto.password === updateUserPasswordDto.newPassword;
+
+    if (sameAsOldPassword)
+      throw new UnprocessableEntityException(
+        'A nova senha não pode ser a mesma',
+      );
 
     const hashedPassword = await HashUtil.hash(
       updateUserPasswordDto.newPassword,
     );
 
     user.password = hashedPassword;
+
     await this.prismaService.users.update({
       where: {
         id,
