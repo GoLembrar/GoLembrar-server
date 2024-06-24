@@ -9,14 +9,18 @@ async function bootstrap() {
     origin: '*',
     methods: ['GET', 'HEAD', 'POST', 'PATCH', 'DELETE'],
   });
+
   const config = new DocumentBuilder()
     .addBearerAuth()
     .setTitle('Go Lembrar API')
-    .setDescription('O APP de lembretes que você recebe no seu WhatsApp')
+    .setDescription('O APP de lembretes que você recebe no seu WhatsApp.')
     .setVersion('0.1')
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document);
+  SwaggerModule.setup('docs', app, document, {
+    customSiteTitle: 'Go Lembrar',
+  });
 
   app.useGlobalPipes(new ValidationPipe());
 
