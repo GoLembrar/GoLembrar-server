@@ -38,7 +38,7 @@ import { CacheService } from './cache/cache.service';
     EmailScheduledModule,
     CacheModule.register({
       isGlobal: true,
-    })
+    }),
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, TasksService, CacheService],

@@ -4,14 +4,14 @@ import {
   ExecutionContext,
   Injectable,
 } from '@nestjs/common';
-import { Request } from 'express';
+import { RequestWithUser } from '../../common/utils/types/RequestWithUser';
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class PreventDuplicateContactGuard implements CanActivate {
   constructor(private readonly prisma: PrismaService) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request: Request | any = context.switchToHttp().getRequest();
+    const request: RequestWithUser = context.switchToHttp().getRequest();
     const { identify } = request.body;
     const userId = request.user.id; //melhorar a busca do id do user, evitar o uso do tipo any
 
