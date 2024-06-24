@@ -1,25 +1,24 @@
-//import { SendEmailService } from './../Email/sendEmail.service';
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
+  Controller,
   Delete,
-  UseGuards,
+  Get,
+  Patch,
+  Post,
   Req,
+  UseGuards,
 } from '@nestjs/common';
-import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { OkResponse } from '../swagger/decorators/ok.decorator';
-import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
-import { okResponseModel } from './swagger/okResponseModel.swagger';
-import { EmailQueueService } from '../queue/email-queue/emailQueue.service';
 import { AuthorizationGuard } from '../common/guards/authorization.guard';
 import { RequestWithUser } from '../common/utils/types/RequestWithUser';
+import { EmailQueueService } from '../queue/email-queue/emailQueue.service';
+import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
+import { OkResponse } from '../swagger/decorators/ok.decorator';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { okResponseModel } from './swagger/okResponseModel.swagger';
+import { UserService } from './user.service';
 
 @Controller('user')
 @ApiTags('user')
@@ -42,7 +41,7 @@ export class UserController {
   @OkResponse([okResponseModel])
   @NotFoundResponse()
   @UseGuards(AuthorizationGuard)
-  public async findOne(@Req() request: Request | any) {
+  public async findOne(@Req() request: RequestWithUser) {
     const user = await this.userService.findOne(request.user.id);
     return user;
   }
@@ -53,7 +52,7 @@ export class UserController {
   @NotFoundResponse()
   @UseGuards(AuthorizationGuard)
   public async update(
-    @Req() request: Request | any,
+    @Req() request: RequestWithUser,
     @Body() updateUserDto: UpdateUserDto,
   ) {
     return this.userService.update(request.user.id, updateUserDto);
@@ -79,7 +78,7 @@ export class UserController {
   @OkResponse(okResponseModel)
   @NotFoundResponse()
   @UseGuards(AuthorizationGuard)
-  public async remove(@Req() request: Request | any) {
+  public async remove(@Req() request: RequestWithUser) {
     return this.userService.remove(request.user.id);
   }
 }

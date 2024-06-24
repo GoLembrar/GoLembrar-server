@@ -1,29 +1,28 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseGuards,
-  Req,
+  Get,
   HttpCode,
-  ParseIntPipe,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { OkResponseModel } from '../auth/swagger/okResponseModel.swagger';
+import { CreateCategoryResponse } from '../category/swagger/createCategoryResponse.swagger';
+import { AddRequestUserId } from '../common/decorators/add-request-user-id.decorator';
+import { AuthorizationGuard } from '../common/guards/authorization.guard';
+import { RequestWithUser } from '../common/utils/types/RequestWithUser';
+import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
+import { OkResponse } from '../swagger/decorators/ok.decorator';
+import { UnauthorizedResponse } from '../swagger/decorators/unauthorized.decorator';
 import { ContactService } from './contact.service';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
-import { AuthorizationGuard } from '../common/guards/authorization.guard';
 import { PreventDuplicateContactGuard } from './guards/preventDuplicateContact.guard';
-import { RequestWithUser } from '../common/utils/types/RequestWithUser';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CreateCategoryResponse } from '../category/swagger/createCategoryResponse.swagger';
-import { OkResponse } from '../swagger/decorators/ok.decorator';
-import { OkResponseModel } from '../auth/swagger/okResponseModel.swagger';
-import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
-import { UnauthorizedResponse } from '../swagger/decorators/unauthorized.decorator';
-import { AddRequestUserId } from '../common/decorators/add-request-user-id.decorator';
 
 @UseGuards(AuthorizationGuard)
 @Controller('contact')

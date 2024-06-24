@@ -9,6 +9,6 @@ import { EmailModule } from '../../consumer-queue-email/email/email.module';
   imports: [EmailModule],
   controllers: [EmailController],
   providers: [EmailScheduledService, PrismaService, CacheService],
-  exports: [EmailScheduledService]
+  exports: [EmailScheduledService],
 })
 export class EmailScheduledModule {}
