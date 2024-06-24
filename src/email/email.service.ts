@@ -113,3 +113,4 @@ export class EmailScheduledService {
     this.logger.log('Email cache updated at: ' + new Date().toISOString());
   }
 }
+export { EmailService };

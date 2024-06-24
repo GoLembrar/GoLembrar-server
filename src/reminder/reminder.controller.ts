@@ -7,23 +7,21 @@ import {
   Patch,
   Post,
   Req,
-  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { ReminderService } from './reminder.service';
-import { CreateReminderDto } from './dto/create-reminder.dto';
-import { AuthorizationGuard } from '../common/guards/authorization.guard';
-import { AddOwnerToBodyGuard } from './guards';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { UnauthorizedResponse } from '../swagger/decorators/unauthorized.decorator';
-import { UpdateReminderDto } from './dto/update-reminder.dto';
-import { CreatedResponse } from '../swagger/decorators/created.decorator';
-import { OkResponse } from '../swagger/decorators/ok.decorator';
-import { ForbiddenResponse } from '../swagger/decorators/forbidden.decorator';
-import { GetReminderResponse } from './swagger/getReminderResponse.swagger';
-import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
-import { Request } from 'express';
+import { AuthorizationGuard } from '../common/guards/authorization.guard';
 import { RequestWithUser } from '../common/utils/types/RequestWithUser';
+import { CreatedResponse } from '../swagger/decorators/created.decorator';
+import { ForbiddenResponse } from '../swagger/decorators/forbidden.decorator';
+import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
+import { OkResponse } from '../swagger/decorators/ok.decorator';
+import { UnauthorizedResponse } from '../swagger/decorators/unauthorized.decorator';
+import { CreateReminderDto } from './dto/create-reminder.dto';
+import { UpdateReminderDto } from './dto/update-reminder.dto';
+import { AddOwnerToBodyGuard } from './guards';
+import { ReminderService } from './reminder.service';
+import { GetReminderResponse } from './swagger/getReminderResponse.swagger';
 
 @Controller('reminder')
 @ApiTags('reminder')
