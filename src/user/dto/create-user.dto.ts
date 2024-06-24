@@ -5,15 +5,9 @@ import {
   IsNotEmpty,
   IsString,
   IsStrongPassword,
-  IsStrongPasswordOptions,
 } from 'class-validator';
+import { passwordDecoratorOptions } from './utils/password';
 
-const passwordDecoratorOptions: IsStrongPasswordOptions = {
-  minLength: 6,
-  minNumbers: 0,
-  minSymbols: 0,
-  minUppercase: 1,
-};
 export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
