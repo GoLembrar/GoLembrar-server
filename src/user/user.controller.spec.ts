@@ -1,12 +1,12 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
-import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
+import { Test, TestingModule } from '@nestjs/testing';
 import { Users } from '@prisma/client';
 import { vi } from 'vitest';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserController } from './user.controller';
+import { UserService } from './user.service';
 
 describe('UserController', () => {
   let controller: UserController;
@@ -14,18 +14,16 @@ describe('UserController', () => {
 
   const mockUserService: Partial<Users | null>[] = [
     {
-      id: 1,
+      id: '00000000-0000-0000-0000-000000000001',
       email: 'user1@email.com',
       password: '123',
-      phone: '999999999',
       createdAt: new Date(),
       updatedAt: new Date(),
     },
     {
-      id: 2,
+      id: '00000000-0000-0000-0000-000000000002',
       email: 'user2@email.com',
       password: '123',
-      phone: '999999999',
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -91,7 +89,6 @@ describe('UserController', () => {
       const userToCreate: CreateUserDto = {
         email: 'user2@email.com',
         password: '123',
-        phone: '999999999',
       };
       const user = await controller.create(userToCreate);
 
@@ -105,7 +102,6 @@ describe('UserController', () => {
 
       const userToUpdate: UpdateUserDto = {
         email: 'user123@email.com',
-        phone: '999999998',
         password: '1234',
       };
 

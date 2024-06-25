@@ -6,6 +6,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { Users } from '@prisma/client';
@@ -41,7 +42,10 @@ export class UserService {
     const foundUser: Users | null = await this.prismaService.users.findFirst({
       where: { id: id.toString() },
     });
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
+    if (!foundUser)
+      throw new UnauthorizedException('Email ou senha incorretos');
+
     const { password, ...secureUserData } = foundUser;
     return secureUserData;
   }
