@@ -9,13 +9,14 @@
     "postinstall": "prisma generate && prisma db push",
     "prisma-dev": "prisma generate && prisma db push",
     "prisma-studio": "prisma studio",
+    "prisma-migrate": "prisma migrate dev",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:worker": "ts-node ./consumer-queue-email/worker.ts",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node dist/src/main.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -25,7 +26,8 @@
     "test:html": "vitest run --reporter=html --outputFile=vitest/output/html/index.html",
     "test:json": "vitest run --reporter=json",
     "test:junit": "vitest run --reporter=junit",
-    "test:ui": "vite preview --outDir vitest/output/html --host"
+    "test:ui": "vite preview --outDir vitest/output/html --host",
+    "prepare": "husky"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",
@@ -76,6 +78,7 @@
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
+    "husky": "^9.0.11",
     "prettier": "^3.0.0",
     "prisma": "^5.12.1",
     "source-map-support": "^0.5.21",

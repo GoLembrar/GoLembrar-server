@@ -14,7 +14,6 @@ model Users {
   id              String            @id @default(uuid())
   email           String            @unique @db.VarChar(128)
   password        String            @db.VarChar(128)
-  phone           String            @unique @db.VarChar(64)
   name            String?           @db.VarChar(255)
   reminder        Reminders[]
   usersToReminder UsersToReminder[]

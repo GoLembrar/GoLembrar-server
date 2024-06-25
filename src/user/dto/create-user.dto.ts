@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
-  IsMobilePhone,
   IsNotEmpty,
   IsString,
   IsStrongPassword,
@@ -20,12 +19,6 @@ export class CreateUserDto {
   @IsEmail()
   @ApiProperty({ example: 'user@email.com' })
   email: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsMobilePhone('pt-BR')
-  @ApiProperty({ example: '999999999' })
-  phone: string;
 
   @IsNotEmpty()
   name: string;

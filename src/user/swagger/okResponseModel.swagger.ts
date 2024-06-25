@@ -8,9 +8,6 @@ export class okResponseModel {
   email: string;
 
   @ApiProperty()
-  phone: string;
-
-  @ApiProperty()
   createdAt: string;
 
   @ApiProperty()
