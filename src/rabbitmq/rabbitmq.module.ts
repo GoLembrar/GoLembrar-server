@@ -13,7 +13,7 @@ import { RabbitMQService } from './rabbitmq.service';
         return ClientProxyFactory.create({
           transport: Transport.RMQ,
           options: {
-            urls: [`${process.env.RABBITMQ_URL}`],
+            urls: [process.env.RABBITMQ_URL],
             queue: QueueList.DEFAULT,
             queueOptions: {
               durable: false,

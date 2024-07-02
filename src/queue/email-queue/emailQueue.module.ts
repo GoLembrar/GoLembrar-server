@@ -11,7 +11,7 @@ import { EmailQueueService } from './emailQueue.service';
         name: 'EMAIL-SERVICE',
         transport: Transport.RMQ,
         options: {
-          urls: [`${process.env.RABBITMQ_URL}`],
+          urls: [process.env.RABBITMQ_URL],
           queue: QueueList.EMAIL,
           queueOptions: {
             durable: true,

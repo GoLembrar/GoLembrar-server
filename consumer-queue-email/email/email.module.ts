@@ -1,8 +1,8 @@
-import { config } from 'dotenv';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
-import { EmailService } from './email.service';
 import { ConfigModule } from '@nestjs/config';
+import { config } from 'dotenv';
+import { EmailService } from './email.service';
 
 config();
 @Module({
@@ -22,4 +22,4 @@ config();
   providers: [EmailService],
   exports: [EmailService],
 })
-export class EmailModule { }
+export class EmailModule {}

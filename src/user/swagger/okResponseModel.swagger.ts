@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class okResponseModel {
   @ApiProperty()
-  id: number;
+  id: string;
 
   @ApiProperty()
   email: string;

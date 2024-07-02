@@ -9,17 +9,18 @@ import { passwordDecoratorOptions } from './utils/password';
 
 export class CreateUserDto {
   @IsNotEmpty()
-  @IsString()
-  @IsStrongPassword(passwordDecoratorOptions)
-  @ApiProperty({ example: '123456' })
-  password: string;
+  @ApiProperty({ example: 'Foo Name' })
+  name: string;
 
   @IsNotEmpty()
   @IsString()
   @IsEmail()
-  @ApiProperty({ example: 'user@email.com' })
+  @ApiProperty({ example: 'example@example.com' })
   email: string;
 
   @IsNotEmpty()
-  name: string;
+  @IsString()
+  @IsStrongPassword(passwordDecoratorOptions)
+  @ApiProperty({ example: 'secretPassword' })
+  password: string;
 }
