@@ -1,10 +1,8 @@
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { config } from 'dotenv';
 import { EmailService } from './email.service';
 
-config();
 @Module({
   imports: [
     ConfigModule.forRoot(),
