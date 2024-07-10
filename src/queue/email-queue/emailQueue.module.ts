@@ -1,6 +1,7 @@
-import 'dotenv/config';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import 'dotenv/config';
+import { QueueList } from '../utils/queue-list';
 import { EmailQueueService } from './emailQueue.service';
 
 @Module({
@@ -14,7 +15,7 @@ import { EmailQueueService } from './emailQueue.service';
             `amqp://${process.env.USER_RABBITMQ}:${process.env.PASSWORD_RABBITMQ}@localhost:5672`,
           ],
 
-          queue: 'Email',
+          queue: QueueList.EMAIL,
           queueOptions: {
             durable: true,
           },

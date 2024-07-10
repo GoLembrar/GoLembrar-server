@@ -1,18 +1,16 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { CredentialsDto } from './dto/credentials.dto';
-import { PrismaService } from '../prisma/prisma.service';
-import { HashUtil } from '../common/utils/hashUtil';
-import { Users } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
+import { Users } from '@prisma/client';
+import { HashUtil } from '../common/utils/hashUtil';
+import { PrismaService } from '../prisma/prisma.service';
+import { CredentialsDto } from './dto/credentials.dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
-import { EmailQueueService } from '../queue/email-queue/emailQueue.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwt: JwtService,
-    private readonly emailQueue: EmailQueueService,
   ) {}
 
   async login(
@@ -33,8 +31,11 @@ export class AuthService {
 
     if (!isPasswordMatching)
       throw new UnauthorizedException('Credenciais inválidas');
+
     const jwtPayloadData: JwtPayload = {
       id: foundUser.id,
+      email: foundUser.email,
+      name: foundUser.name,
     };
 
     const token = this.jwt.sign(jwtPayloadData, {
@@ -43,7 +44,6 @@ export class AuthService {
     const refreshToken = this.jwt.sign(jwtPayloadData, {
       expiresIn: process.env.JWT_REFRESH_EXP,
     });
-    await this.emailQueue.emailQueue(foundUser.email);
 
     return { token, refreshToken };
   }
@@ -55,7 +55,7 @@ export class AuthService {
       });
 
       const user = await this.prisma.users.findUnique({
-        where: { id: payload.id },
+        where: { id: payload.id, email: payload.email, name: payload.name },
       });
 
       if (!user) throw new UnauthorizedException('Usuário não encontrado');

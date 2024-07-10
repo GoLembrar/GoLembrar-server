@@ -4,9 +4,10 @@ import { UserController } from './user.controller';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthorizationGuard } from '../common/guards/authorization.guard';
 import { JwtModule } from '@nestjs/jwt';
+import { EmailQueueModule } from '../queue/email-queue/emailQueue.module';
 
 @Module({
-  imports: [JwtModule],
+  imports: [JwtModule, EmailQueueModule],
   controllers: [UserController],
   providers: [UserService, PrismaService, AuthorizationGuard],
 })

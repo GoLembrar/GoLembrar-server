@@ -3,7 +3,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { EmailService } from './email.service';
 import { ConfigModule } from '@nestjs/config';
-import { EmailConsumer } from '../consumers/email.consumer';
+
 config();
 @Module({
   imports: [
@@ -11,10 +11,10 @@ config();
     MailerModule.forRoot({
       transport: {
         host: process.env.EMAIL_HOST,
-        port: parseInt(process.env.MAIL_PORT, 10),
+        port: parseInt(process.env.EMAIL_SERVICE_PORT, 10),
         auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.ACCESS_TOKEN,
+          user: process.env.EMAIL_AUTH_USER,
+          pass: process.env.EMAIL_AUTH_PASSWORD,
         },
       },
     }),
@@ -22,4 +22,4 @@ config();
   providers: [EmailService],
   exports: [EmailService],
 })
-export class EmailModule {}
+export class EmailModule { }

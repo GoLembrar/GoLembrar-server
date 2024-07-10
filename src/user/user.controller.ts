@@ -1,69 +1,84 @@
-//import { SendEmailService } from './../Email/sendEmail.service';
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  ParseIntPipe,
-  NotFoundException,
+  Get,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
-import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { Users } from '@prisma/client';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { OkResponse } from '../swagger/decorators/ok.decorator';
+import { AuthorizationGuard } from '../common/guards/authorization.guard';
+import { RequestWithUser } from '../common/utils/types/RequestWithUser';
+import { EmailQueueService } from '../queue/email-queue/emailQueue.service';
 import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
+import { OkResponse } from '../swagger/decorators/ok.decorator';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { okResponseModel } from './swagger/okResponseModel.swagger';
-import { RabbitmqService } from '../rabbitmq/rabbitmq.service';
+import { UserService } from './user.service';
 
 @Controller('user')
 @ApiTags('user')
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    //private readonly rabbitMq: RabbitmqService,
-    //private readonly emailService: SendEmailService,
+    private readonly emailQueue: EmailQueueService,
   ) {}
 
   @Post()
   @OkResponse(okResponseModel)
   @ApiOperation({ summary: 'Create a new user.' })
-  async create(@Body() createUserDto: CreateUserDto) {
-    //this.rabbitMq.enqueueTask();
+  public async create(@Body() createUserDto: CreateUserDto) {
+    this.emailQueue.emailQueue(createUserDto.email);
     return await this.userService.create(createUserDto);
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Find a user by id.' })
+  @Get('')
+  @ApiOperation({ summary: 'Find a user by token' })
   @OkResponse([okResponseModel])
   @NotFoundResponse()
-  async findOne(@Param('id', ParseIntPipe) id: string) {
-    const user: Partial<Users> | null = await this.userService.findOne(+id);
-    if (!user)
-      throw new NotFoundException(`Usuário com id ${id} não foi encontrado.`);
+  @UseGuards(AuthorizationGuard)
+  public async findOne(@Req() request: RequestWithUser) {
+    const user = await this.userService.findOne(request.user.id);
     return user;
   }
 
-  @Patch(':id')
+  @Patch('')
   @ApiOperation({ summary: 'Update a user by id.' })
   @OkResponse(okResponseModel)
   @NotFoundResponse()
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @UseGuards(AuthorizationGuard)
+  public async update(
+    @Req() request: RequestWithUser,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.userService.update(request.user.id, updateUserDto);
   }
 
-  @Delete(':id')
+  @Patch('update-password')
+  @ApiOperation({ summary: 'Update a user password by id.' })
+  @OkResponse(okResponseModel)
+  @NotFoundResponse()
+  @UseGuards(AuthorizationGuard)
+  public async updatePassword(
+    @Req() request: RequestWithUser,
+    @Body() updateUserPasswordDto: UpdateUserPasswordDto,
+  ) {
+    return await this.userService.upddatePassword(
+      request.user.id,
+      updateUserPasswordDto,
+    );
+  }
+
+  @Delete()
   @ApiOperation({ summary: 'Remove a user by id.' })
   @OkResponse(okResponseModel)
   @NotFoundResponse()
-  remove(
-    @Param('id', ParseIntPipe)
-    id: number,
-  ) {
-    return this.userService.remove(id);
+  @UseGuards(AuthorizationGuard)
+  public async remove(@Req() request: RequestWithUser) {
+    return this.userService.remove(request.user.id);
   }
 }
