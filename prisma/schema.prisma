@@ -69,3 +69,10 @@ enum Platform {
   DISCORD
   EMAIL
 }
+
+model Token {
+id         Int       @id @default(autoincrement())
+hash       String    @db.VarChar(255) @unique
+userName   String    @db.VarChar(100) @unique
+@@map("tokens")
+}

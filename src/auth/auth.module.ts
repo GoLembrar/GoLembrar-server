@@ -18,5 +18,6 @@ import { EmailModule } from '../../consumer-queue-email/email/email.module';
   ],
   controllers: [AuthController],
   providers: [AuthService, PrismaService],
+  exports: [AuthService, PrismaService],
 })
 export class AuthModule {}
