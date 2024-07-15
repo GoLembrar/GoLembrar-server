@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Put } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CredentialsDto } from './dto/credentials.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -16,5 +16,10 @@ export class AuthController {
   @UnauthorizedResponse()
   login(@Body() credentials: CredentialsDto) {
     return this.authService.login(credentials);
+  }
+
+  @Post('refresh-token')
+  async refreshToken(@Body() body: { refreshToken: string }) {
+    return this.authService.refreshToken(body.refreshToken);
   }
 }

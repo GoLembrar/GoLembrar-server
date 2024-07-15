@@ -39,8 +39,17 @@ POST http://localhost:3000/auth HTTP/1.1
 Content-Type: application/json
 
 {
-  "email" : "test@email.com",
+  "email" : "jhone.test14@gmail.com",
   "password" : "senhaForte"
+}
+
+###
+
+POST http://localhost:3000/auth/refresh-token HTTP/1.1
+Content-Type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjlkMmJlMGM1LTFhYzYtNGE0Yy05YmRkLWJjNTg1NmJiMzI0NyIsImVtYWlsIjoiamhvbmUudGVzdDE0QGdtYWlsLmNvbSIsIm5hbWUiOiJqaG9uZSIsImlhdCI6MTcyMDU3ODM3NiwiZXhwIjoxNzIwODM3NTc2fQ.JJ-DfAXpOQzqA7YlIcgm3UYnB09w1fGXqHWxNKZa4hk"
 }
 
 ### get all users account
