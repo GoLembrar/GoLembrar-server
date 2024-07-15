@@ -4,12 +4,16 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
+import { Response } from 'express';
+
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OkResponseModel } from '../auth/swagger/okResponseModel.swagger';
 import { CreateCategoryResponse } from '../category/swagger/createCategoryResponse.swagger';
@@ -67,11 +71,16 @@ export class ContactController {
   @ApiOperation({ summary: 'Update contact' })
   @UnauthorizedResponse()
   @NotFoundResponse()
-  update(
+  async update(
     @Param('id') id: string,
     @Body() @AddRequestUserId() updateContactDto: UpdateContactDto,
+    @Res() response: Response,
   ) {
-    return this.contactService.update(id, updateContactDto);
+    const user = await this.contactService.update(id, updateContactDto);
+    response.status(HttpStatus.OK).json({
+      message: 'user updated',
+      user,
+    });
   }
 
   @Delete(':id')

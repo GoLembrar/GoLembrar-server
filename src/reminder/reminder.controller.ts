@@ -2,11 +2,13 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   NotFoundException,
   Param,
   Patch,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -22,6 +24,7 @@ import { UpdateReminderDto } from './dto/update-reminder.dto';
 import { AddOwnerToBodyGuard } from './guards';
 import { ReminderService } from './reminder.service';
 import { GetReminderResponse } from './swagger/getReminderResponse.swagger';
+import { Response } from 'express';
 
 @Controller('reminder')
 @ApiTags('reminder')
@@ -68,10 +71,14 @@ export class ReminderController {
   @OkResponse()
   @UnauthorizedResponse()
   @ForbiddenResponse()
-  updateReminder(
+  async updateReminder(
     @Param('id') id: string,
     @Body() updateReminderDto: UpdateReminderDto,
-  ): Promise<void> {
-    return this.reminderService.updateReminder(id, updateReminderDto);
+    @Res() response: Response,
+  ): Promise<Response> {
+    await this.reminderService.updateReminder(id, updateReminderDto);
+    return response.status(HttpStatus.NO_CONTENT).json({
+      message: 'reminder updated',
+    });
   }
 }

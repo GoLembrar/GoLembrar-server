@@ -1,11 +1,14 @@
+import { Response } from 'express';
 import {
   Body,
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Patch,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -31,9 +34,15 @@ export class UserController {
   @Post()
   @OkResponse(okResponseModel)
   @ApiOperation({ summary: 'Create a new user.' })
-  public async create(@Body() createUserDto: CreateUserDto) {
+  public async create(
+    @Body() createUserDto: CreateUserDto,
+    @Res() response: Response,
+  ) {
     this.emailQueue.emailQueue(createUserDto.email);
-    return await this.userService.create(createUserDto);
+    await this.userService.create(createUserDto);
+    return response
+      .status(HttpStatus.CREATED)
+      .json({ message: 'user created' });
   }
 
   @Get('')
@@ -54,8 +63,12 @@ export class UserController {
   public async update(
     @Req() request: RequestWithUser,
     @Body() updateUserDto: UpdateUserDto,
+    @Res() response: Response,
   ) {
-    return this.userService.update(request.user.id, updateUserDto);
+    await this.userService.update(request.user.id, updateUserDto);
+    return response.status(HttpStatus.NO_CONTENT).json({
+      message: 'user updated',
+    });
   }
 
   @Patch('update-password')
