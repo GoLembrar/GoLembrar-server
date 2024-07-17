@@ -1,8 +1,7 @@
-import { ClientRMQ, MessagePattern } from '@nestjs/microservices';
-import { EmailService } from '../email/email.service';
 import { Injectable } from '@nestjs/common';
 import * as amqp from 'amqplib';
 import { QueueList } from '../../src/queue/utils/queue-list';
+import { EmailService } from '../email/email.service';
 @Injectable()
 export class EmailConsumer {
   private channel: amqp.Channel;
@@ -12,9 +11,7 @@ export class EmailConsumer {
   }
 
   private async receiveEmail() {
-    const connection = await amqp.connect(
-      `amqp://${process.env.USER_RABBITMQ}:${process.env.PASSWORD_RABBITMQ}@localhost`,
-    );
+    const connection = await amqp.connect(process.env.RABBITMQ_URL);
     this.channel = await connection.createChannel();
     console.log('EmailConsumer: conexão feita com sucesso!');
     // Consume messages from the queue
