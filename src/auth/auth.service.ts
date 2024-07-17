@@ -1,22 +1,23 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Users } from '@prisma/client';
+import { ConfigService } from '@nestjs/config';
 import { HashUtil } from '../common/utils/hashUtil';
 import { PrismaService } from '../prisma/prisma.service';
 import { CredentialsDto } from './dto/credentials.dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly prisma: PrismaService,
-    private readonly jwt: JwtService,
+    private readonly prismaService: PrismaService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+    private readonly userService: UserService,
   ) {}
 
-  async login(
-    credentials: CredentialsDto,
-  ): Promise<{ token: string; refreshToken: string }> {
-    const foundUser: Users = await this.prisma.users.findFirst({
+  async login(credentials: CredentialsDto) {
+    const foundUser = await this.prismaService.user.findFirst({
       where: {
         email: credentials.email,
       },
@@ -38,42 +39,67 @@ export class AuthService {
       name: foundUser.name,
     };
 
-    const token = this.jwt.sign(jwtPayloadData, {
+    const token = this.jwtService.sign(jwtPayloadData, {
       expiresIn: process.env.JWT_EXP,
     });
-    const refreshToken = this.jwt.sign(jwtPayloadData, {
+    const refreshToken = this.jwtService.sign(jwtPayloadData, {
       expiresIn: process.env.JWT_REFRESH_EXP,
     });
 
     return { token, refreshToken };
   }
 
-  async refreshToken(refreshToken: string) {
+  verifyToken(token: string, secret: string): boolean {
     try {
-      const payload: JwtPayload = await this.jwt.verifyAsync(refreshToken, {
-        secret: process.env.JWT_SECRET,
-      });
-
-      const user = await this.prisma.users.findUnique({
-        where: { id: payload.id, email: payload.email, name: payload.name },
-      });
-
-      if (!user) throw new UnauthorizedException('Usuário não encontrado');
-
-      const token = this.jwt.sign(
-        { id: user.id },
-        { expiresIn: process.env.JWT_EXP },
+      return Boolean(
+        this.jwtService.verify(token, {
+          secret,
+        }),
       );
-
-      return { token };
-    } catch (error) {
-      if (error.name === 'TokenExpiredError') {
-        throw new UnauthorizedException(
-          'Refresh token expirado, por favor, relogue',
-        );
-      } else {
-        throw new UnauthorizedException('Refresh token inválido');
-      }
+    } catch (err) {
+      return false;
     }
+  }
+
+  async genTokens(id: string) {
+    const [token, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(
+        {
+          sub: id,
+        },
+        {
+          secret: this.configService.get<string>('JWT_SECRET'),
+          expiresIn: process.env.JWT_EXP,
+        },
+      ),
+      this.jwtService.signAsync(
+        {
+          sub: id,
+        },
+        {
+          secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+          expiresIn: process.env.JWT_REFRESH_EXP,
+        },
+      ),
+    ]);
+
+    return { token, refreshToken };
+  }
+
+  async refreshTokens(token: string, id: string) {
+    if (!token || !id)
+      throw new UnauthorizedException('Credenciais não fornecidas');
+
+    const verify = this.verifyToken(token, process.env.JWT_REFRESH_SECRET);
+
+    if (verify) {
+      const user = await this.userService.findOne(id);
+
+      if (!user) throw new UnauthorizedException('Credenciais inválidas');
+
+      return await this.genTokens(user.id);
+    }
+
+    throw new UnauthorizedException('Credenciais inválidas');
   }
 }

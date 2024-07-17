@@ -1,5 +1,4 @@
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   HttpException,
   HttpStatus,
@@ -9,7 +8,7 @@ import {
   UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { Users } from '@prisma/client';
+import { User } from '@prisma/client';
 import { HashUtil } from '../common/utils/hashUtil';
 import { PrismaService } from './../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -22,7 +21,7 @@ export class UserService {
   private readonly logger: Logger = new Logger(UserService.name);
 
   async create(createUserDto: CreateUserDto) {
-    const existingUser = await this.prismaService.users.findUnique({
+    const existingUser = await this.prismaService.user.findUnique({
       where: { email: createUserDto.email },
     });
 
@@ -33,25 +32,26 @@ export class UserService {
     const hashedPassword = await HashUtil.hash(createUserDto.password);
     createUserDto.password = hashedPassword;
 
-    await this.prismaService.users.create({
+    await this.prismaService.user.create({
       data: createUserDto,
     });
   }
 
-  async findOne(id: string): Promise<Partial<Users> | null> {
-    const foundUser: Users | null = await this.prismaService.users.findFirst({
+  async findOne(id: string) {
+    const foundUser: User | null = await this.prismaService.user.findFirst({
       where: { id: id.toString() },
     });
 
     if (!foundUser)
       throw new UnauthorizedException('Email ou senha incorretos');
 
+    //eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...secureUserData } = foundUser;
     return secureUserData;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<void> {
-    const user = await this.prismaService.users.findUnique({
+    const user = await this.prismaService.user.findUnique({
       where: { id },
     });
 
@@ -64,7 +64,7 @@ export class UserService {
       updateUserDto.password = hashedPassword;
     }
 
-    await this.prismaService.users.update({
+    await this.prismaService.user.update({
       where: {
         id,
       },
@@ -78,7 +78,7 @@ export class UserService {
   ): Promise<void> {
     /* esse metodo tem como principal objetivo atualizar a senha do usuario, porem antes disso
     ele tem que verificar se a senha antiga é igual a senha atual, caso seja atualizar o campo password usando o newPassword do Dto */
-    const user = await this.prismaService.users.findUnique({
+    const user = await this.prismaService.user.findUnique({
       where: { id },
     });
 
@@ -104,7 +104,7 @@ export class UserService {
 
     user.password = hashedPassword;
 
-    await this.prismaService.users.update({
+    await this.prismaService.user.update({
       where: {
         id,
       },
@@ -114,7 +114,7 @@ export class UserService {
 
   async remove(id: string): Promise<void> {
     try {
-      await this.prismaService.users.delete({
+      await this.prismaService.user.delete({
         where: {
           id,
         },

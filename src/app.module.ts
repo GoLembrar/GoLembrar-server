@@ -8,7 +8,6 @@ import { EmailModule } from '../consumer-queue-email/email/email.module';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { CacheService } from './cache/cache.service';
-import { CategoryModule } from './category/category.module';
 import { ContactModule } from './contact/contact.module';
 import { EmailScheduledModule } from './email/email.module';
 import { PrismaService } from './prisma/prisma.service';
@@ -28,7 +27,6 @@ import { UserModule } from './user/user.module';
     UserModule,
     AuthModule,
     ReminderModule,
-    CategoryModule,
     ContactModule,
     EmailModule,
     RabbitmqModule,

@@ -13,11 +13,6 @@ export class CreateReminderDto {
   description: string;
 
   @IsNotEmpty()
-  @IsString()
-  @ApiProperty({ example: 'Reminder platform' })
-  platform: string;
-
-  @IsNotEmpty()
   @IsDateString()
   @ApiProperty({ example: '2021-09-01T00:00:00.000Z' })
   scheduled: Date;

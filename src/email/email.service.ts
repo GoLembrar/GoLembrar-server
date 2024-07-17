@@ -1,9 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { EmailStatus } from '@prisma/client';
+import { Status } from '@prisma/client';
 import { EmailService } from '../../consumer-queue-email/email/email.service';
 import { CacheService } from '../cache/cache.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { EmailPrisma } from './dto/EmailPrisma';
 
 @Injectable()
 export class EmailScheduledService {
@@ -15,7 +14,7 @@ export class EmailScheduledService {
 
   private logger = new Logger(EmailScheduledService.name);
 
-  async getEmailsDueToday(): Promise<EmailPrisma[]> {
+  async getEmailsDueToday() {
     const cachedEmails = await this.cacheManager.get<any[]>('today_emails');
 
     if (cachedEmails) {
@@ -36,21 +35,19 @@ export class EmailScheduledService {
     return todayEmails;
   }
 
-  private async getEmailsDueTodayFromDatabase(
-    limitDateInMilliseconds: number,
-  ): Promise<EmailPrisma[]> {
+  private async getEmailsDueTodayFromDatabase(limitDateInMilliseconds: number) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    return this.prismaService.emails.findMany({
+    return this.prismaService.email.findMany({
       where: {
-        dueDate: {
+        scheduled: {
           gte: today,
           lt: new Date(today.getTime() + limitDateInMilliseconds),
         },
       },
       orderBy: {
-        dueDate: 'asc',
+        scheduled: 'asc',
       },
     });
   }
@@ -62,18 +59,18 @@ export class EmailScheduledService {
 
       for (const email of todayEmails) {
         try {
-          if (email.status === EmailStatus.PENDING && email.dueDate <= today) {
+          if (email.status === Status.PENDING && email.scheduled <= today) {
             await this.emailService.sendEmail(
               email.to,
               email.subject,
               email.html,
             );
-            await this.updateEmailStatus(email.id, EmailStatus.SENT);
+            await this.updateEmailStatus(email.id, Status.SENT);
             this.logger.log(`Email sent to ${email.to}`);
           }
         } catch (e) {
           this.logger.error('Error sending email', e);
-          await this.updateEmailStatus(email.id, EmailStatus.FAILED);
+          await this.updateEmailStatus(email.id, Status.FAILED);
         }
       }
     }
@@ -87,15 +84,14 @@ export class EmailScheduledService {
         cachedEmails.length > 0 &&
         cachedEmails.some(
           (email) =>
-            email.status === EmailStatus.PENDING ||
-            email.status === EmailStatus.FAILED,
+            email.status === Status.PENDING || email.status === Status.FAILED,
         )
       );
     }
   }
 
-  async updateEmailStatus(emailId: number, status: EmailStatus) {
-    await this.prismaService.emails.update({
+  async updateEmailStatus(emailId: number, status: Status) {
+    await this.prismaService.email.update({
       where: {
         id: emailId,
       },

@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { Platform } from '@prisma/client';
+import { Channel } from '@prisma/client';
 
 @Injectable()
 export class ContactService {
@@ -10,14 +10,14 @@ export class ContactService {
   async create(createContactDto: CreateContactDto) {
     const { userId, ...createData } = createContactDto;
 
-    const platform = Platform[createData.platform.toUpperCase()];
+    const channel = Channel[createData.channel.toUpperCase()];
     const contact = await this.prismaService.contact.create({
       data: {
         ...createData,
         user: {
           connect: { id: userId },
         },
-        platform,
+        channel: channel,
       },
     });
     return contact;
@@ -45,7 +45,7 @@ export class ContactService {
   async update(id: string, updateContactDto: UpdateContactDto) {
     const { userId, ...updateData } = updateContactDto;
 
-    const platform = Platform[updateData.platform.toUpperCase()];
+    const channel = Channel[updateData.channel.toUpperCase()];
     const contact = await this.prismaService.contact.findUnique({
       where: {
         id: id,
@@ -67,7 +67,7 @@ export class ContactService {
       },
       data: {
         ...updateData,
-        platform,
+        channel,
       },
     });
 

@@ -13,11 +13,6 @@ export class UpdateReminderDto {
   description?: string;
 
   @IsOptional()
-  @IsString()
-  @ApiProperty({ example: 'Reminder platform', required: false })
-  platform?: string;
-
-  @IsOptional()
   @IsDateString()
   @ApiProperty({ example: '2021-09-01T00:00:00.000Z', required: false })
   scheduled?: Date;

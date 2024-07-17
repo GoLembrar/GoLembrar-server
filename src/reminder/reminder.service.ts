@@ -2,28 +2,27 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateReminderDto } from './dto/create-reminder.dto';
 import { UpdateReminderDto } from './dto/update-reminder.dto';
-import { Reminders } from '@prisma/client';
 
 @Injectable()
 export class ReminderService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getReminderById(id: string): Promise<Reminders> {
-    return await this.prismaService.reminders.findFirst({
+  async getReminderById(id: string) {
+    return await this.prismaService.reminder.findFirst({
       where: { id: id },
     });
   }
 
-  async getUserReminders(userId: string): Promise<Reminders[]> {
-    return await this.prismaService.reminders.findMany({
+  async getUserReminders(userId: string) {
+    return await this.prismaService.reminder.findMany({
       where: {
         ownerId: userId,
       },
     });
   }
 
-  async createReminder(reminderDto: CreateReminderDto): Promise<void> {
-    await this.prismaService.reminders.create({
+  async createReminder(reminderDto: CreateReminderDto) {
+    await this.prismaService.reminder.create({
       data: reminderDto,
     });
   }
@@ -32,13 +31,18 @@ export class ReminderService {
     id: string,
     reminderDto: UpdateReminderDto,
   ): Promise<void> {
-    if (Object.keys(reminderDto).length === 1)
+    if (Object.keys(reminderDto).length === 0)
       throw new ForbiddenException('Não existem dados para serem atualizados');
+
+    const currentTime = Date.now();
+    const minimumScheduleTime = currentTime + 15 * 60 * 1000; // 15 minutes in milliseconds
+
     const validScheduledDate =
       reminderDto.scheduled &&
-      new Date(reminderDto.scheduled).getTime() > Date.now() + 15000 * 60;
+      new Date(reminderDto.scheduled).getTime() > minimumScheduleTime;
+
     if (!reminderDto.scheduled || validScheduledDate) {
-      await this.prismaService.reminders.update({
+      await this.prismaService.reminder.update({
         where: { id },
         data: reminderDto,
       });
