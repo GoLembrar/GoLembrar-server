@@ -39,13 +39,12 @@ export class UserService {
 
   async findOne(id: string) {
     const foundUser: User | null = await this.prismaService.user.findFirst({
-      where: { id: id.toString() },
+      where: { id: id },
     });
 
     if (!foundUser)
       throw new UnauthorizedException('Email ou senha incorretos');
 
-    //eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...secureUserData } = foundUser;
     return secureUserData;
   }

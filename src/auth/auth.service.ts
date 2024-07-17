@@ -49,6 +49,11 @@ export class AuthService {
     return { token, refreshToken };
   }
 
+  /**
+   * @param token The JWT token to be verify
+   * @param secret The secret used for signature this token
+   * @returns Boolean if is valid or invalid token
+   */
   verifyToken(token: string, secret: string): boolean {
     try {
       return Boolean(
@@ -61,6 +66,10 @@ export class AuthService {
     }
   }
 
+  /**
+   * @param email Email of the user
+   * @returns The access and refresh token
+   */
   async genTokens(id: string) {
     const [token, refreshToken] = await Promise.all([
       this.jwtService.signAsync(

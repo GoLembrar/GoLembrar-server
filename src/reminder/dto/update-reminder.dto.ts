@@ -16,9 +16,4 @@ export class UpdateReminderDto {
   @IsDateString()
   @ApiProperty({ example: '2021-09-01T00:00:00.000Z', required: false })
   scheduled?: Date;
-
-  @IsOptional()
-  @IsInt()
-  @ApiProperty({ example: 1, required: false })
-  categoryId?: number;
 }

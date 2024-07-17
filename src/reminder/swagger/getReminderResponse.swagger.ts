@@ -17,9 +17,6 @@ export class GetReminderResponse {
   isActivated: boolean;
 
   @ApiProperty()
-  categoryId: number;
-
-  @ApiProperty()
   ownerId: number;
 
   @ApiProperty()

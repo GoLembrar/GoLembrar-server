@@ -13,10 +13,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
-
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { OkResponseModel } from '../auth/swagger/okResponseModel.swagger';
-import { CreateCategoryResponse } from '../category/swagger/createCategoryResponse.swagger';
 import { AddRequestUserId } from '../common/decorators/add-request-user-id.decorator';
 import { AuthorizationGuard } from '../common/guards/authorization.guard';
 import { RequestWithUser } from '../common/utils/types/RequestWithUser';
@@ -39,7 +37,6 @@ export class ContactController {
   @HttpCode(201)
   @ApiOperation({ summary: 'Create contact' })
   @UnauthorizedResponse()
-  @CreateCategoryResponse()
   @UseGuards(PreventDuplicateContactGuard)
   create(
     @Body() @AddRequestUserId() createContactDto: CreateContactDto,
@@ -52,7 +49,7 @@ export class ContactController {
   @Get()
   @ApiOperation({ summary: 'Get all contacts' })
   @UnauthorizedResponse()
-  @OkResponse([OkResponseModel])
+  @OkResponse(OkResponseModel)
   findAll(@Req() request: RequestWithUser) {
     const userId = request.user.id;
     return this.contactService.findAll(userId);

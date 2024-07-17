@@ -16,8 +16,8 @@ import { UnauthorizedResponse } from '../swagger/decorators/unauthorized.decorat
 import { Response } from 'express';
 import { RequestWithUser } from '../common/utils/types/RequestWithUser';
 
-@Controller('auth')
 @ApiTags('auth')
+@Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -25,6 +25,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Login' })
   @OkResponse(OkResponseModel)
   @UnauthorizedResponse()
+  @HttpCode(HttpStatus.OK)
   login(@Body() credentials: CredentialsDto) {
     return this.authService.login(credentials);
   }

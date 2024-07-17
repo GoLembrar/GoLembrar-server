@@ -22,9 +22,4 @@ export class CreateReminderDto {
   @IsNotEmpty()
   @ApiProperty({ example: 'abc...' })
   ownerId: string;
-
-  @IsNotEmpty()
-  @IsInt()
-  @ApiProperty({ example: 1 })
-  categoryId: number;
 }
