@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsInt, IsNotEmpty, IsString } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  ArrayUnique,
+  IsArray,
+  IsDateString,
+  IsNotEmpty,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class CreateReminderDto {
   @IsNotEmpty()
@@ -18,8 +26,21 @@ export class CreateReminderDto {
   scheduled: Date;
 
   @IsNotEmpty()
+  @IsArray()
+  @ArrayNotEmpty()
+  @ArrayUnique()
+  @IsUUID('4', { each: true })
+  @ApiProperty({
+    example: [
+      'f0b9cfd9-5987-49a6-90f7-944552bebee8',
+      '11e80f14-0604-41d4-b150-337e64858fb2',
+    ],
+  })
+  usersToReminder: string[];
+
+  @IsNotEmpty()
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ example: 'abc...' })
+  @ApiProperty({ example: 'UUID of reminder sender' })
   ownerId: string;
 }
