@@ -17,6 +17,7 @@ export class ReminderService {
               select: {
                 id: true,
                 name: true,
+                channel: true,
               },
             },
           },
@@ -29,6 +30,19 @@ export class ReminderService {
     return await this.prismaService.reminder.findMany({
       where: {
         ownerId: userId,
+      },
+      include: {
+        usersToReminder: {
+          include: {
+            contact: {
+              select: {
+                id: true,
+                name: true,
+                channel: true,
+              },
+            },
+          },
+        },
       },
     });
   }
