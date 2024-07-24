@@ -40,6 +40,10 @@ export class UserService {
   async findOne(id: string) {
     const foundUser: User | null = await this.prismaService.user.findFirst({
       where: { id: id },
+      select: {
+        name: true,
+        email: true,
+      },
     });
 
     if (!foundUser)
