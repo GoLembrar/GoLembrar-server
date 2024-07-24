@@ -8,8 +8,21 @@ export class ReminderService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async getReminderById(id: string) {
-    return await this.prismaService.reminder.findFirst({
+    return await this.prismaService.reminder.findUnique({
       where: { id: id },
+      include: {
+        usersToReminder: {
+          include: {
+            contact: {
+              select: {
+                id: true,
+                name: true,
+                channel: true,
+              },
+            },
+          },
+        },
+      },
     });
   }
 
@@ -18,12 +31,39 @@ export class ReminderService {
       where: {
         ownerId: userId,
       },
+      include: {
+        usersToReminder: {
+          include: {
+            contact: {
+              select: {
+                id: true,
+                name: true,
+                channel: true,
+              },
+            },
+          },
+        },
+      },
     });
   }
 
   async createReminder(reminderDto: CreateReminderDto) {
+    const userToReminderConnect = reminderDto.usersToReminder.map(
+      (contactId) => ({
+        contactId,
+      }),
+    );
+
     await this.prismaService.reminder.create({
-      data: reminderDto,
+      data: {
+        title: reminderDto.title,
+        description: reminderDto.description,
+        scheduled: reminderDto.scheduled,
+        ownerId: reminderDto.ownerId,
+        usersToReminder: {
+          create: userToReminderConnect,
+        },
+      },
     });
   }
 

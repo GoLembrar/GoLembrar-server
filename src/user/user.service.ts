@@ -1,4 +1,3 @@
-import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import {
   HttpException,
   HttpStatus,
@@ -8,10 +7,10 @@ import {
   UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { User } from '@prisma/client';
 import { HashUtil } from '../common/utils/hashUtil';
 import { PrismaService } from './../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -38,19 +37,21 @@ export class UserService {
   }
 
   async findOne(id: string) {
-    const foundUser: User | null = await this.prismaService.user.findFirst({
+    const foundUser = await this.prismaService.user.findFirst({
       where: { id: id },
       select: {
-        name: true,
+        id: true,
         email: true,
+        name: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
 
     if (!foundUser)
       throw new UnauthorizedException('Email ou senha incorretos');
 
-    const { password, ...secureUserData } = foundUser;
-    return secureUserData;
+    return foundUser;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<void> {
