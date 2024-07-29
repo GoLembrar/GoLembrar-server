@@ -67,15 +67,21 @@ export class ReminderService {
     });
   }
 
+  /**
+   * Updates a reminder with the data.
+   *
+   * @param {string} id - The ID of the reminder to be updated.
+   * @param {UpdateReminderDto} reminderDto - The DTO containing the update data.
+   * @returns {Promise<void>} - A promise that resolves when the update is complete.
+   */
   async updateReminder(
     id: string,
     reminderDto: UpdateReminderDto,
   ): Promise<void> {
-    if (Object.keys(reminderDto).length === 0)
-      throw new ForbiddenException('Não existem dados para serem atualizados');
+    if (Object.keys(reminderDto).length === 0) return;
 
     const currentTime = Date.now();
-    const minimumScheduleTime = currentTime + 15 * 60 * 1000; // 15 minutes in milliseconds
+    const minimumScheduleTime = currentTime + 30 * 60 * 1000; // 30 minutes in milliseconds
 
     const validScheduledDate =
       reminderDto.scheduled &&
@@ -84,13 +90,24 @@ export class ReminderService {
     if (!reminderDto.scheduled || validScheduledDate) {
       await this.prismaService.reminder.update({
         where: { id },
-        data: reminderDto,
+        data: {
+          title: reminderDto.title,
+          description: reminderDto.description,
+          scheduled: reminderDto.scheduled,
+          ownerId: reminderDto.ownerId,
+          usersToReminder: {
+            deleteMany: {},
+            create: reminderDto.usersToReminder?.map((id) => ({
+              contact: { connect: { id } },
+            })),
+          },
+        },
       });
       return;
     }
 
     throw new ForbiddenException(
-      'Não é permitido agendar um lembrete com data menor que 15 minutos no futuro',
+      'Não é permitido agendar um lembrete com data menor que 30 minutos no futuro',
     );
   }
 }
