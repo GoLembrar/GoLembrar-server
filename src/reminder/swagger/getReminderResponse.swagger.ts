@@ -11,16 +11,10 @@ export class GetReminderResponse {
   description: string;
 
   @ApiProperty()
-  platform: string;
-
-  @ApiProperty()
   scheduled: string;
 
   @ApiProperty()
   isActivated: boolean;
-
-  @ApiProperty()
-  categoryId: number;
 
   @ApiProperty()
   ownerId: number;

@@ -1,3 +1,4 @@
+import { Channel } from '@prisma/client';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateContactDto {
@@ -11,7 +12,7 @@ export class CreateContactDto {
 
   @IsNotEmpty()
   @IsString()
-  platform: string;
+  channel: Channel;
 
   @IsNotEmpty()
   userId: string;
