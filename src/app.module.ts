@@ -20,12 +20,12 @@ import { UserModule } from './user/user.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    AuthModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'swagger-static'),
       serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/docs',
     }),
     UserModule,
-    AuthModule,
     ReminderModule,
     ContactModule,
     EmailModule,

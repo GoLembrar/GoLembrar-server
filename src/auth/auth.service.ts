@@ -1,11 +1,10 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import { HashUtil } from '../common/utils/hashUtil';
 import { PrismaService } from '../prisma/prisma.service';
-import { CredentialsDto } from './dto/credentials.dto';
-import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { UserService } from '../user/user.service';
+import { CredentialsDto } from './dto/credentials.dto';
 
 @Injectable()
 export class AuthService {
@@ -33,20 +32,9 @@ export class AuthService {
     if (!isPasswordMatching)
       throw new UnauthorizedException('Credenciais inválidas');
 
-    const jwtPayloadData: JwtPayload = {
-      id: foundUser.id,
-      email: foundUser.email,
-      name: foundUser.name,
-    };
+    const tokens = await this.genTokens(foundUser.id);
 
-    const token = this.jwtService.sign(jwtPayloadData, {
-      expiresIn: process.env.JWT_EXP,
-    });
-    const refreshToken = this.jwtService.sign(jwtPayloadData, {
-      expiresIn: process.env.JWT_REFRESH_EXP,
-    });
-
-    return { token, refreshToken };
+    return tokens;
   }
 
   /**

@@ -9,12 +9,12 @@ import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
 
 @Module({
   imports: [
-    UserModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: process.env.JWT_EXP },
       global: true,
     }),
+    UserModule,
   ],
   controllers: [AuthController],
   providers: [
