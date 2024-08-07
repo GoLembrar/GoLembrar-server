@@ -20,7 +20,6 @@ import { UserModule } from './user/user.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    AuthModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'swagger-static'),
       serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/docs',
@@ -33,6 +32,7 @@ import { UserModule } from './user/user.module';
     ScheduleModule.forRoot(),
     TasksModule,
     EmailScheduledModule,
+    AuthModule,
     CacheModule.register({
       isGlobal: true,
     }),

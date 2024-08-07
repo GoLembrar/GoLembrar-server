@@ -12,7 +12,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuthorizationGuard } from '../common/guards/authorization.guard';
+import { Response } from 'express';
+import { AccessTokenGuard } from '../auth/guards/access-token/access-token.guard';
 import { RequestWithUser } from '../common/utils/types/RequestWithUser';
 import { CreatedResponse } from '../swagger/decorators/created.decorator';
 import { ForbiddenResponse } from '../swagger/decorators/forbidden.decorator';
@@ -24,11 +25,10 @@ import { UpdateReminderDto } from './dto/update-reminder.dto';
 import { AddOwnerToBodyGuard } from './guards';
 import { ReminderService } from './reminder.service';
 import { GetReminderResponse } from './swagger/getReminderResponse.swagger';
-import { Response } from 'express';
 
 @Controller('reminder')
 @ApiTags('reminder')
-@UseGuards(AuthorizationGuard)
+@UseGuards(AccessTokenGuard)
 @ApiBearerAuth()
 export class ReminderController {
   constructor(private readonly reminderService: ReminderService) {}

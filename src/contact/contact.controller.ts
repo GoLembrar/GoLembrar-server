@@ -12,11 +12,11 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { Response } from 'express';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
+import { AccessTokenGuard } from '../auth/guards/access-token/access-token.guard';
 import { OkResponseModel } from '../auth/swagger/okResponseModel.swagger';
 import { AddRequestUserId } from '../common/decorators/add-request-user-id.decorator';
-import { AuthorizationGuard } from '../common/guards/authorization.guard';
 import { RequestWithUser } from '../common/utils/types/RequestWithUser';
 import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
 import { OkResponse } from '../swagger/decorators/ok.decorator';
@@ -26,7 +26,7 @@ import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
 import { PreventDuplicateContactGuard } from './guards/preventDuplicateContact.guard';
 
-@UseGuards(AuthorizationGuard)
+@UseGuards(AccessTokenGuard)
 @Controller('contact')
 @ApiTags('contact')
 @ApiBearerAuth()

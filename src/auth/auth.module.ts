@@ -8,14 +8,7 @@ import { AccessTokenStrategy } from './strategies/accessToken.strategy';
 import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
 
 @Module({
-  imports: [
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: process.env.JWT_EXP },
-      global: true,
-    }),
-    UserModule,
-  ],
+  imports: [JwtModule.register({}), UserModule],
   controllers: [AuthController],
   providers: [
     AuthService,
@@ -24,6 +17,6 @@ import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
     AccessTokenStrategy,
     RefreshTokenStrategy,
   ],
-  exports: [AuthService, PrismaService],
+  exports: [AuthService],
 })
 export class AuthModule {}
