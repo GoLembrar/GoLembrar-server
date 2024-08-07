@@ -14,6 +14,5 @@ export class CreateContactDto {
   @IsString()
   channel: Channel;
 
-  @IsNotEmpty()
   userId: string;
 }

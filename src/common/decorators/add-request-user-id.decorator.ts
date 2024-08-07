@@ -4,7 +4,7 @@ import { RequestWithUser } from '../utils/types/RequestWithUser';
 export const AddRequestUserId = createParamDecorator(
   (data: unknown, context: ExecutionContext) => {
     const request: RequestWithUser = context.switchToHttp().getRequest();
-    const userId = request.user.id;
+    const userId = request.user['sub'];
 
     // Adicione o userId ao objeto request
     request.body.userId = userId;

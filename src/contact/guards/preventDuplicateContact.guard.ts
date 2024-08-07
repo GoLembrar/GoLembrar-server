@@ -13,7 +13,7 @@ export class PreventDuplicateContactGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: RequestWithUser = context.switchToHttp().getRequest();
     const { identify } = request.body;
-    const userId = request.user.id; //melhorar a busca do id do user, evitar o uso do tipo any
+    const userId = request.user['sub']; //melhorar a busca do id do user, evitar o uso do tipo any
 
     const contact = await this.prisma.contact.findFirst({
       where: {

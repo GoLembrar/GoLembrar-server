@@ -51,7 +51,7 @@ export class UserController {
   @NotFoundResponse()
   @UseGuards(AccessTokenGuard)
   public async findOne(@Req() request: RequestWithUser) {
-    const user = await this.userService.findOne(request.user.id);
+    const user = await this.userService.findOne(request.user['sub']);
     return user;
   }
 
@@ -65,7 +65,7 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
     @Res() response: Response,
   ) {
-    await this.userService.update(request.user.id, updateUserDto);
+    await this.userService.update(request.user['sub'], updateUserDto);
     return response.status(HttpStatus.NO_CONTENT).json({
       message: 'user updated',
     });
@@ -81,7 +81,7 @@ export class UserController {
     @Body() updateUserPasswordDto: UpdateUserPasswordDto,
   ) {
     return await this.userService.upddatePassword(
-      request.user.id,
+      request.user['sub'],
       updateUserPasswordDto,
     );
   }
@@ -92,6 +92,6 @@ export class UserController {
   @NotFoundResponse()
   @UseGuards(AccessTokenGuard)
   public async remove(@Req() request: RequestWithUser) {
-    return this.userService.remove(request.user.id);
+    return this.userService.remove(request.user['sub']);
   }
 }

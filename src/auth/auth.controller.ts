@@ -43,7 +43,7 @@ export class AuthController {
   ) {
     const tokens = await this.authService.refreshTokens(
       request.user.refreshToken,
-      request.user.id,
+      request.user['sub'],
     );
 
     return response.status(HttpStatus.OK).json({ tokens });

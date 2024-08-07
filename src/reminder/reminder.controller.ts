@@ -51,7 +51,7 @@ export class ReminderController {
   @UnauthorizedResponse()
   @NotFoundResponse()
   async getRemindersByUser(@Req() request: RequestWithUser) {
-    const userId: string = request.user.id;
+    const userId: string = request.user['sub'];
     return this.reminderService.getUserReminders(userId);
   }
 
