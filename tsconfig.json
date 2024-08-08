@@ -17,6 +17,5 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false
   },
-  "include": ["src/**/*", "consumer-queue-email", "vitest.config.ts"],
-  "exclude": ["node_modules", "**/*spec.ts", "./test/"]
+  "include": ["src/**/*", "consumer-queue-email", "vitest.config.ts"]
 }
