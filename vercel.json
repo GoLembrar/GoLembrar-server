@@ -1,7 +1,4 @@
 {
-  "env": {
-    "BRANCH": "develop"
-  },
   "version": 2,
   "builds": [
     {
