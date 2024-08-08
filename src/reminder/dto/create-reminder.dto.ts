@@ -38,9 +38,6 @@ export class CreateReminderDto {
   })
   usersToReminder: string[];
 
-  @IsNotEmpty()
-  @IsString()
-  @IsNotEmpty()
   @ApiProperty({ example: 'UUID of reminder sender' })
   ownerId: string;
 }

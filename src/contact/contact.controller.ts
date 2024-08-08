@@ -12,11 +12,11 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { Response } from 'express';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
+import { AccessTokenGuard } from '../auth/guards/access-token/access-token.guard';
 import { OkResponseModel } from '../auth/swagger/okResponseModel.swagger';
 import { AddRequestUserId } from '../common/decorators/add-request-user-id.decorator';
-import { AuthorizationGuard } from '../common/guards/authorization.guard';
 import { RequestWithUser } from '../common/utils/types/RequestWithUser';
 import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
 import { OkResponse } from '../swagger/decorators/ok.decorator';
@@ -24,9 +24,8 @@ import { UnauthorizedResponse } from '../swagger/decorators/unauthorized.decorat
 import { ContactService } from './contact.service';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
-import { PreventDuplicateContactGuard } from './guards/preventDuplicateContact.guard';
 
-@UseGuards(AuthorizationGuard)
+@UseGuards(AccessTokenGuard)
 @Controller('contact')
 @ApiTags('contact')
 @ApiBearerAuth()
@@ -37,12 +36,12 @@ export class ContactController {
   @HttpCode(201)
   @ApiOperation({ summary: 'Create contact' })
   @UnauthorizedResponse()
-  @UseGuards(PreventDuplicateContactGuard)
+  @UseGuards(AccessTokenGuard)
   create(
     @Body() @AddRequestUserId() createContactDto: CreateContactDto,
     @Req() request: RequestWithUser,
   ) {
-    createContactDto.userId = request.user.id;
+    createContactDto.userId = request.user['sub'];
     return this.contactService.create(createContactDto);
   }
 
@@ -51,7 +50,7 @@ export class ContactController {
   @UnauthorizedResponse()
   @OkResponse(OkResponseModel)
   findAll(@Req() request: RequestWithUser) {
-    const userId = request.user.id;
+    const userId = request.user['sub'];
     return this.contactService.findAll(userId);
   }
 
@@ -60,7 +59,7 @@ export class ContactController {
   @UnauthorizedResponse()
   @NotFoundResponse()
   findOne(@Param('id') id: string, @Req() request: RequestWithUser) {
-    const userId = request.user.id;
+    const userId = request.user['sub'];
     return this.contactService.findOne(id, userId);
   }
 
@@ -85,7 +84,7 @@ export class ContactController {
   @UnauthorizedResponse()
   @NotFoundResponse()
   remove(@Param('id') id: string, @Req() request: RequestWithUser) {
-    const userId = request.user.id;
+    const userId = request.user['sub'];
     return this.contactService.remove(id, userId);
   }
 }

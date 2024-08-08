@@ -8,7 +8,7 @@ export class AddOwnerToBodyGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request: Request = context.switchToHttp().getRequest();
     if (request['user']) {
-      request.body['ownerId'] = request['user'].id;
+      request.body['ownerId'] = request.user['id'];
       return true;
     }
     return false;

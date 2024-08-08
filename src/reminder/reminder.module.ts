@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ReminderService } from './reminder.service';
-import { ReminderController } from './reminder.controller';
+import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
+import { ReminderController } from './reminder.controller';
+import { ReminderService } from './reminder.service';
 
 @Module({
   controllers: [ReminderController],
-  providers: [ReminderService, PrismaService],
+  providers: [ReminderService, PrismaService, JwtService],
 })
 export class ReminderModule {}

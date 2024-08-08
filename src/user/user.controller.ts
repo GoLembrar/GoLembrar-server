@@ -1,4 +1,3 @@
-import { Response } from 'express';
 import {
   Body,
   Controller,
@@ -12,7 +11,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuthorizationGuard } from '../common/guards/authorization.guard';
+import { Response } from 'express';
+import { AccessTokenGuard } from '../auth/guards/access-token/access-token.guard';
 import { RequestWithUser } from '../common/utils/types/RequestWithUser';
 import { EmailQueueService } from '../queue/email-queue/emailQueue.service';
 import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
@@ -49,9 +49,9 @@ export class UserController {
   @ApiOperation({ summary: 'Find a user by token' })
   @OkResponse([okResponseModel])
   @NotFoundResponse()
-  @UseGuards(AuthorizationGuard)
+  @UseGuards(AccessTokenGuard)
   public async findOne(@Req() request: RequestWithUser) {
-    const user = await this.userService.findOne(request.user.id);
+    const user = await this.userService.findOne(request.user['sub']);
     return user;
   }
 
@@ -59,13 +59,13 @@ export class UserController {
   @ApiOperation({ summary: 'Update a user by id.' })
   @OkResponse(okResponseModel)
   @NotFoundResponse()
-  @UseGuards(AuthorizationGuard)
+  @UseGuards(AccessTokenGuard)
   public async update(
     @Req() request: RequestWithUser,
     @Body() updateUserDto: UpdateUserDto,
     @Res() response: Response,
   ) {
-    await this.userService.update(request.user.id, updateUserDto);
+    await this.userService.update(request.user['sub'], updateUserDto);
     return response.status(HttpStatus.NO_CONTENT).json({
       message: 'user updated',
     });
@@ -75,13 +75,13 @@ export class UserController {
   @ApiOperation({ summary: 'Update a user password by id.' })
   @OkResponse(okResponseModel)
   @NotFoundResponse()
-  @UseGuards(AuthorizationGuard)
+  @UseGuards(AccessTokenGuard)
   public async updatePassword(
     @Req() request: RequestWithUser,
     @Body() updateUserPasswordDto: UpdateUserPasswordDto,
   ) {
     return await this.userService.upddatePassword(
-      request.user.id,
+      request.user['sub'],
       updateUserPasswordDto,
     );
   }
@@ -90,8 +90,8 @@ export class UserController {
   @ApiOperation({ summary: 'Remove a user by id.' })
   @OkResponse(okResponseModel)
   @NotFoundResponse()
-  @UseGuards(AuthorizationGuard)
+  @UseGuards(AccessTokenGuard)
   public async remove(@Req() request: RequestWithUser) {
-    return this.userService.remove(request.user.id);
+    return this.userService.remove(request.user['sub']);
   }
 }

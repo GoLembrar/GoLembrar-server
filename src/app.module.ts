@@ -25,7 +25,6 @@ import { UserModule } from './user/user.module';
       serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/docs',
     }),
     UserModule,
-    AuthModule,
     ReminderModule,
     ContactModule,
     EmailModule,
@@ -33,6 +32,7 @@ import { UserModule } from './user/user.module';
     ScheduleModule.forRoot(),
     TasksModule,
     EmailScheduledModule,
+    AuthModule,
     CacheModule.register({
       isGlobal: true,
     }),
