@@ -1,10 +1,23 @@
 {
   "name": "go-lembrar-server",
+  "homepage": "https://golembrar.com/",
   "version": "0.0.1",
   "description": "<p align=\"center\">\r   <a href=\"http://nestjs.com/\" target=\"blank\"><img src=\"https://nestjs.com/img/logo-small.svg\" width=\"200\" alt=\"Nest Logo\" /></a>\r </p>",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "main": "src/main",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GoLembrar/GoLembrar-server.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/GoLembrar/GoLembrar-server/issues"
+  },
   "scripts": {
     "postinstall": "prisma generate && prisma db push",
     "prisma-dev": "prisma generate && prisma db push",
@@ -93,18 +106,5 @@
     "typescript": "^5.1.3",
     "unplugin-swc": "^1.4.4",
     "vitest": "^1.0.4"
-  },
-  "main": ".eslintrc.js",
-  "directories": {
-    "test": "test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/GoLembrar/GoLembrar-server.git"
-  },
-  "keywords": [],
-  "bugs": {
-    "url": "https://github.com/GoLembrar/GoLembrar-server/issues"
-  },
-  "homepage": "https://github.com/GoLembrar/GoLembrar-server#readme"
+  }
 }
