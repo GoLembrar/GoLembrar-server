@@ -61,8 +61,11 @@ export class ReminderController {
   @UnauthorizedResponse()
   @CreatedResponse()
   async createReminder(
+    @Req() request: RequestWithUser,
     @Body() createReminderDto: CreateReminderDto,
   ): Promise<void> {
+    console.log(request.user['sub']);
+    createReminderDto.ownerId = request.user['sub'];
     return this.reminderService.createReminder(createReminderDto);
   }
 
