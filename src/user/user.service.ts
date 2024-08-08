@@ -28,6 +28,16 @@ export class UserService {
       throw new HttpException('Email ja cadastrado', HttpStatus.CONFLICT);
     }
 
+    const regex = /^(?=.*[A-Z]).{6,24}$/;
+    const isPasswordValid = regex.test(createUserDto.password);
+
+    if (!isPasswordValid) {
+      throw new HttpException(
+        'A senha deve ter entre 6 e 24 caracteres e pelo menos uma letra maiúscula.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const hashedPassword = await HashUtil.hash(createUserDto.password);
     createUserDto.password = hashedPassword;
 
