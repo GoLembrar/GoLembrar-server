@@ -7,9 +7,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: ['https://golembrar.vercel.app/', 'https://golembrar.com/'],
+    origin: ['*'],
     methods: ['GET', 'HEAD', 'POST', 'PATCH', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   app.useGlobalPipes(new ValidationPipe());
