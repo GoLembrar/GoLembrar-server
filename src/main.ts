@@ -4,12 +4,12 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    cors: {
-      credentials: true,
-      origin: ['https://app.golembrar.com', 'http://localhost:4200/'],
-      methods: ['GET', 'HEAD', 'POST', 'PATCH', 'DELETE'],
-    },
+  const app = await NestFactory.create(AppModule);
+
+  app.enableCors({
+    credentials: true,
+    origin: '*',
+    methods: ['GET', 'HEAD', 'POST', 'PATCH', 'DELETE'],
   });
 
   app.useGlobalPipes(new ValidationPipe());
