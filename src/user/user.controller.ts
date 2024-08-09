@@ -10,13 +10,21 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiConflictResponse,
+  ApiCreatedResponse,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { Response } from 'express';
 import { AccessTokenGuard } from '../auth/guards/access-token/access-token.guard';
 import { RequestWithUser } from '../common/utils/types/RequestWithUser';
 // import { EmailQueueService } from '../queue/email-queue/emailQueue.service';
-import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
-import { OkResponse } from '../swagger/decorators/ok.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -32,8 +40,13 @@ export class UserController {
   ) {}
 
   @Post()
-  @OkResponse(okResponseModel)
   @ApiOperation({ summary: 'Create a new user.' })
+  @ApiCreatedResponse({
+    description: 'User creation success response',
+    type: okResponseModel,
+  })
+  @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiConflictResponse({ description: 'User already exists' })
   public async create(
     @Body() createUserDto: CreateUserDto,
     @Res() response: Response,
@@ -47,8 +60,12 @@ export class UserController {
 
   @Get('')
   @ApiOperation({ summary: 'Find a user by token' })
-  @OkResponse([okResponseModel])
-  @NotFoundResponse()
+  @ApiOkResponse({
+    description: 'User response found successfully',
+    type: okResponseModel,
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized user response' })
+  @ApiNotFoundResponse({ description: 'User not found response' })
   @UseGuards(AccessTokenGuard)
   public async findOne(@Req() request: RequestWithUser) {
     const user = await this.userService.findOne(request.user['sub']);
@@ -57,8 +74,9 @@ export class UserController {
 
   @Patch('')
   @ApiOperation({ summary: 'Update a user by id.' })
-  @OkResponse(okResponseModel)
-  @NotFoundResponse()
+  @ApiNoContentResponse({ description: 'User response updated successfully' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized user response' })
+  @ApiNotFoundResponse({ description: 'User not found response' })
   @UseGuards(AccessTokenGuard)
   public async update(
     @Req() request: RequestWithUser,
@@ -73,8 +91,11 @@ export class UserController {
 
   @Patch('update-password')
   @ApiOperation({ summary: 'Update a user password by id.' })
-  @OkResponse(okResponseModel)
-  @NotFoundResponse()
+  @ApiNoContentResponse({
+    description: 'User response password updated successfully',
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized user response' })
+  @ApiNotFoundResponse({ description: 'User not found response' })
   @UseGuards(AccessTokenGuard)
   public async updatePassword(
     @Req() request: RequestWithUser,
@@ -88,8 +109,9 @@ export class UserController {
 
   @Delete()
   @ApiOperation({ summary: 'Remove a user by id.' })
-  @OkResponse(okResponseModel)
-  @NotFoundResponse()
+  @ApiOkResponse({ description: 'User response removed successfully' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized user response' })
+  @ApiNotFoundResponse({ description: 'User not found response' })
   @UseGuards(AccessTokenGuard)
   public async remove(@Req() request: RequestWithUser) {
     return this.userService.remove(request.user['sub']);
