@@ -4,25 +4,26 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
-  app.enableCors({
-    origin: ['*'],
-    methods: ['GET', 'HEAD', 'POST', 'PATCH', 'DELETE'],
+  const app = await NestFactory.create(AppModule, {
+    cors: {
+      credentials: true,
+      origin: ['https://app.golembrar.com', 'http://localhost:4200/'],
+      methods: ['GET', 'HEAD', 'POST', 'PATCH', 'DELETE'],
+    },
   });
 
   app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
     .addBearerAuth()
-    .setTitle('Go Lembrar API')
+    .setTitle('GoLembrar API')
     .setDescription('O APP de lembretes que você recebe no seu WhatsApp.')
     .setVersion('0.1')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document, {
-    customSiteTitle: 'GoLembrar Swagger',
+    customSiteTitle: 'GoLembrar API',
     swaggerOptions: {
       tagsSorter: 'alpha',
       operationsSorter: 'alpha',
