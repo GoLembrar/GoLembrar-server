@@ -36,7 +36,7 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    // private readonly emailQueue: EmailQueueService,
+    private readonly emailQueue: EmailQueueService,
   ) {}
 
   @Post()
@@ -51,7 +51,7 @@ export class UserController {
     @Body() createUserDto: CreateUserDto,
     @Res() response: Response,
   ) {
-    // this.emailQueue.emailQueue(createUserDto.email);
+    this.emailQueue.emailQueue(createUserDto.email);
     await this.userService.create(createUserDto);
     return response
       .status(HttpStatus.CREATED)
