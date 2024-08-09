@@ -14,7 +14,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AccessTokenGuard } from '../auth/guards/access-token/access-token.guard';
 import { RequestWithUser } from '../common/utils/types/RequestWithUser';
-import { EmailQueueService } from '../queue/email-queue/emailQueue.service';
+// import { EmailQueueService } from '../queue/email-queue/emailQueue.service';
 import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
 import { OkResponse } from '../swagger/decorators/ok.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -28,7 +28,7 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    private readonly emailQueue: EmailQueueService,
+    // private readonly emailQueue: EmailQueueService,
   ) {}
 
   @Post()
@@ -38,7 +38,7 @@ export class UserController {
     @Body() createUserDto: CreateUserDto,
     @Res() response: Response,
   ) {
-    this.emailQueue.emailQueue(createUserDto.email);
+    // this.emailQueue.emailQueue(createUserDto.email);
     await this.userService.create(createUserDto);
     return response
       .status(HttpStatus.CREATED)

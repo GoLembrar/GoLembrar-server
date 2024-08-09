@@ -1,8 +1,7 @@
 {
   "name": "go-lembrar-server",
   "homepage": "https://golembrar.com/",
-  "version": "0.0.1",
-  "description": "<p align=\"center\">\r   <a href=\"http://nestjs.com/\" target=\"blank\"><img src=\"https://nestjs.com/img/logo-small.svg\" width=\"200\" alt=\"Nest Logo\" /></a>\r </p>",
+  "version": "0.1.0",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
