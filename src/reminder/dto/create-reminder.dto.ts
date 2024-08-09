@@ -7,22 +7,22 @@ import {
   IsNotEmpty,
   IsString,
   IsUUID,
-  Max,
-  Min,
+  MaxLength,
+  MinLength,
 } from 'class-validator';
 
 export class CreateReminderDto {
   @IsNotEmpty()
   @IsString()
-  @Min(2)
-  @Max(120)
+  @MinLength(2)
+  @MaxLength(120)
   @ApiProperty({ example: 'Reminder title' })
   title: string;
 
   @IsNotEmpty()
   @IsString()
-  @Min(2)
-  @Max(500)
+  @MinLength(2)
+  @MaxLength(500)
   @ApiProperty({ example: 'Reminder description' })
   description: string;
 
