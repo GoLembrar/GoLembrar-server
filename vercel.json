@@ -10,7 +10,10 @@
     {
       "src": "/(.*)",
       "dest": "src/main.ts",
-      "methods": ["GET", "POST", "PATCH", "DELETE"]
+      "methods": ["GET", "POST", "PATCH", "DELETE"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*"
+      }
     }
   ]
 }
