@@ -15,10 +15,31 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
-    .addBearerAuth()
     .setTitle('GoLembrar API')
     .setDescription('O APP de lembretes que você recebe no seu WhatsApp.')
     .setVersion('0.1')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'JWT-Token',
+    )
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT refresh token',
+        in: 'header',
+      },
+      'JWT-Refresh-Token',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

@@ -32,9 +32,7 @@ export class AuthService {
     if (!isPasswordMatching)
       throw new UnauthorizedException('Credenciais inválidas');
 
-    const tokens = await this.genTokens(foundUser.id);
-
-    return tokens;
+    return await this.genTokens(foundUser.id);
   }
 
   /**

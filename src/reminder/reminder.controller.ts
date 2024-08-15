@@ -29,7 +29,7 @@ import { GetReminderResponse } from './swagger/getReminderResponse.swagger';
 @Controller('reminder')
 @ApiTags('reminder')
 @UseGuards(AccessTokenGuard)
-@ApiBearerAuth()
+@ApiBearerAuth('JWT-Token')
 export class ReminderController {
   constructor(private readonly reminderService: ReminderService) {}
 
