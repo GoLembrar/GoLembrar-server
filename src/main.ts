@@ -7,23 +7,44 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: ['https://golembrar.vercel.app/', 'https://golembrar.com/'],
+    credentials: true,
+    origin: '*',
     methods: ['GET', 'HEAD', 'POST', 'PATCH', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
-    .addBearerAuth()
-    .setTitle('Go Lembrar API')
+    .setTitle('GoLembrar API')
     .setDescription('O APP de lembretes que você recebe no seu WhatsApp.')
     .setVersion('0.1')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'JWT-Token',
+    )
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT refresh token',
+        in: 'header',
+      },
+      'JWT-Refresh-Token',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document, {
-    customSiteTitle: 'GoLembrar Swagger',
+    customSiteTitle: 'GoLembrar API',
     swaggerOptions: {
       tagsSorter: 'alpha',
       operationsSorter: 'alpha',

@@ -1,20 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty } from 'class-validator';
-
-/* const passwordDecoratorOptions: IsStrongPasswordOptions = {
-  minLength: 6,
-  minNumbers: 0,
-  minSymbols: 0,
-  minUppercase: 1,
-}; */
+import { IsEmail, IsNotEmpty, MaxLength } from 'class-validator';
 
 export class CredentialsDto {
-  @ApiProperty({ example: 'user@email.com' })
   @IsEmail()
   @IsNotEmpty()
+  @MaxLength(100)
+  @ApiProperty({ example: 'user@email.com' })
   email: string;
 
-  @ApiProperty({ example: '123456' })
   @IsNotEmpty()
+  @MaxLength(25)
+  @ApiProperty({ example: '123456' })
   password: string;
 }

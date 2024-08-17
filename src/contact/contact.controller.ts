@@ -15,11 +15,9 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AccessTokenGuard } from '../auth/guards/access-token/access-token.guard';
-import { OkResponseModel } from '../auth/swagger/okResponseModel.swagger';
 import { AddRequestUserId } from '../common/decorators/add-request-user-id.decorator';
 import { RequestWithUser } from '../common/utils/types/RequestWithUser';
 import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
-import { OkResponse } from '../swagger/decorators/ok.decorator';
 import { UnauthorizedResponse } from '../swagger/decorators/unauthorized.decorator';
 import { ContactService } from './contact.service';
 import { CreateContactDto } from './dto/create-contact.dto';
@@ -28,7 +26,7 @@ import { UpdateContactDto } from './dto/update-contact.dto';
 @UseGuards(AccessTokenGuard)
 @Controller('contact')
 @ApiTags('contact')
-@ApiBearerAuth()
+@ApiBearerAuth('JWT-Token')
 export class ContactController {
   constructor(private readonly contactService: ContactService) {}
 
@@ -48,7 +46,6 @@ export class ContactController {
   @Get()
   @ApiOperation({ summary: 'Get all contacts' })
   @UnauthorizedResponse()
-  @OkResponse(OkResponseModel)
   findAll(@Req() request: RequestWithUser) {
     const userId = request.user['sub'];
     return this.contactService.findAll(userId);

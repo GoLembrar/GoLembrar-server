@@ -5,16 +5,22 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  MaxLength,
+  MinLength,
 } from 'class-validator';
 
 export class UpdateReminderDto {
   @IsOptional()
   @IsString()
+  @MinLength(2)
+  @MaxLength(120)
   @ApiProperty({ example: 'Reminder title', required: false })
   title?: string;
 
   @IsOptional()
   @IsString()
+  @MinLength(2)
+  @MaxLength(500)
   @ApiProperty({ example: 'Reminder description', required: false })
   description?: string;
 

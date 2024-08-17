@@ -7,16 +7,22 @@ import {
   IsNotEmpty,
   IsString,
   IsUUID,
+  MaxLength,
+  MinLength,
 } from 'class-validator';
 
 export class CreateReminderDto {
   @IsNotEmpty()
   @IsString()
+  @MinLength(2)
+  @MaxLength(120)
   @ApiProperty({ example: 'Reminder title' })
   title: string;
 
   @IsNotEmpty()
   @IsString()
+  @MinLength(2)
+  @MaxLength(500)
   @ApiProperty({ example: 'Reminder description' })
   description: string;
 
@@ -38,6 +44,8 @@ export class CreateReminderDto {
   })
   usersToReminder: string[];
 
-  @ApiProperty({ example: 'UUID of reminder sender' })
+  @ApiProperty({
+    example: '7eebe2b6-5877-459c-ae65-a7e9383624e6',
+  })
   ownerId: string;
 }

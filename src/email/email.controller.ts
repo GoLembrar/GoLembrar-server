@@ -4,8 +4,10 @@ import { RequestWithUser } from '../common/utils/types/RequestWithUser';
 import { Response } from 'express';
 import { EmailDto } from './dto/email.dto';
 import { EmailQueueService } from '../queue/email-queue/emailQueue.service';
+import { ApiExcludeController } from '@nestjs/swagger';
 
 @Controller('email')
+@ApiExcludeController(true)
 export class EmailController {
   constructor(
     private readonly emailService: EmailScheduledService,

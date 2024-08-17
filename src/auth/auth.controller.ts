@@ -9,7 +9,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { RequestWithUser } from '../common/utils/types/RequestWithUser';
 import { OkResponse } from '../swagger/decorators/ok.decorator';
@@ -17,7 +17,7 @@ import { UnauthorizedResponse } from '../swagger/decorators/unauthorized.decorat
 import { AuthService } from './auth.service';
 import { CredentialsDto } from './dto/credentials.dto';
 import { RefreshTokenGuard } from './guards/refresh-token/refresh-token.guard';
-import { OkResponseModel } from './swagger/okResponseModel.swagger';
+import { OkLoginModel } from './swagger/okAuthModel.swagger';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -26,7 +26,7 @@ export class AuthController {
 
   @Post()
   @ApiOperation({ summary: 'Login' })
-  @OkResponse(OkResponseModel)
+  @OkResponse(OkLoginModel)
   @UnauthorizedResponse()
   @HttpCode(HttpStatus.OK)
   login(@Body() credentials: CredentialsDto) {
@@ -35,6 +35,8 @@ export class AuthController {
 
   @Get('refresh')
   @UseGuards(RefreshTokenGuard)
+  @OkResponse(OkLoginModel)
+  @ApiBearerAuth('JWT-Refresh-Token')
   @ApiOperation({ summary: 'Refresh the tokens' })
   @HttpCode(HttpStatus.OK)
   async refreshToken(
@@ -46,6 +48,6 @@ export class AuthController {
       request.user['sub'],
     );
 
-    return response.status(HttpStatus.OK).json({ tokens });
+    return response.status(HttpStatus.OK).json(tokens);
   }
 }
