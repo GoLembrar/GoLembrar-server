@@ -44,8 +44,5 @@ export class CreateReminderDto {
   })
   usersToReminder: string[];
 
-  @ApiProperty({
-    example: '7eebe2b6-5877-459c-ae65-a7e9383624e6',
-  })
   ownerId: string;
 }
