@@ -6,7 +6,7 @@ export function ForbiddenResponse() {
   return applyDecorators(
     ApiResponse({
       status: 403,
-      description: 'forbidden',
+      description: 'Forbidden error response',
       type: ForbiddenException,
     }),
   );
