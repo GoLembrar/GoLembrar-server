@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpStatus,
   Patch,
   Post,
@@ -10,17 +11,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBadRequestResponse,
-  ApiConflictResponse,
-  ApiCreatedResponse,
-  ApiNoContentResponse,
-  ApiNotFoundResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-  ApiUnauthorizedResponse,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AccessTokenGuard } from '../auth/guards/access-token/access-token.guard';
 import { RequestWithUser } from '../common/utils/types/RequestWithUser';
@@ -30,6 +21,14 @@ import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { okResponseModel } from './swagger/okResponseModel.swagger';
 import { UserService } from './user.service';
+import { UnauthorizedResponse } from '../swagger/decorators/unauthorized.decorator';
+import { NotFoundResponse } from '../swagger/decorators/not-found.decorator';
+import { CreatedResponse } from '../swagger/decorators/created.decorator';
+import { ConflictResponse } from '../swagger/decorators/conflict.decorator';
+import { BadRequestResponse } from '../swagger/decorators/bad-request.decorator';
+import { OkResponse } from '../swagger/decorators/ok.decorator';
+import { NoContentResponse } from '../swagger/decorators/no-content.decorator';
+import { UnprocessableEntityResponse } from '../swagger/decorators/unprocessable-entity.decorator';
 
 @Controller('user')
 @ApiTags('user')
@@ -40,13 +39,11 @@ export class UserController {
   ) {}
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new user.' })
-  @ApiCreatedResponse({
-    description: 'User creation success response',
-    type: okResponseModel,
-  })
-  @ApiBadRequestResponse({ description: 'Bad request' })
-  @ApiConflictResponse({ description: 'User already exists' })
+  @CreatedResponse('User created response successfully', 'user created')
+  @BadRequestResponse()
+  @ConflictResponse()
   public async create(
     @Body() createUserDto: CreateUserDto,
     @Res() response: Response,
@@ -59,25 +56,25 @@ export class UserController {
   }
 
   @Get('')
-  @ApiOperation({ summary: 'Find a user by token' })
-  @ApiOkResponse({
-    description: 'User response found successfully',
-    type: okResponseModel,
-  })
-  @ApiUnauthorizedResponse({ description: 'Unauthorized user response' })
-  @ApiNotFoundResponse({ description: 'User not found response' })
   @UseGuards(AccessTokenGuard)
+  @ApiOperation({ summary: 'Find a user by token' })
+  @ApiBearerAuth('JWT-Token')
+  @OkResponse('User response found successfully', okResponseModel)
+  @UnauthorizedResponse()
+  @NotFoundResponse()
   public async findOne(@Req() request: RequestWithUser) {
     const user = await this.userService.findOne(request.user['sub']);
     return user;
   }
 
   @Patch('')
-  @ApiOperation({ summary: 'Update a user by id.' })
-  @ApiNoContentResponse({ description: 'User response updated successfully' })
-  @ApiUnauthorizedResponse({ description: 'Unauthorized user response' })
-  @ApiNotFoundResponse({ description: 'User not found response' })
   @UseGuards(AccessTokenGuard)
+  @ApiOperation({ summary: 'Update a user by id.' })
+  @ApiBearerAuth('JWT-Token')
+  @NoContentResponse('User response updated successfully')
+  @UnauthorizedResponse()
+  @NotFoundResponse()
+  @ConflictResponse()
   public async update(
     @Req() request: RequestWithUser,
     @Body() updateUserDto: UpdateUserDto,
@@ -90,30 +87,36 @@ export class UserController {
   }
 
   @Patch('update-password')
-  @ApiOperation({ summary: 'Update a user password by id.' })
-  @ApiNoContentResponse({
-    description: 'User response password updated successfully',
-  })
-  @ApiUnauthorizedResponse({ description: 'Unauthorized user response' })
-  @ApiNotFoundResponse({ description: 'User not found response' })
   @UseGuards(AccessTokenGuard)
+  @ApiOperation({ summary: 'Update a user password by id.' })
+  @ApiBearerAuth('JWT-Token')
+  @NoContentResponse('User response password updated successfully')
+  @BadRequestResponse()
+  @UnauthorizedResponse()
+  @NotFoundResponse()
+  @UnprocessableEntityResponse()
   public async updatePassword(
     @Req() request: RequestWithUser,
     @Body() updateUserPasswordDto: UpdateUserPasswordDto,
-  ) {
-    return await this.userService.upddatePassword(
+    @Res() response: Response,
+  ): Promise<Response> {
+    await this.userService.upddatePassword(
       request.user['sub'],
       updateUserPasswordDto,
     );
+    return response.status(HttpStatus.NO_CONTENT).json({
+      message: 'user password updated',
+    });
   }
 
   @Delete()
-  @ApiOperation({ summary: 'Remove a user by id.' })
-  @ApiOkResponse({ description: 'User response removed successfully' })
-  @ApiUnauthorizedResponse({ description: 'Unauthorized user response' })
-  @ApiNotFoundResponse({ description: 'User not found response' })
   @UseGuards(AccessTokenGuard)
+  @ApiOperation({ summary: 'Remove a user by id.' })
+  @ApiBearerAuth('JWT-Token')
+  @OkResponse('User response removed successfully')
+  @UnauthorizedResponse()
+  @NotFoundResponse()
   public async remove(@Req() request: RequestWithUser) {
-    return this.userService.remove(request.user['sub']);
+    return await this.userService.remove(request.user['sub']);
   }
 }
