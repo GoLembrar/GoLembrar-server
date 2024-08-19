@@ -1,6 +1,6 @@
 import {
-  HttpException,
-  HttpStatus,
+  BadRequestException,
+  ConflictException,
   Injectable,
   Logger,
   NotFoundException,
@@ -12,6 +12,7 @@ import { PrismaService } from './../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { isPasswordValid } from '../common/utils/isPasswordValid';
 
 @Injectable()
 export class UserService {
@@ -25,16 +26,14 @@ export class UserService {
     });
 
     if (existingUser) {
-      throw new HttpException('Email ja cadastrado', HttpStatus.CONFLICT);
+      throw new ConflictException('Email ja cadastrado');
     }
 
-    const regex = /^(?=.*[A-Z]).{6,24}$/;
-    const isPasswordValid = regex.test(createUserDto.password);
+    const passwordValidation = isPasswordValid(createUserDto.password);
 
-    if (!isPasswordValid) {
-      throw new HttpException(
+    if (!passwordValidation) {
+      throw new BadRequestException(
         'A senha deve ter entre 6 e 24 caracteres e pelo menos uma letra maiúscula.',
-        HttpStatus.BAD_REQUEST,
       );
     }
 
@@ -73,6 +72,24 @@ export class UserService {
       throw new NotFoundException('Usuário não encontrado');
     }
 
+    const userEmailExist = await this.prismaService.user.findUnique({
+      where: {
+        email: updateUserDto.email,
+      },
+    });
+
+    if (userEmailExist && userEmailExist.id !== user.id) {
+      throw new ConflictException('Email ja cadastrado');
+    }
+
+    const passwordValidation = isPasswordValid(updateUserDto.password);
+
+    if (!passwordValidation) {
+      throw new BadRequestException(
+        'A senha deve ter entre 6 e 24 caracteres e pelo menos uma letra maiúscula.',
+      );
+    }
+
     if (updateUserDto.password) {
       const hashedPassword = await HashUtil.hash(updateUserDto.password);
       updateUserDto.password = hashedPassword;
@@ -95,6 +112,18 @@ export class UserService {
     const user = await this.prismaService.user.findUnique({
       where: { id },
     });
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado');
+    }
+
+    const passwordValidation = isPasswordValid(updateUserPasswordDto.password);
+
+    if (!passwordValidation) {
+      throw new BadRequestException(
+        'A senha deve ter entre 6 e 24 caracteres e pelo menos uma letra maiúscula.',
+      );
+    }
 
     const currentPasswordValidation = await HashUtil.compare(
       updateUserPasswordDto.password,
@@ -127,14 +156,18 @@ export class UserService {
   }
 
   async remove(id: string): Promise<void> {
-    try {
-      await this.prismaService.user.delete({
-        where: {
-          id,
-        },
-      });
-    } catch (e) {
-      this.logger.error(e);
+    const user = await this.prismaService.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado');
     }
+
+    await this.prismaService.user.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
