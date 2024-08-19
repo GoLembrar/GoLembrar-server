@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateReminderDto } from './dto/create-reminder.dto';
 import { UpdateReminderDto } from './dto/update-reminder.dto';
@@ -8,7 +12,7 @@ export class ReminderService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async getReminderById(id: string) {
-    return await this.prismaService.reminder.findUnique({
+    const reminder = await this.prismaService.reminder.findUnique({
       where: { id: id },
       include: {
         usersToReminder: {
@@ -24,6 +28,12 @@ export class ReminderService {
         },
       },
     });
+
+    if (!reminder) {
+      throw new NotFoundException('Não foi possível encontrar o lembrete');
+    }
+
+    return reminder;
   }
 
   async getUserReminders(userId: string) {
