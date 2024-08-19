@@ -1,6 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Channel } from '@prisma/client';
-import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
+
+export enum Channel {
+  EMAIL = 'EMAIL',
+  WHATSAPP = 'WHATSAPP',
+  TELEGRAM = 'TELEGRAM',
+  DISCORD = 'DISCORD',
+}
 
 export class CreateContactDto {
   @IsNotEmpty()
@@ -16,7 +28,7 @@ export class CreateContactDto {
   identify: string;
 
   @IsNotEmpty()
-  @IsString()
+  @IsEnum(Channel)
   @ApiProperty({ example: 'EMAIL' })
   channel: Channel;
 
