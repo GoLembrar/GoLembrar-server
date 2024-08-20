@@ -13,15 +13,19 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
+import { response, Response } from 'express';
 import { AccessTokenGuard } from '../auth/guards/access-token/access-token.guard';
 import { AddRequestUserId } from '../common/decorators/add-request-user-id.decorator';
 import { RequestWithUser } from '../common/utils/types/RequestWithUser';
-import { NotFoundResponse } from '../swagger/decorators/notFound.decorator';
 import { UnauthorizedResponse } from '../swagger/decorators/unauthorized.decorator';
 import { ContactService } from './contact.service';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
+import { NotFoundResponse } from '../swagger/decorators/not-found.decorator';
+import { CreatedResponse } from '../swagger/decorators/created.decorator';
+import { OkResponse } from '../swagger/decorators/ok.decorator';
+import { GetContactResponse } from './swagger/getContactResponse.swagger';
+import { NoContentResponse } from '../swagger/decorators/no-content.decorator';
 
 @UseGuards(AccessTokenGuard)
 @Controller('contact')
@@ -32,36 +36,42 @@ export class ContactController {
 
   @Post()
   @HttpCode(201)
-  @ApiOperation({ summary: 'Create contact' })
-  @UnauthorizedResponse()
   @UseGuards(AccessTokenGuard)
-  create(
+  @ApiOperation({ summary: 'Create contact' })
+  @CreatedResponse('Contact created response successfully', 'contact created')
+  @UnauthorizedResponse()
+  async create(
     @Body() @AddRequestUserId() createContactDto: CreateContactDto,
     @Req() request: RequestWithUser,
-  ) {
+  ): Promise<Response> {
     createContactDto.userId = request.user['sub'];
-    return this.contactService.create(createContactDto);
+    await this.contactService.create(createContactDto);
+
+    return response.status(HttpStatus.CREATED);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all contacts' })
+  @OkResponse('Contacts found response successfully', [GetContactResponse])
   @UnauthorizedResponse()
-  findAll(@Req() request: RequestWithUser) {
+  async findAll(@Req() request: RequestWithUser) {
     const userId = request.user['sub'];
-    return this.contactService.findAll(userId);
+    return await this.contactService.findAll(userId);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get one contact' })
+  @OkResponse('Contact found response successfully', GetContactResponse)
   @UnauthorizedResponse()
   @NotFoundResponse()
-  findOne(@Param('id') id: string, @Req() request: RequestWithUser) {
+  async findOne(@Param('id') id: string, @Req() request: RequestWithUser) {
     const userId = request.user['sub'];
-    return this.contactService.findOne(id, userId);
+    return await this.contactService.findOne(id, userId);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update contact' })
+  @NoContentResponse('Contact updated response successfully')
   @UnauthorizedResponse()
   @NotFoundResponse()
   async update(
@@ -69,19 +79,22 @@ export class ContactController {
     @Body() @AddRequestUserId() updateContactDto: UpdateContactDto,
     @Res() response: Response,
   ) {
-    const user = await this.contactService.update(id, updateContactDto);
-    response.status(HttpStatus.OK).json({
+    await this.contactService.update(id, updateContactDto);
+    return response.status(HttpStatus.NO_CONTENT).json({
       message: 'user updated',
-      user,
     });
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete contact' })
+  @OkResponse('Contact response removed successfully', Boolean)
   @UnauthorizedResponse()
   @NotFoundResponse()
-  remove(@Param('id') id: string, @Req() request: RequestWithUser) {
+  async remove(
+    @Param('id') id: string,
+    @Req() request: RequestWithUser,
+  ): Promise<boolean> {
     const userId = request.user['sub'];
-    return this.contactService.remove(id, userId);
+    return await this.contactService.remove(id, userId);
   }
 }

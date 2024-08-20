@@ -1,13 +1,13 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
-import { DefaultException } from '../../common/utils/exception/default.exception';
+import { UnauthorizedException } from '../../common/utils/exception/unauthorized.exception';
 
 export function UnauthorizedResponse() {
   return applyDecorators(
     ApiResponse({
       status: 401,
-      description: 'unauthorized',
-      type: DefaultException,
+      description: 'Unauthorized error response',
+      type: UnauthorizedException,
     }),
   );
 }

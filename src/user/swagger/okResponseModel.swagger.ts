@@ -8,6 +8,9 @@ export class okResponseModel {
   email: string;
 
   @ApiProperty()
+  name: string;
+
+  @ApiProperty()
   createdAt: string;
 
   @ApiProperty()

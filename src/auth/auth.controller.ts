@@ -25,20 +25,20 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Login' })
-  @OkResponse(OkLoginModel)
-  @UnauthorizedResponse()
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Login' })
+  @OkResponse('Login response successfully', OkLoginModel)
+  @UnauthorizedResponse()
   login(@Body() credentials: CredentialsDto) {
     return this.authService.login(credentials);
   }
 
   @Get('refresh')
+  @HttpCode(HttpStatus.OK)
   @UseGuards(RefreshTokenGuard)
-  @OkResponse(OkLoginModel)
   @ApiBearerAuth('JWT-Refresh-Token')
   @ApiOperation({ summary: 'Refresh the tokens' })
-  @HttpCode(HttpStatus.OK)
+  @OkResponse('Refresh token response successfully', OkLoginModel)
   async refreshToken(
     @Req() request: RequestWithUser,
     @Res() response: Response,
