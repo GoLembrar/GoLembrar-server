@@ -39,6 +39,11 @@ export class ContactService {
         userId: userId,
       },
     });
+
+    if (!contact) {
+      throw new NotFoundException('Não foi possível encontrar o contato');
+    }
+
     return contact;
   }
 
@@ -54,8 +59,7 @@ export class ContactService {
     });
 
     if (!contact) {
-      //retornar um Expception
-      return new NotFoundException('Contato não encontrado');
+      throw new NotFoundException('Não foi possível encontrar o contato');
     }
 
     const updatedContact = await this.prismaService.contact.update({
