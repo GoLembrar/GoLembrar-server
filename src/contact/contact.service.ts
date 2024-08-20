@@ -78,7 +78,7 @@ export class ContactService {
     return updatedContact;
   }
 
-  async remove(id: string, userId: string): Promise<boolean> {
+  public async remove(id: string, userId: string): Promise<boolean> {
     const contact = await this.prismaService.contact.findFirst({
       where: {
         id,
@@ -91,7 +91,10 @@ export class ContactService {
     }
 
     await this.prismaService.contact.delete({
-      where: { ...contact },
+      where: { id: contact.id },
+      include: {
+        UsersToReminder: true,
+      },
     });
 
     return true;
