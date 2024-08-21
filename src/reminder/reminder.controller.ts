@@ -57,14 +57,13 @@ export class ReminderController {
   @ApiOperation({ summary: 'Create a new reminder.' })
   @CreatedResponse('Reminder created response successfully', 'reminder created')
   @UnauthorizedResponse()
-  async createReminder(
+  async create(
     @Req() request: RequestWithUser,
     @Body() createReminderDto: CreateReminderDto,
     @Res() response: Response,
   ): Promise<Response> {
     createReminderDto.ownerId = request.user['sub'];
-    const reminder =
-      await this.reminderService.createReminder(createReminderDto);
+    const reminder = await this.reminderService.create(createReminderDto);
     return response.status(HttpStatus.CREATED).json({
       message: 'reminder created',
       reminder,
@@ -76,12 +75,12 @@ export class ReminderController {
   @NoContentResponse('Reminder updated response successfully')
   @UnauthorizedResponse()
   @ForbiddenResponse()
-  async updateReminder(
+  async update(
     @Param('id') id: string,
     @Body() updateReminderDto: UpdateReminderDto,
     @Res() response: Response,
   ): Promise<Response> {
-    const reminderUpdated = await this.reminderService.updateReminder(
+    const reminderUpdated = await this.reminderService.update(
       id,
       updateReminderDto,
     );
@@ -113,7 +112,7 @@ export class ReminderController {
   @OkResponse('Reminder removed response successfully')
   @UnauthorizedResponse()
   @ForbiddenResponse()
-  async removeReminder(
+  async remove(
     @Param('id') id: string,
     @Req() request: RequestWithUser,
     @Res() response: Response,

@@ -58,7 +58,7 @@ export class ReminderService {
     });
   }
 
-  public async createReminder(reminderDto: CreateReminderDto) {
+  public async create(reminderDto: CreateReminderDto) {
     const userToReminderConnect = reminderDto.usersToReminder.map(
       (contactId) => ({
         contactId,
@@ -85,7 +85,7 @@ export class ReminderService {
    * @param {UpdateReminderDto} reminderDto - The DTO containing the update data.
    * @returns {Promise<Reminder>} - A promise that resolves when the update is complete.
    */
-  public async updateReminder(id: string, reminderDto: UpdateReminderDto) {
+  public async update(id: string, reminderDto: UpdateReminderDto) {
     if (Object.keys(reminderDto).length === 0) {
       throw new BadRequestException('Nenhum campo foi atualizado');
     }
