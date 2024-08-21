@@ -1,6 +1,6 @@
 #Rota para criaçãoo de contato com um usuario logado
 @host = http://localhost:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzE1ODkxMzcxLCJleHAiOjE3MTU4OTQ5NzF9.CwTOK0yQWZwB8sNiWPDgDXUhu76PbVKKBWRC98TSnjY
+@token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MmU5Y2M0ZS0zOGQ0LTRjNzUtOThiMi00NGUzZTJlM2Y0MmQiLCJpYXQiOjE3MjQyNTkxNjQsImV4cCI6MTcyNDI5MTU2NH0._sWzZdFO2IHyqMF8-U7IuJDCx0wrne8CFhNeAOkg_I8"
 ###
 
 POST {{host}}/contact HTTP/1.1
@@ -9,8 +9,8 @@ Authorization: Bearer {{token}}
 
 {
     "name": "teste",
-    "identify": "123456787",
-    "platform": "whatsapp"
+    "identify": "user-contact@gmail.com",
+    "platform": "email"
 }
 
 ###

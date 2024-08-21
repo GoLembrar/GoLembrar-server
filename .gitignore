@@ -41,3 +41,7 @@ lerna-debug.log*
 
 .docker
 .vercel
+
+#ignorar todos os arquivos que estão na pasta http que não contem .example no meio do nome
+http/*.http
+!http/*.example.http
