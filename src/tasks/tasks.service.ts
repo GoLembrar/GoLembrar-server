@@ -12,7 +12,7 @@ export class TasksService {
   async getTodayEMails() {
     const todayMails = await this.emailScheduledService.getEmailsDueToday();
     this.logger.debug(
-      'Called when the current hour is 00:00. All the emails due today are: ',
+      'getTodayEMails: Called when the current hour is 00:00. All the emails due today are: ',
       JSON.stringify(todayMails),
     );
   }
@@ -20,11 +20,12 @@ export class TasksService {
   @Cron('* * * * *')
   async verifyIfTheresIsEmailToSend() {
     await this.emailScheduledService.sendTodayEmails();
-    this.logger.debug('Called every minute');
+    this.logger.debug('verifyIfTheresIsEmailToSend: Called every minute');
   }
+
   @Cron('0 8,13,18 * * *')
   async updateCache() {
     await this.emailScheduledService.updateCache();
-    this.logger.debug('Called every minute');
+    this.logger.debug('updateCache: Called every minute');
   }
 }

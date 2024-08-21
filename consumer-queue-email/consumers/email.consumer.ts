@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as amqp from 'amqplib';
 import { QueueList } from '../../src/queue/utils/queue-list';
 import { EmailService } from '../email/email.service';
+
 @Injectable()
 export class EmailConsumer {
   private channel: amqp.Channel;
@@ -24,18 +25,9 @@ export class EmailConsumer {
         // Call the email service to send email
         await this.emailService.sendEmail(
           email,
-          'Mensagem de boas vindas',
-          'Bem vindo ao GoLembrar',
+          data.data.subject,
+          data.data.message,
         );
-        /* new Promise((resolve, reject) => {
-          setTimeout(
-            () => {
-              resolve(console.log(`EMAIL ENVIADO COM SUCESSO PARA: ${email}`));
-            },
-            Math.floor(Math.random() * 5000 + 1000),
-          );
-        }); */
-
         // Acknowledge the message
         this.channel.ack(msg);
       }
