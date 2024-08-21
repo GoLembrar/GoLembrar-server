@@ -1,8 +1,11 @@
 #Rota para criaçãoo de contato com um usuario logado
 @host = http://localhost:3000
-@token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MmU5Y2M0ZS0zOGQ0LTRjNzUtOThiMi00NGUzZTJlM2Y0MmQiLCJpYXQiOjE3MjQyNTkxNjQsImV4cCI6MTcyNDI5MTU2NH0._sWzZdFO2IHyqMF8-U7IuJDCx0wrne8CFhNeAOkg_I8"
-###
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxNjVmN2FlYS05ODQ0LTRmNmUtOGZkYS1mNGI3MWRjMzBkMzUiLCJpYXQiOjE3MjQyNjI5NDQsImV4cCI6MTcyNDI5NTM0NH0.W_6rbL9-fvQE7y9IIVzpMTdy-8pfPGsJsxQoi7gjosY
 
+@contactId = 1
+
+###
+# @name createContact
 POST {{host}}/contact HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -10,12 +13,14 @@ Authorization: Bearer {{token}}
 {
     "name": "teste",
     "identify": "user-contact@gmail.com",
-    "platform": "email"
+    "channel": "EMAIL" 
 }
+////WHATSAPP|TELEGRAM|DISCORD|EMAIL
 
 ###
 
 ###Rota para pegar todos os contacts do usuario logado
+# @name getContacts
 GET {{host}}/contact HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -23,17 +28,19 @@ Authorization: Bearer {{token}}
 ###
 
 ### pegar um contact especifico de um usuario logado
-GET {{host}}/contact/9 HTTP/1.1
+# @name getContact
+GET {{host}}/contact/1 HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ###
-
-DELETE {{host}}/contact/9 HTTP/1.1
+# @name deleteContact
+DELETE {{host}}/contact/1 HTTP/1.1
 Authorization: Bearer {{token}}
 
 ###
 
+# @name updateContact
 PATCH {{host}}/contact/10 HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{token}}
