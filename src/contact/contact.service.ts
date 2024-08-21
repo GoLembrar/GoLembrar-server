@@ -6,7 +6,7 @@ import {
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { Channel } from '@prisma/client';
+import { Channel, Contact } from '@prisma/client';
 
 @Injectable()
 export class ContactService {
@@ -51,7 +51,7 @@ export class ContactService {
     return contacts;
   }
 
-  async findOne(id: string, userId: string) {
+  public async findOne(id: string, userId: string): Promise<Contact> {
     const contact = await this.prismaService.contact.findFirst({
       where: {
         id: id,

@@ -1,12 +1,12 @@
-@host = http://localhost:3000
 #o o token não atualiza os valores por aqui, somente o valor interno armazenado
+@host = http://localhost:3000
 @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzEzODEzNjMyLCJleHAiOjE3MTM4MTcyMzJ9.1PiVvLtTjm5cTNKZ1-QEkKXqM4Bjx2Oc9tecADnEhaE
 @tokenRefresh = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzEzODEzNjMyLCJleHAiOjE3MTM4MTcyMzJ9.1PiVvLtTjm5cTNKZ1-QEkKXqM4Bjx2Oc9tecADnEhaE
 
 ### create one user account
 
 # @name createUser
-POST http://localhost:3000/user HTTP/1.1
+POST {{host}}/user HTTP/1.1
 Content-Type: application/json
 
 {
@@ -29,7 +29,7 @@ Authorization: Bearer {{token}}
 ###
 
 # @name deleteUser
-DELETE http://localhost:3000/user
+DELETE {{host}}/user
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -37,13 +37,13 @@ Content-Type: application/json
 
 ### get one user account
 # @name getUser
-GET http://localhost:3000/user
+GET {{host}}/user
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ### user login
 # @name login
-POST http://localhost:3000/auth HTTP/1.1
+POST {{host}}/auth HTTP/1.1
 Content-Type: application/json
 
 {
@@ -58,7 +58,7 @@ Content-Type: application/json
 ###
 
 # @name refreshToken
-GET http://localhost:3000/auth/refresh HTTP/1.1
+GET {{host}}/auth/refresh HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer {{tokenRefresh}}
 

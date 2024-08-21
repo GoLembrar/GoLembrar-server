@@ -19,6 +19,10 @@ Authorization: Bearer {{token}}
 
 ###
 
+@contactId = {{createContact.response.body.contact.id}}
+
+###
+
 ###Rota para pegar todos os contacts do usuario logado
 # @name getContacts
 GET {{host}}/contact HTTP/1.1

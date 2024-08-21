@@ -11,7 +11,7 @@ import { UpdateReminderDto } from './dto/update-reminder.dto';
 export class ReminderService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getReminderById(id: string) {
+  public async getReminderById(id: string) {
     const reminder = await this.prismaService.reminder.findUnique({
       where: { id: id },
       include: {
@@ -36,7 +36,7 @@ export class ReminderService {
     return reminder;
   }
 
-  async getUserReminders(userId: string) {
+  public async getUserReminders(userId: string) {
     return await this.prismaService.reminder.findMany({
       where: {
         ownerId: userId,
@@ -57,14 +57,14 @@ export class ReminderService {
     });
   }
 
-  async createReminder(reminderDto: CreateReminderDto) {
+  public async createReminder(reminderDto: CreateReminderDto) {
     const userToReminderConnect = reminderDto.usersToReminder.map(
       (contactId) => ({
         contactId,
       }),
     );
 
-    await this.prismaService.reminder.create({
+    return await this.prismaService.reminder.create({
       data: {
         title: reminderDto.title,
         description: reminderDto.description,
@@ -84,7 +84,7 @@ export class ReminderService {
    * @param {UpdateReminderDto} reminderDto - The DTO containing the update data.
    * @returns {Promise<void>} - A promise that resolves when the update is complete.
    */
-  async updateReminder(
+  public async updateReminder(
     id: string,
     reminderDto: UpdateReminderDto,
   ): Promise<void> {
@@ -119,5 +119,56 @@ export class ReminderService {
     throw new ForbiddenException(
       'Não é permitido agendar um lembrete com data menor que 30 minutos no futuro',
     );
+  }
+
+  public async remove(reminderId: string, userId: string) {
+    const reminder = await this.prismaService.reminder.findUnique({
+      where: { id: reminderId, ownerId: userId },
+      select: { id: true, ownerId: true },
+    });
+
+    if (!reminder) {
+      throw new NotFoundException('Não foi possível encontrar o lembrete');
+    }
+
+    if (reminder.ownerId !== userId) {
+      throw new ForbiddenException(
+        'Você não tem permissão para remover este lembrete',
+      );
+    }
+
+    await this.prismaService.reminder.delete({
+      where: { id: reminderId },
+      include: {
+        usersToReminder: true,
+      },
+    });
+
+    return true;
+  }
+
+  public async removeAll(userId: string) {
+    const reminders = await this.prismaService.reminder.findMany({
+      where: { ownerId: userId },
+      select: { id: true },
+    });
+
+    if (reminders.length === 0) {
+      throw new NotFoundException('Nenhum lembrete encontrado');
+    }
+
+    // dletando a tabela usersToReminder associada com o reminder
+    await this.prismaService.usersToReminder.deleteMany({
+      where: {
+        reminderId: { in: reminders.map((reminder) => reminder.id) },
+      },
+    });
+
+    // deletando o reminder
+    await this.prismaService.reminder.deleteMany({
+      where: { ownerId: userId },
+    });
+
+    return true;
   }
 }

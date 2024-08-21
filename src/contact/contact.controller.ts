@@ -13,7 +13,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { response, Response } from 'express';
+import { Response } from 'express';
 import { AccessTokenGuard } from '../auth/guards/access-token/access-token.guard';
 import { AddRequestUserId } from '../common/decorators/add-request-user-id.decorator';
 import { RequestWithUser } from '../common/utils/types/RequestWithUser';
@@ -37,17 +37,24 @@ export class ContactController {
   @Post()
   @HttpCode(201)
   @UseGuards(AccessTokenGuard)
-  @ApiOperation({ summary: 'Create contact' })
+  @ApiOperation({
+    summary: 'Create contact',
+    description: 'Creates a new contact for the authenticated user',
+  })
   @CreatedResponse('Contact created response successfully', 'contact created')
   @UnauthorizedResponse()
   public async create(
     @Body() @AddRequestUserId() createContactDto: CreateContactDto,
     @Req() request: RequestWithUser,
+    @Res() response: Response,
   ): Promise<Response> {
     createContactDto.userId = request.user['sub'];
-    await this.contactService.create(createContactDto);
+    const contact = await this.contactService.create(createContactDto);
 
-    return response.status(HttpStatus.CREATED);
+    return response.status(HttpStatus.CREATED).json({
+      message: 'contact created',
+      contact,
+    });
   }
 
   @Get()
@@ -64,9 +71,17 @@ export class ContactController {
   @OkResponse('Contact found response successfully', GetContactResponse)
   @UnauthorizedResponse()
   @NotFoundResponse()
-  async findOne(@Param('id') id: string, @Req() request: RequestWithUser) {
+  public async findOne(
+    @Param('id') contactId: string,
+    @Req() request: RequestWithUser,
+    @Res() response: Response,
+  ) {
     const userId = request.user['sub'];
-    return await this.contactService.findOne(id, userId);
+    const contact = await this.contactService.findOne(contactId, userId);
+    return response.status(HttpStatus.OK).json({
+      message: 'contact found',
+      contact,
+    });
   }
 
   @Patch(':id')

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Param,
@@ -11,7 +12,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { response, Response } from 'express';
+import { Response } from 'express';
 import { AccessTokenGuard } from '../auth/guards/access-token/access-token.guard';
 import { RequestWithUser } from '../common/utils/types/RequestWithUser';
 import { CreatedResponse } from '../swagger/decorators/created.decorator';
@@ -59,12 +60,14 @@ export class ReminderController {
   async createReminder(
     @Req() request: RequestWithUser,
     @Body() createReminderDto: CreateReminderDto,
+    @Res() response: Response,
   ): Promise<Response> {
-    console.log(request.user['sub']);
     createReminderDto.ownerId = request.user['sub'];
-    await this.reminderService.createReminder(createReminderDto);
+    const reminder =
+      await this.reminderService.createReminder(createReminderDto);
     return response.status(HttpStatus.CREATED).json({
       message: 'reminder created',
+      reminder,
     });
   }
 
@@ -80,5 +83,40 @@ export class ReminderController {
   ): Promise<Response> {
     await this.reminderService.updateReminder(id, updateReminderDto);
     return response.status(HttpStatus.NO_CONTENT);
+  }
+
+  @Delete('/all/')
+  @ApiOperation({ summary: 'Delete all reminders from user' })
+  @OkResponse('Reminders removed response successfully')
+  @UnauthorizedResponse()
+  @ForbiddenResponse()
+  async removeAllReminders(
+    @Req() request: RequestWithUser,
+    @Res() response: Response,
+  ) {
+    const userId: string = request.user['sub'];
+    const remindersDeleted = await this.reminderService.removeAll(userId);
+    return response.status(HttpStatus.OK).json({
+      message: 'reminders removed',
+      remindersDeleted,
+    });
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete a reminder.' })
+  @OkResponse('Reminder removed response successfully')
+  @UnauthorizedResponse()
+  @ForbiddenResponse()
+  async removeReminder(
+    @Param('id') id: string,
+    @Req() request: RequestWithUser,
+    @Res() response: Response,
+  ): Promise<Response> {
+    const userId: string = request.user['sub'];
+    const reminderRemoved = await this.reminderService.remove(id, userId);
+    return response.status(HttpStatus.OK).json({
+      message: 'reminder removed',
+      reminderRemoved,
+    });
   }
 }
