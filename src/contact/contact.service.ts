@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
 import { PrismaService } from '../prisma/prisma.service';
@@ -7,13 +11,28 @@ import { Channel } from '@prisma/client';
 @Injectable()
 export class ContactService {
   constructor(private readonly prismaService: PrismaService) {}
-  async create(createContactDto: CreateContactDto) {
-    const { userId, ...createData } = createContactDto;
+  public async create(createContactDto: CreateContactDto) {
+    const { userId, identify, ...createData } = createContactDto;
+
+    const existingContact = await this.prismaService.contact.findFirst({
+      where: {
+        userId: userId,
+        identify: identify,
+        name: createData.name,
+      },
+    });
+
+    if (existingContact) {
+      throw new ConflictException(
+        'Contact already exists for this user and identify',
+      );
+    }
 
     const channel = Channel[createData.channel.toUpperCase()];
     const contact = await this.prismaService.contact.create({
       data: {
         ...createData,
+        identify,
         user: {
           connect: { id: userId },
         },

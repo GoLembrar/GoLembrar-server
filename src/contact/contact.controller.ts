@@ -40,7 +40,7 @@ export class ContactController {
   @ApiOperation({ summary: 'Create contact' })
   @CreatedResponse('Contact created response successfully', 'contact created')
   @UnauthorizedResponse()
-  async create(
+  public async create(
     @Body() @AddRequestUserId() createContactDto: CreateContactDto,
     @Req() request: RequestWithUser,
   ): Promise<Response> {
