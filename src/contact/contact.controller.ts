@@ -100,6 +100,15 @@ export class ContactController {
     });
   }
 
+  @Delete('/all/')
+  @ApiOperation({ summary: 'Delete all contacts' })
+  @OkResponse('Contacts response removed successfully', Boolean)
+  @UnauthorizedResponse()
+  async removeAll(@Req() request: RequestWithUser): Promise<boolean> {
+    const userId = request.user['sub'];
+    return await this.contactService.removeAll(userId);
+  }
+
   @Delete(':id')
   @ApiOperation({ summary: 'Delete contact' })
   @OkResponse('Contact response removed successfully', Boolean)

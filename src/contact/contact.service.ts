@@ -118,4 +118,21 @@ export class ContactService {
 
     return true;
   }
+
+  public async removeAll(userId: string) {
+    const contacts = await this.prismaService.contact.findMany({
+      where: { userId: userId },
+      select: { id: true },
+    });
+
+    if (contacts.length === 0) {
+      throw new NotFoundException('Nenhum contato encontrado');
+    }
+
+    await this.prismaService.contact.deleteMany({
+      where: { userId: userId },
+    });
+
+    return true;
+  }
 }
