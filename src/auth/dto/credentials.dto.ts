@@ -5,11 +5,11 @@ export class CredentialsDto {
   @IsEmail()
   @IsNotEmpty()
   @MaxLength(100)
-  @ApiProperty({ example: 'user@email.com' })
+  @ApiProperty({ example: 'example@example.com' })
   email: string;
 
   @IsNotEmpty()
   @MaxLength(25)
-  @ApiProperty({ example: '123456' })
+  @ApiProperty({ example: 'secretPassword' })
   password: string;
 }
