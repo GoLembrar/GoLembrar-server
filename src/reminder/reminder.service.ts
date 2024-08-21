@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -82,13 +83,12 @@ export class ReminderService {
    *
    * @param {string} id - The ID of the reminder to be updated.
    * @param {UpdateReminderDto} reminderDto - The DTO containing the update data.
-   * @returns {Promise<void>} - A promise that resolves when the update is complete.
+   * @returns {Promise<Reminder>} - A promise that resolves when the update is complete.
    */
-  public async updateReminder(
-    id: string,
-    reminderDto: UpdateReminderDto,
-  ): Promise<void> {
-    if (Object.keys(reminderDto).length === 0) return;
+  public async updateReminder(id: string, reminderDto: UpdateReminderDto) {
+    if (Object.keys(reminderDto).length === 0) {
+      throw new BadRequestException('Nenhum campo foi atualizado');
+    }
 
     const currentTime = Date.now();
     const minimumScheduleTime = currentTime + 30 * 60 * 1000; // 30 minutes in milliseconds
@@ -98,7 +98,7 @@ export class ReminderService {
       new Date(reminderDto.scheduled).getTime() > minimumScheduleTime;
 
     if (!reminderDto.scheduled || validScheduledDate) {
-      await this.prismaService.reminder.update({
+      const reminderUpdated = await this.prismaService.reminder.update({
         where: { id },
         data: {
           title: reminderDto.title,
@@ -113,7 +113,7 @@ export class ReminderService {
           },
         },
       });
-      return;
+      return reminderUpdated;
     }
 
     throw new ForbiddenException(

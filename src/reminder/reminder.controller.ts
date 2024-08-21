@@ -81,8 +81,14 @@ export class ReminderController {
     @Body() updateReminderDto: UpdateReminderDto,
     @Res() response: Response,
   ): Promise<Response> {
-    await this.reminderService.updateReminder(id, updateReminderDto);
-    return response.status(HttpStatus.NO_CONTENT);
+    const reminderUpdated = await this.reminderService.updateReminder(
+      id,
+      updateReminderDto,
+    );
+    return response.status(HttpStatus.OK).json({
+      message: 'reminder updated',
+      reminderUpdated,
+    });
   }
 
   @Delete('/all/')
