@@ -67,7 +67,7 @@ async function bootstrap() {
     console.log(
       `
       ==================================================
-      📅 GoLembrar API running at: http://localhost:3000
+      📅 GoLembrar API running at: http://localhost:${port}
       ==================================================
       `,
     );
