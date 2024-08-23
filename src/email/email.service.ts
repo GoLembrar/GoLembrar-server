@@ -14,11 +14,11 @@ export class EmailScheduledService {
 
   private logger = new Logger(EmailScheduledService.name);
 
-  async getEmailsDueToday() {
+  async getEmailsDueToday(): Promise<{ from: string; emails: any }> {
     const cachedEmails = await this.cacheManager.get<any[]>('today_emails');
 
     if (cachedEmails) {
-      return cachedEmails;
+      return { from: 'cache', emails: cachedEmails };
     }
 
     const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
@@ -32,7 +32,7 @@ export class EmailScheduledService {
       oneDayInMilliseconds,
     );
 
-    return todayEmails;
+    return { from: 'database', emails: todayEmails };
   }
 
   private async getEmailsDueTodayFromDatabase(limitDateInMilliseconds: number) {
@@ -52,14 +52,22 @@ export class EmailScheduledService {
     });
   }
 
+  //! EXECUTADA A CADA 1 MINUTO
   async sendTodayEmails() {
-    if (await this.isThereEmailToSend()) {
+    const hasEmailsToSend = await this.isThereEmailToSend();
+    this.logger.debug(
+      `sendTodayEmails: has emails to send: ${hasEmailsToSend}`,
+    );
+    //metodo atual so esta pegando oos emails do banco de dados, precisa pegar tambem os que estao na fila chamado 'Email'
+    if (true) {
       const todayEmails = await this.getEmailsDueToday();
+      console.log('today emails', todayEmails);
       const today = new Date();
 
-      for (const email of todayEmails) {
+      for (const email of todayEmails.emails) {
         try {
           if (email.status === Status.PENDING && email.scheduled <= today) {
+            console.info(`Email scheduled to be sent: ${email.to}`);
             await this.emailService.sendEmail(
               email.to,
               email.subject,
@@ -76,7 +84,7 @@ export class EmailScheduledService {
     }
   }
 
-  private async isThereEmailToSend() {
+  private async isThereEmailToSend(): Promise<boolean> {
     const cachedEmails = await this.cacheManager.get<any[]>('today_emails');
 
     if (cachedEmails) {
@@ -88,6 +96,7 @@ export class EmailScheduledService {
         )
       );
     }
+    return false;
   }
 
   async updateEmailStatus(emailId: number, status: Status) {

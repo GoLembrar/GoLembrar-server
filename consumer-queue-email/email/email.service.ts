@@ -1,9 +1,13 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class EmailService {
-  constructor(private readonly mailerService: MailerService) {}
+  constructor(
+    private readonly mailerService: MailerService,
+    private readonly configService: ConfigService,
+  ) {}
 
   async sendEmail(
     email: string,
@@ -12,10 +16,9 @@ export class EmailService {
   ): Promise<void> {
     await this.mailerService.sendMail({
       to: email,
-      from: process.env.EMAIL_USER,
+      from: this.configService.get('EMAIL_AUTH_USER'),
       subject: subject,
       html: `<b>${context}</b>`,
     });
-    console.log('mensagem enviada com sucesso');
   }
 }
