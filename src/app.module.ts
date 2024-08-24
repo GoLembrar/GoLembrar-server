@@ -15,6 +15,7 @@ import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 import { ReminderModule } from './reminder/reminder.module';
 import { TasksModule } from './tasks/tasks.module';
 import { UserModule } from './user/user.module';
+import { MailtrapModule } from './email/mailtrap/mailtrap.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { UserModule } from './user/user.module';
     RabbitmqModule,
     TasksModule,
     EmailScheduledModule,
+    MailtrapModule,
     ScheduleModule.forRoot(),
     CacheModule.register({
       isGlobal: true,

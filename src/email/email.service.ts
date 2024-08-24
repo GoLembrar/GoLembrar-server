@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Status } from '@prisma/client';
+import { Email, Status } from '@prisma/client';
 import { EmailService } from '../../consumer-queue-email/email/email.service';
 import { CacheService } from '../cache/cache.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -14,7 +14,7 @@ export class EmailScheduledService {
 
   private logger = new Logger(EmailScheduledService.name);
 
-  async getEmailsDueToday(): Promise<{ from: string; emails: any }> {
+  async getEmailsDueToday(): Promise<{ from: string; emails: Email[] }> {
     const cachedEmails = await this.cacheManager.get<any[]>('today_emails');
 
     if (cachedEmails) {
@@ -42,10 +42,12 @@ export class EmailScheduledService {
     return this.prismaService.email.findMany({
       where: {
         scheduled: {
-          gte: today,
+          gt: today, //desnecessario talvez
           lt: new Date(today.getTime() + limitDateInMilliseconds),
         },
+        status: Status.PENDING,
       },
+
       orderBy: {
         scheduled: 'asc',
       },
@@ -58,13 +60,13 @@ export class EmailScheduledService {
     this.logger.debug(
       `sendTodayEmails: has emails to send: ${hasEmailsToSend}`,
     );
-    //metodo atual so esta pegando oos emails do banco de dados, precisa pegar tambem os que estao na fila chamado 'Email'
+    //* metodo atual so esta pegando oos emails do banco de dados, precisa pegar tambem os que estao na fila chamado 'Email'
     if (true) {
-      const todayEmails = await this.getEmailsDueToday();
-      console.log('today emails', todayEmails);
+      const { from, emails } = await this.getEmailsDueToday();
+      console.log('today emails: ', emails.length, '. from ', from);
       const today = new Date();
 
-      for (const email of todayEmails.emails) {
+      for (const email of emails) {
         try {
           if (email.status === Status.PENDING && email.scheduled <= today) {
             console.info(`Email scheduled to be sent: ${email.to}`);
@@ -76,8 +78,8 @@ export class EmailScheduledService {
             await this.updateEmailStatus(email.id, Status.SENT);
             this.logger.log(`Email sent to ${email.to}`);
           }
-        } catch (e) {
-          this.logger.error('Error sending email', e);
+        } catch (error) {
+          this.logger.error('Error sending email', error);
           await this.updateEmailStatus(email.id, Status.FAILED);
         }
       }
