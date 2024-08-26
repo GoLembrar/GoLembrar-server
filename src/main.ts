@@ -9,7 +9,7 @@ async function bootstrap() {
 
   app.enableCors({
     credentials: true,
-    origin: '*',
+    origin: ['https://app-golembrar.vercel.app', 'https://app.golembrar.com'],
     methods: ['GET', 'HEAD', 'OPTIONS', 'POST', 'PATCH', 'DELETE'],
     exposedHeaders: ['Authorization'],
     allowedHeaders: [
