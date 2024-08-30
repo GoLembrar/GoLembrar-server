@@ -16,6 +16,7 @@ import { ReminderModule } from './reminder/reminder.module';
 import { TasksModule } from './tasks/tasks.module';
 import { UserModule } from './user/user.module';
 import { MailtrapModule } from './email/mailtrap/mailtrap.module';
+import { FactoryModule } from './factories/factory.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { MailtrapModule } from './email/mailtrap/mailtrap.module';
     TasksModule,
     EmailScheduledModule,
     MailtrapModule,
+    FactoryModule,
     ScheduleModule.forRoot(),
     CacheModule.register({
       isGlobal: true,

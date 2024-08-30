@@ -7,8 +7,8 @@ import { ConfigService } from '@nestjs/config';
 export class EmailService {
   constructor(
     private readonly mailerService: MailerService,
-    private readonly configService: ConfigService,
     private readonly mailtrapService: MailtrapService,
+    private readonly configService: ConfigService,
   ) {}
 
   async sendEmail(

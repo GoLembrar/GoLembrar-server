@@ -42,6 +42,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@nestjs-modules/mailer": "^2.0.2",
     "@nestjs/cache-manager": "^2.2.2",
     "@nestjs/common": "^10.0.0",
