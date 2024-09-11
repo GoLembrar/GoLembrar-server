@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+/* import { Injectable, Logger } from '@nestjs/common';
 import { Email, Status } from '@prisma/client';
 import { EmailService } from '../../consumer-queue-email/email/email.service';
 import { CacheService } from '../cache/cache.service';
@@ -60,8 +60,8 @@ export class EmailScheduledService {
     this.logger.debug(
       `sendTodayEmails: has emails to send: ${hasEmailsToSend}`,
     );
-    //* metodo atual so esta pegando oos emails do banco de dados, precisa pegar tambem os que estao na fila chamado 'Email'
-    if (true) {
+    //?  metodo atual so esta pegando oos emails do banco de dados, precisa pegar tambem os que estao na fila chamado 'Email'
+    if (hasEmailsToSend) {
       const { from, emails } = await this.getEmailsDueToday();
       console.log('today emails: ', emails.length, '. from ', from);
       const today = new Date();
@@ -121,3 +121,43 @@ export class EmailScheduledService {
   }
 }
 export { EmailService };
+ */
+
+import { MailerService } from '@nestjs-modules/mailer';
+import { Injectable } from '@nestjs/common';
+import { MailtrapService } from './mailtrap/mailtrap.service';
+import { ConfigService } from '@nestjs/config';
+
+@Injectable()
+export class EmailService {
+  constructor(
+    private readonly mailerService: MailerService,
+    private readonly mailtrapService: MailtrapService,
+    private readonly configService: ConfigService,
+  ) {}
+
+  async sendEmail(
+    email: string,
+    subject: string,
+    context: string,
+  ): Promise<boolean> {
+    try {
+      await this.mailerService.sendMail({
+        to: email,
+        from: this.configService.get('EMAIL_AUTH_USER'),
+        subject: subject,
+        html: `<b>${context}</b>`,
+      });
+      return true;
+    } catch (smtpError) {
+      console.log('SMTP error:', smtpError);
+      try {
+        await this.mailtrapService.sendEmail(email, subject, context);
+        return true;
+      } catch (apiError) {
+        console.log('API error:', apiError);
+        return false;
+      }
+    }
+  }
+}
