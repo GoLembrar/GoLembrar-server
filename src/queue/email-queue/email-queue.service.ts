@@ -1,4 +1,4 @@
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+/* import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { QueueServicesList } from '../utils/queue-services-list';
 import { ClientRMQ } from '@nestjs/microservices';
 
@@ -27,3 +27,4 @@ export class EmailQueueService implements OnModuleInit {
     return this.client.send(pattern, data).subscribe();
   }
 }
+ */

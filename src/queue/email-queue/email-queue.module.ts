@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+/* import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { QueueList } from '../utils/queue-list';
 import { EmailQueueService } from './email-queue.service';
@@ -24,3 +24,4 @@ import { QueueServicesList } from '../utils/queue-services-list';
   exports: [EmailQueueService],
 })
 export class EmailQueueModule {}
+ */
