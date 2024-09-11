@@ -21,7 +21,6 @@ import { OkResponse } from '../swagger/decorators/ok.decorator';
 import { UnauthorizedResponse } from '../swagger/decorators/unauthorized.decorator';
 import { CreateReminderDto } from './dto/create-reminder.dto';
 import { UpdateReminderDto } from './dto/update-reminder.dto';
-import { AddOwnerToBodyGuard } from './guards';
 import { ReminderService } from './reminder.service';
 import { GetReminderResponse } from './swagger/getReminderResponse.swagger';
 import { NotFoundResponse } from '../swagger/decorators/not-found.decorator';
@@ -39,7 +38,7 @@ export class ReminderController {
   @OkResponse('Reminder found response successfully', GetReminderResponse)
   @UnauthorizedResponse()
   @NotFoundResponse()
-  async getReminderById(@Param('id') id: string) {
+  async findOneById(@Param('id') id: string) {
     return await this.reminderService.getReminderById(id);
   }
 
@@ -47,13 +46,13 @@ export class ReminderController {
   @ApiOperation({ summary: 'Get all reminders from user' })
   @OkResponse('Reminders found response successfully', [GetReminderResponse])
   @UnauthorizedResponse()
-  async getRemindersByUser(@Req() request: RequestWithUser) {
+  async findManyByUser(@Req() request: RequestWithUser) {
     const userId: string = request.user['sub'];
     return this.reminderService.getUserReminders(userId);
   }
 
   @Post('')
-  @UseGuards(AddOwnerToBodyGuard)
+  @UseGuards(AccessTokenGuard)
   @ApiOperation({ summary: 'Create a new reminder.' })
   @CreatedResponse('Reminder created response successfully', 'reminder created')
   @UnauthorizedResponse()
@@ -95,10 +94,7 @@ export class ReminderController {
   @OkResponse('Reminders removed response successfully')
   @UnauthorizedResponse()
   @ForbiddenResponse()
-  async removeAllReminders(
-    @Req() request: RequestWithUser,
-    @Res() response: Response,
-  ) {
+  async removeAll(@Req() request: RequestWithUser, @Res() response: Response) {
     const userId: string = request.user['sub'];
     const remindersDeleted = await this.reminderService.removeAll(userId);
     return response.status(HttpStatus.OK).json({
