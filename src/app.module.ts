@@ -9,7 +9,7 @@ import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { CacheService } from './cache/cache.service';
 import { ContactModule } from './contact/contact.module';
-import { EmailScheduledModule } from './email/email.module';
+// import { EmailScheduledModule } from './email/email.module';
 import { PrismaService } from './prisma/prisma.service';
 import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 import { ReminderModule } from './reminder/reminder.module';
@@ -35,7 +35,7 @@ import { FactoryModule } from './factories/factory.module';
     EmailModule,
     RabbitmqModule,
     TasksModule,
-    EmailScheduledModule,
+    // EmailScheduledModule,
     MailtrapModule,
     FactoryModule,
     ScheduleModule.forRoot(),
