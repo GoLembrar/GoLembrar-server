@@ -1,17 +1,25 @@
 import { Module } from '@nestjs/common';
-import { EmailScheduledService } from './email.service';
-import { EmailController } from './email.controller';
-import { PrismaService } from '../prisma/prisma.service';
-import { CacheService } from '../cache/cache.service';
-import { EmailModule } from '../../consumer-queue-email/email/email.module';
-import { RabbitmqModule } from '../rabbitmq/rabbitmq.module';
-import { EmailQueueModule } from '../queue/email-queue/email-queue.module';
-import { EmailListenerModule } from '../events/email-listener/email-listener.module';
+import { ConfigModule } from '@nestjs/config';
+import { MailtrapModule } from './mailtrap/mailtrap.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { EmailService } from './email.service';
 
 @Module({
-  imports: [EmailModule, RabbitmqModule, EmailQueueModule, EmailListenerModule],
-  controllers: [EmailController],
-  providers: [EmailScheduledService, PrismaService, CacheService],
-  exports: [EmailScheduledService],
+  imports: [
+    ConfigModule.forRoot(),
+    MailtrapModule,
+    MailerModule.forRoot({
+      transport: {
+        host: process.env.EMAIL_HOST,
+        port: parseInt(process.env.EMAIL_SERVICE_PORT, 10),
+        auth: {
+          user: process.env.EMAIL_AUTH_USER,
+          pass: process.env.EMAIL_AUTH_PASSWORD,
+        },
+      },
+    }),
+  ],
+  providers: [EmailService],
+  exports: [EmailService],
 })
-export class EmailScheduledModule {}
+export class EmailModule {}
