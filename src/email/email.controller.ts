@@ -1,4 +1,4 @@
-import {
+/* import {
   Body,
   Controller,
   HttpStatus,
@@ -10,7 +10,7 @@ import {
 import { Response } from 'express';
 import { ApiExcludeController, ApiOperation } from '@nestjs/swagger';
 import { RabbitMQService } from '../rabbitmq/rabbitmq.service';
-import { EmailQueueService } from '../queue/email-queue/email-queue.service';
+// import { EmailQueueService } from '../queue/email-queue/email-queue.service';
 import { EmailsToSendDto } from './dto/email.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { Status } from '@prisma/client';
@@ -23,7 +23,7 @@ import { RequestWithUser } from '../common/utils/types/RequestWithUser';
 export class EmailController {
   constructor(
     private readonly rabbitMQService: RabbitMQService,
-    private readonly emailQueueService: EmailQueueService,
+    // private readonly emailQueueService: EmailQueueService,
     private readonly prismaService: PrismaService,
     //@Inject('EMAIL_LISTENER_SERVICE')
     //private readonly emailListenerService: ClientProxy,
@@ -60,3 +60,4 @@ export class EmailController {
     return response.status(HttpStatus.OK).json({ message: 'Emails queued' });
   }
 }
+ */
