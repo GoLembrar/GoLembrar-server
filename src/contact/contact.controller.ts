@@ -26,6 +26,7 @@ import { CreatedResponse } from '../swagger/decorators/created.decorator';
 import { OkResponse } from '../swagger/decorators/ok.decorator';
 import { GetContactResponse } from './swagger/getContactResponse.swagger';
 import { NoContentResponse } from '../swagger/decorators/no-content.decorator';
+import { FindContactByNameDto } from './dto/find-contact-by-name.dto';
 
 @UseGuards(AccessTokenGuard)
 @Controller('contact')
@@ -120,5 +121,18 @@ export class ContactController {
   ): Promise<boolean> {
     const userId = request.user['sub'];
     return await this.contactService.remove(id, userId);
+  }
+
+  @Post('search')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Find contacts by name',
+    description:
+      'Pass an string name and get a array of contacts that matches the name ',
+  })
+  @OkResponse('Contact response founds successfully', Boolean)
+  @UnauthorizedResponse()
+  async findByName(@Body() dto: FindContactByNameDto) {
+    return await this.contactService.findByName(dto.name);
   }
 }

@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -22,12 +23,11 @@ model User {
 }
 
 model Reminder {
-  id          String   @id @default(uuid())
-  title       String   @db.VarChar(128)
-  description String   @db.VarChar(512)
-  scheduled   DateTime
-  isActivated Boolean  @default(true)
-
+  id              String            @id @default(uuid())
+  title           String            @db.VarChar(128)
+  description     String            @db.VarChar(512)
+  scheduled       DateTime
+  isActivated     Boolean           @default(true)
   owner           User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId         String
   usersToReminder UsersToReminder[]
