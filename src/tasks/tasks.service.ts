@@ -19,14 +19,21 @@ export class TasksService {
   private delayInSendingToQueue = false;
   private delayInGettingToQueue = false;
 
-  // @Cron('0 0 * * *')
-  // async getTodayEMails() {
-  //   const todayMails = await this.emailScheduledService.getEmailsDueToday();
-  //   this.logger.debug(
-  //     'getTodayEMails: Called when the current hour is 00:00. All the emails due today are: ',
-  //     JSON.stringify(todayMails),
-  //   );
-  // }
+  @Cron('0 0 * * *')
+  async getTodayEMails() {
+    //   const todayMails = await this.emailScheduledService.getEmailsDueToday();
+    //   this.logger.debug(
+    //     'getTodayEMails: Called when the current hour is 00:00. All the emails due today are: ',
+    //     JSON.stringify(todayMails),
+    //   );
+
+    const { today, reminders } =
+      await this.reminderService.getScheduledRemindersForToday();
+
+    this.logger.debug(
+      `Number of reminders scheduled at ${today}: ${reminders.length}`,
+    );
+  }
 
   // @Cron('* * * * *')
   // async verifyIfTheresIsEmailToSend() {
@@ -39,24 +46,6 @@ export class TasksService {
   //   await this.emailScheduledService.updateCache();
   //   this.logger.debug('updateCache: Called every minute');
   // }
-
-  @Cron('0,30 * * * *') // Tarefa executada a cada 30 minutos começando às 00:00
-  async getScheduledRemindersEveryThirtyMinutes() {
-    const { startDate, endDate, reminders } =
-      await this.reminderService.getScheduledRemindersWithinNextThirtyMinutes();
-
-    const scheduledRemindersAmount = reminders.reduce(
-      (accumulator, reminder) => {
-        const count = Number(reminder.reminders_count);
-        return accumulator + count;
-      },
-      0,
-    );
-
-    this.logger.debug(
-      `Number of reminders scheduled from ${startDate} to ${endDate}: ${scheduledRemindersAmount}`,
-    );
-  }
 
   @Cron('* * * * *') // Tarefa executada a cada minuto com delay de 100ms
   async sendScheduledRemindersToQueueByChannelEveryMinute() {
