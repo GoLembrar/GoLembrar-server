@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ForbiddenException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -8,22 +9,20 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateReminderDto } from './dto/create-reminder.dto';
 import { UpdateReminderDto } from './dto/update-reminder.dto';
 import { isValidScheduledDate } from '../common/utils/isValidScheduledDate';
-import { ScheduledReminder } from './dto/scheduled-reminders.response.dto';
+import { ReminderResponse } from './dto/scheduled-reminders.response.dto';
 import { CacheService } from '../cache/cache.service';
-import { ConfigService } from '@nestjs/config';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { isWithinCurrentDay } from '../common/utils/isWithinCurrentDay';
+import { getDatesInISO } from '../common/utils/getDatesInISO';
 
 @Injectable()
 export class ReminderService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly cacheService: CacheService,
-    private readonly configService: ConfigService,
+    @Inject(CACHE_MANAGER) private readonly cacheService: CacheService,
   ) {}
 
-  private readonly scheduledReminderTimeLimit = this.configService.get<number>(
-    'TIME_INTERVAL_IN_MINUTES_TO_FETCH_SCHEDULED_REMINDERS',
-  );
-  private readonly offset = -3 * 60 * 60 * 1000; // -3 horas em milissegundos
+  private readonly scheduledReminderTimeLimit = 30;
 
   public async getReminderById(id: string) {
     const reminder = await this.prismaService.reminder.findUnique({
@@ -71,44 +70,31 @@ export class ReminderService {
     });
   }
 
-  // Busca os lembretes agendados nos últimos 30min [0'-29'] agrupando por horário e pelo canal [Ex.: 2024-09-10T16:16:00.000Z_EMAIL]
-  public async getScheduledRemindersWithinNextThirtyMinutes() {
-    const now = new Date().setSeconds(0, 0);
-    const minutesLater = new Date(
-      now + (this.scheduledReminderTimeLimit - 1) * 60 * 1000,
-    ); // 29 minutos à frente
+  // Busca os lembretes previamente agendados para o dia corrente
+  public async getScheduledRemindersForToday() {
+    const { startOfDay, endOfDay } = getDatesInISO();
 
-    // Ajuste manual para o fuso horário de Brasília (UTC-3)
-    const nowWithoutOffset = new Date(now + this.offset);
-    const minutesLaterWithoutOffset = new Date(
-      minutesLater.getTime() + this.offset,
-    );
+    const firstHourOfDay = new Date(startOfDay);
+    const lastHourOfDay = new Date(endOfDay);
 
-    const nowFormatted = Math.floor(nowWithoutOffset.getTime() / 1000);
-    const minutesLaterFormatted = Math.floor(
-      minutesLaterWithoutOffset.getTime(),
-    );
+    const startOfDayOnDb = Math.floor(firstHourOfDay.getTime() / 1000);
+    const endOfDayOnDb = Math.floor(lastHourOfDay.getTime() / 1000);
 
-    const scheduledReminders: ScheduledReminder[] = await this.prismaService
+    const startOfDayFormmatted = firstHourOfDay.toISOString();
+
+    const scheduledReminders: ReminderResponse[] = await this.prismaService
       .$queryRaw`
       SELECT
-        r.scheduled,
-        c.channel,
-        COUNT(utr.id) AS reminders_count,
-        JSON_AGG(
-          JSON_BUILD_OBJECT(
-            'id', utr.id,
-            'reminder_id', utr."reminderId",
-            'reminder_title', r.title,
-            'reminder_description', r.description,
-            'reminder_status', utr.status,
-            'reminder_created_at', utr."createdAt",
-            'reminder_scheduled', r.scheduled,
-            'contact_id', utr."contactId",
-            'contact_identify', c.identify,
-            'contact_channel', c.channel
-          )
-        ) AS reminders
+        utr.id AS id,
+        utr."reminderId" AS reminder_id,
+        r.title AS reminder_title,
+        r.description AS reminder_description,
+        utr.status AS reminder_status,
+        utr."createdAt" AS reminder_created_at,
+        r.scheduled AS reminder_scheduled,
+        utr."contactId" AS contact_id,
+        c.identify AS contact_identify,
+        c.channel AS contact_channel       
       FROM
         "users_to_reminders" AS utr
       INNER JOIN
@@ -116,30 +102,27 @@ export class ReminderService {
       INNER JOIN
         reminders AS r ON utr."reminderId" = r.id
       WHERE
-        EXTRACT(EPOCH FROM r.scheduled) BETWEEN ${nowFormatted} AND ${minutesLaterFormatted}
+        EXTRACT(EPOCH FROM r.scheduled) BETWEEN ${startOfDayOnDb} AND ${endOfDayOnDb}
         AND utr.status = 'PENDING'
         AND r."isActivated" = true
-      GROUP BY
-        r.scheduled, c.channel
       ORDER BY
         r.scheduled, c.channel;
-    `;
+      `;
 
     // Salva os lembretes agrupados pela data/horário e o canal no cache
-    scheduledReminders.forEach(async (item) => {
-      const date = new Date(item.scheduled);
-      const key = `${date.toISOString()}_${item.channel}`;
+    for (const scheduledReminder of scheduledReminders) {
+      const date = new Date(scheduledReminder.reminder_scheduled);
+      const key = `${date.toISOString()}_${scheduledReminder.contact_channel}_${scheduledReminder.id}`;
 
       await this.cacheService.set(
         key,
-        JSON.stringify(item.reminders),
-        1 * 60 * 60 * 1000,
-      ); // TTL de 1 hora
-    });
+        scheduledReminder,
+        24 * 60 * 60 * 1000, // TTL de 1 dia
+      );
+    }
 
     return {
-      startDate: nowWithoutOffset.toISOString(),
-      endDate: minutesLaterWithoutOffset.toISOString(),
+      today: startOfDayFormmatted,
       reminders: scheduledReminders,
     };
   }
@@ -173,7 +156,51 @@ export class ReminderService {
           create: userToReminderConnect,
         },
       },
+      include: {
+        usersToReminder: {
+          select: {
+            id: true,
+            status: true,
+            contact: {
+              select: {
+                id: true,
+                identify: true,
+                channel: true,
+              },
+            },
+          },
+        },
+      },
     });
+
+    // Verifica se a data de agendamento do lembrete está dentro do dia corrente
+    const validWithinCurrentDay = isWithinCurrentDay(reminderDto.scheduled);
+
+    if (validWithinCurrentDay) {
+      const date = new Date(newReminder.scheduled);
+
+      for (const userToReminder of newReminder.usersToReminder) {
+        const key = `${date.toISOString()}_${userToReminder.contact.channel}_${userToReminder.id}`;
+        const value = {
+          id: userToReminder.id,
+          reminder_id: newReminder.id,
+          reminder_title: newReminder.title,
+          reminder_description: newReminder.description,
+          reminder_status: userToReminder.status,
+          reminder_created_at: newReminder.createdAt,
+          reminder_schedule: newReminder.scheduled,
+          contact_id: userToReminder.contact.id,
+          contact_identify: userToReminder.contact.identify,
+          contact_channel: userToReminder.contact.channel,
+        };
+
+        await this.cacheService.set(
+          key,
+          value,
+          24 * 60 * 60 * 1000, // TTL de 1 dia
+        );
+      }
+    }
 
     return newReminder;
   }
@@ -206,13 +233,32 @@ export class ReminderService {
       where: {
         id,
       },
+      include: {
+        usersToReminder: {
+          select: {
+            id: true,
+            status: true,
+            contact: {
+              select: {
+                id: true,
+                identify: true,
+                channel: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!reminder) {
       throw new NotFoundException('Não foi possível encontrar o lembrete');
     }
 
-    if (reminder.scheduled.getTime() < new Date().getTime()) {
+    const scheduledReminder = new Date(reminder.scheduled);
+    const offset = -3 * 60 * 60 * 1000; // -3 horas em milissegundos
+    const now = new Date().setSeconds(0, 0) + offset;
+
+    if (scheduledReminder.getTime() < now) {
       throw new ForbiddenException(
         'Não é permitido atualizar um lembrete com a data inferior a data corrente',
       );
@@ -232,7 +278,61 @@ export class ReminderService {
           })),
         },
       },
+      include: {
+        usersToReminder: {
+          select: {
+            id: true,
+            status: true,
+            contact: {
+              select: {
+                id: true,
+                identify: true,
+                channel: true,
+              },
+            },
+          },
+        },
+      },
     });
+
+    // Verifica se a data de agendamento do lembrete está dentro do dia corrente
+    const validWithinCurrentDay = isWithinCurrentDay(reminderDto.scheduled);
+
+    if (validWithinCurrentDay) {
+      const oldDate = new Date(reminder.scheduled);
+
+      // Exclui do cache o lembrete salvo anteriormente
+      for (const userToReminder of reminder.usersToReminder) {
+        const key = `${oldDate.toISOString()}_${userToReminder.contact.channel}_${userToReminder.id}`;
+
+        await this.cacheService.del(key);
+      }
+
+      const date = new Date(reminderUpdated.scheduled);
+
+      // Grava no cache o lembrete alterado
+      for (const userToReminderUpdated of reminderUpdated.usersToReminder) {
+        const key = `${date.toISOString()}_${userToReminderUpdated.contact.channel}_${userToReminderUpdated.id}`;
+        const value = {
+          id: userToReminderUpdated.id,
+          reminder_id: reminderUpdated.id,
+          reminder_title: reminderUpdated.title,
+          reminder_description: reminderUpdated.description,
+          reminder_status: userToReminderUpdated.status,
+          reminder_created_at: reminderUpdated.createdAt,
+          reminder_schedule: reminderUpdated.scheduled,
+          contact_id: userToReminderUpdated.contact.id,
+          contact_identify: userToReminderUpdated.contact.identify,
+          contact_channel: userToReminderUpdated.contact.channel,
+        };
+
+        await this.cacheService.set(
+          key,
+          value,
+          24 * 60 * 60 * 1000, // TTL de 1 dia
+        );
+      }
+    }
 
     return reminderUpdated;
   }
