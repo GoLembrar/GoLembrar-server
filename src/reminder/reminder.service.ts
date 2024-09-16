@@ -109,7 +109,7 @@ export class ReminderService {
         r.scheduled, c.channel;
       `;
 
-    // Salva os lembretes agrupados pela data/horário e o canal no cache
+    // Salva cada lembrete pela data/horário, o canal e o ID no cache
     for (const scheduledReminder of scheduledReminders) {
       const date = new Date(scheduledReminder.reminder_scheduled);
       const key = `${date.toISOString()}_${scheduledReminder.contact_channel}_${scheduledReminder.id}`;
