@@ -1,12 +1,5 @@
 import { Channel, Status } from '@prisma/client';
 
-export interface ScheduledReminder {
-  scheduled: string;
-  channel: Channel;
-  reminders_count: bigint;
-  reminders: ReminderResponse[];
-}
-
 export interface ReminderResponse {
   id: number;
   reminder_id: string;
@@ -17,5 +10,5 @@ export interface ReminderResponse {
   reminder_scheduled: string;
   contact_id: string;
   contact_identify: string;
-  contact_channel: string;
+  contact_channel: Channel;
 }
