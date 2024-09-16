@@ -33,6 +33,17 @@ services:
     depends_on:
       - golembrar-db
 
+  keydb-cache:
+    image: bitnami/keydb
+    ports:
+      - 6379:6379
+    environment:
+      - KEYDB_REPLICATION_MODE=master
+      - KEYDB_PASSWORD=my_master_password
+    volumes:
+      - keydb_cache_data:/var/lib/keydb-persistence:/bitnami
+
+
 networks:
   default:
     driver: bridge
@@ -41,3 +52,4 @@ networks:
 volumes:
   golembrar-db:
   rabbitmq_data:
+  keydb_cache_data:
