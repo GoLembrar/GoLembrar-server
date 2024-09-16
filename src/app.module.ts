@@ -1,4 +1,6 @@
 import { CacheModule } from '@nestjs/cache-manager';
+import type { RedisClientOptions } from 'redis';
+import * as redisStore from 'cache-manager-redis-store';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -39,8 +41,12 @@ import { FactoryModule } from './factories/factory.module';
     MailtrapModule,
     FactoryModule,
     ScheduleModule.forRoot(),
-    CacheModule.register({
+    CacheModule.register<RedisClientOptions>({
       isGlobal: true,
+      store: redisStore,
+      host: process.env.KEYDB_HOST,
+      port: parseInt(process.env.KEYDB_PORT, 10) || 6379,
+      password: process.env.KEYDB_PASSWORD,
     }),
   ],
   controllers: [AppController],
