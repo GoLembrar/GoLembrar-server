@@ -62,10 +62,9 @@ export class ReminderController {
     @Res() response: Response,
   ): Promise<Response> {
     createReminderDto.ownerId = request.user['sub'];
-    const reminder = await this.reminderService.create(createReminderDto);
+    await this.reminderService.create(createReminderDto);
     return response.status(HttpStatus.CREATED).json({
       message: 'reminder created',
-      reminder,
     });
   }
 
@@ -79,13 +78,9 @@ export class ReminderController {
     @Body() updateReminderDto: UpdateReminderDto,
     @Res() response: Response,
   ): Promise<Response> {
-    const reminderUpdated = await this.reminderService.update(
-      id,
-      updateReminderDto,
-    );
+    await this.reminderService.update(id, updateReminderDto);
     return response.status(HttpStatus.OK).json({
       message: 'reminder updated',
-      reminderUpdated,
     });
   }
 
@@ -96,10 +91,9 @@ export class ReminderController {
   @ForbiddenResponse()
   async removeAll(@Req() request: RequestWithUser, @Res() response: Response) {
     const userId: string = request.user['sub'];
-    const remindersDeleted = await this.reminderService.removeAll(userId);
+    await this.reminderService.removeAll(userId);
     return response.status(HttpStatus.OK).json({
       message: 'reminders removed',
-      remindersDeleted,
     });
   }
 
@@ -114,10 +108,9 @@ export class ReminderController {
     @Res() response: Response,
   ): Promise<Response> {
     const userId: string = request.user['sub'];
-    const reminderRemoved = await this.reminderService.remove(id, userId);
+    await this.reminderService.remove(id, userId);
     return response.status(HttpStatus.OK).json({
       message: 'reminder removed',
-      reminderRemoved,
     });
   }
 }
