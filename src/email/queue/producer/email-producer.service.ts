@@ -1,35 +1,38 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CacheService } from '../../../cache/cache.service';
 import { Channel } from '@prisma/client';
 import { ReminderResponse } from '../../../reminder/dto/scheduled-reminders.response.dto';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { RabbitMQService } from '../../../rabbitmq/rabbitmq.service';
 
 @Injectable()
 export class EmailProducerService {
   constructor(
-    @Inject(CACHE_MANAGER) private readonly cacheService: CacheService,
+    private readonly cacheService: CacheService,
     private readonly rabbitmqService: RabbitMQService,
   ) {}
 
   public async getScheduledEmailReminders(currentTimeKey: string) {
-    const cacheKey = currentTimeKey + '_' + Channel.EMAIL;
     const queue = 'email_queue';
+    const cacheKey = currentTimeKey + '_' + Channel.EMAIL;
 
-    const result: string = await this.cacheService.get(cacheKey);
-    const values: ReminderResponse[] = result && JSON.parse(result);
+    const result = await this.cacheService.getAll();
+    const keys = result.filter((key) => key.startsWith(cacheKey));
 
-    if (values !== undefined && values.length > 0) {
-      for (const value of values) {
-        this.rabbitmqService.sendToQueue(
+    let processedCount = 0;
+
+    if (keys.length > 0) {
+      for (const key of keys) {
+        const value: ReminderResponse[] = await this.cacheService.get(key);
+
+        await this.rabbitmqService.sendToQueue(
           queue,
           Buffer.from(JSON.stringify(value)),
         );
-      }
 
-      return values.length;
-    } else {
-      return 0;
+        processedCount++;
+      }
     }
+
+    return processedCount;
   }
 }
