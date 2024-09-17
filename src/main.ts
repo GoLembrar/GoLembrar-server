@@ -7,31 +7,43 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.enableCors({
-    credentials: true,
-    origin: ['https://app-golembrar.vercel.app', 'https://app.golembrar.com'],
-    methods: ['GET', 'HEAD', 'OPTIONS', 'POST', 'PATCH', 'DELETE'],
-    exposedHeaders: ['Authorization'],
-    allowedHeaders: [
-      'Content-Type',
-      'Origin',
-      'X-Requested-With',
-      'Accept',
-      'Authorization',
-    ],
-  });
+  const isDevelopment = process.env.NODE_ENV === 'development';
+
+  if (isDevelopment) {
+    app.enableCors({
+      origin: 'http://localhost:4200',
+      methods: ['GET', 'HEAD', 'OPTIONS', 'POST', 'PATCH', 'DELETE'],
+      credentials: true,
+    });
+  } else {
+    app.enableCors({
+      credentials: true,
+      origin: ['https://app-golembrar.vercel.app', 'https://app.golembrar.com'],
+      methods: ['GET', 'HEAD', 'OPTIONS', 'POST', 'PATCH', 'DELETE'],
+      exposedHeaders: ['Authorization'],
+      allowedHeaders: [
+        'Content-Type',
+        'Origin',
+        'X-Requested-With',
+        'Accept',
+        'Authorization',
+      ],
+    });
+  }
 
   app.useGlobalPipes(new ValidationPipe());
 
-  app.use(
-    ['/docs', '/docs-json'],
-    basicAuth({
-      challenge: true,
-      users: {
-        [process.env.SWAGGER_USER]: process.env.SWAGGER_PASSWORD,
-      },
-    }),
-  );
+  if (!isDevelopment) {
+    app.use(
+      ['/docs', '/docs-json'],
+      basicAuth({
+        challenge: true,
+        users: {
+          [process.env.SWAGGER_USER]: process.env.SWAGGER_PASSWORD,
+        },
+      }),
+    );
+  }
 
   const config = new DocumentBuilder()
     .setTitle('GoLembrar API')
