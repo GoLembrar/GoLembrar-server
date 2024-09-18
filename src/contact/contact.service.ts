@@ -172,4 +172,15 @@ export class ContactService {
 
     return true;
   }
+
+  public async findByName(name: string) {
+    const cleanTerm = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').trim();
+
+    return this.prismaService.$queryRaw<Contact[]>`
+      SELECT *
+      FROM contacts
+      WHERE contacts::text ~* ${cleanTerm}
+      LIMIT 10
+    `;
+  }
 }
