@@ -28,16 +28,12 @@ import { BadRequestResponse } from '../swagger/decorators/bad-request.decorator'
 import { OkResponse } from '../swagger/decorators/ok.decorator';
 import { NoContentResponse } from '../swagger/decorators/no-content.decorator';
 import { UnprocessableEntityResponse } from '../swagger/decorators/unprocessable-entity.decorator';
-import { RabbitMQService } from '../rabbitmq/rabbitmq.service';
-import { QueueList } from '../queue/utils/queue-list';
+// import { QueueList } from '../queue/utils/queue-list';
 
 @Controller('user')
 @ApiTags('user')
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    private readonly rabbitMQService: RabbitMQService,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -49,11 +45,11 @@ export class UserController {
     @Body() createUserDto: CreateUserDto,
     @Res() response: Response,
   ) {
-    this.rabbitMQService.enqueueTask(QueueList.EMAIL, {
-      email: createUserDto.email,
-      subject: 'Bem vindo ao GoLembrar',
-      message: 'Espero que você goste do nosso produto!',
-    });
+    // this.rabbitMQService.enqueueTask(QueueList.EMAIL, {
+    //   email: createUserDto.email,
+    //   subject: 'Bem vindo ao GoLembrar',
+    //   message: 'Espero que você goste do nosso produto!',
+    // });
     await this.userService.create(createUserDto);
     return response
       .status(HttpStatus.CREATED)

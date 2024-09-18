@@ -1,28 +1,14 @@
 import { Module } from '@nestjs/common';
-import { ClientProxyFactory, Transport } from '@nestjs/microservices';
-import { QueueList } from '../queue/utils/queue-list';
 import { RabbitMQService } from './rabbitmq.service';
 
+// import { ClientProxyFactory, Transport } from '@nestjs/microservices';
+// import { QueueList } from '../queue/utils/queue-list';
+// import { QueueServicesList } from '../queue/utils/queue-services-list';
+// import { EmailQueueModule } from '../queue/email-queue/email-queue.module';
+// import { EmailListenerModule } from '../events/email-listener/email-listener.module';
+
 @Module({
-  providers: [
-    RabbitMQService,
-    {
-      provide: 'RABBITMQ-SERVICE',
-      useFactory: () => {
-        console.log('CONFIGURANDO RABBITMQ');
-        return ClientProxyFactory.create({
-          transport: Transport.RMQ,
-          options: {
-            urls: [process.env.RABBITMQ_URL],
-            queue: QueueList.DEFAULT,
-            queueOptions: {
-              durable: false,
-            },
-          },
-        });
-      },
-    },
-  ],
+  providers: [RabbitMQService],
   exports: [RabbitMQService],
 })
 export class RabbitmqModule {}

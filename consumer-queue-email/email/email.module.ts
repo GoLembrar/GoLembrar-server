@@ -2,10 +2,12 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EmailService } from './email.service';
+import { MailtrapModule } from '../../src/email/mailtrap/mailtrap.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    MailtrapModule,
     MailerModule.forRoot({
       transport: {
         host: process.env.EMAIL_HOST,

@@ -1,0 +1,4 @@
+export enum QueueServicesList {
+  EMAIL_SERVICE = 'EMAIL-SERVICE',
+  RABBITMQ_SERVICE = 'RABBITMQ-SERVICE',
+}

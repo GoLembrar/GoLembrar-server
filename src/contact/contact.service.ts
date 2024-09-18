@@ -119,6 +119,43 @@ export class ContactService {
     return true;
   }
 
+  /**
+   * Remove multiple contacts for a given user.
+   *
+   * @param ids - An array of contact IDs to be removed.
+   * @param userId - The ID of the user who owns the contacts.
+   * @returns A boolean indicating whether the operation was successful.
+   */
+  public async removeMany(ids: string[], userId: string): Promise<boolean> {
+    // Find all contacts that match the given IDs and belong to the specified user
+    const contacts = await this.prismaService.contact.findMany({
+      where: {
+        id: {
+          in: ids,
+        },
+        userId,
+      },
+    });
+
+    // If no matching contacts are found, return false
+    if (contacts.length === 0) {
+      return false;
+    }
+
+    // Delete all contacts that match the given IDs and belong to the specified user
+    await this.prismaService.contact.deleteMany({
+      where: {
+        id: {
+          in: ids,
+        },
+        userId,
+      },
+    });
+
+    // Return true to indicate successful deletion
+    return true;
+  }
+
   public async removeAll(userId: string) {
     const contacts = await this.prismaService.contact.findMany({
       where: { userId: userId },

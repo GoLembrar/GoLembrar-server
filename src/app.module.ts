@@ -1,4 +1,6 @@
 import { CacheModule } from '@nestjs/cache-manager';
+import type { RedisClientOptions } from 'redis';
+import * as redisStore from 'cache-manager-redis-store';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -9,12 +11,14 @@ import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { CacheService } from './cache/cache.service';
 import { ContactModule } from './contact/contact.module';
-import { EmailScheduledModule } from './email/email.module';
+// import { EmailScheduledModule } from './email/email.module';
 import { PrismaService } from './prisma/prisma.service';
 import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 import { ReminderModule } from './reminder/reminder.module';
 import { TasksModule } from './tasks/tasks.module';
 import { UserModule } from './user/user.module';
+import { MailtrapModule } from './email/mailtrap/mailtrap.module';
+import { FactoryModule } from './factories/factory.module';
 
 @Module({
   imports: [
@@ -33,10 +37,16 @@ import { UserModule } from './user/user.module';
     EmailModule,
     RabbitmqModule,
     TasksModule,
-    EmailScheduledModule,
+    // EmailScheduledModule,
+    MailtrapModule,
+    FactoryModule,
     ScheduleModule.forRoot(),
-    CacheModule.register({
+    CacheModule.register<RedisClientOptions>({
       isGlobal: true,
+      store: redisStore,
+      host: process.env.KEYDB_HOST,
+      port: parseInt(process.env.KEYDB_PORT, 10) || 6379,
+      password: process.env.KEYDB_PASSWORD,
     }),
   ],
   controllers: [AppController],
