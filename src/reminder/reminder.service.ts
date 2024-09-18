@@ -178,9 +178,11 @@ export class ReminderService {
 
     if (validWithinCurrentDay) {
       const date = new Date(newReminder.scheduled);
+      date.setSeconds(0, 0);
+      const dateFormatted = new Date(date);
 
       for (const userToReminder of newReminder.usersToReminder) {
-        const key = `${date.toISOString()}_${userToReminder.contact.channel}_${userToReminder.id}`;
+        const key = `${dateFormatted.toISOString()}_${userToReminder.contact.channel}_${userToReminder.id}`;
         const value = {
           id: userToReminder.id,
           reminder_id: newReminder.id,
@@ -300,19 +302,23 @@ export class ReminderService {
 
     if (validWithinCurrentDay) {
       const oldDate = new Date(reminder.scheduled);
+      oldDate.setSeconds(0, 0);
+      const oldDateFormatted = new Date(oldDate);
 
       // Exclui do cache o lembrete salvo anteriormente
       for (const userToReminder of reminder.usersToReminder) {
-        const key = `${oldDate.toISOString()}_${userToReminder.contact.channel}_${userToReminder.id}`;
+        const key = `${oldDateFormatted.toISOString()}_${userToReminder.contact.channel}_${userToReminder.id}`;
 
         await this.cacheService.del(key);
       }
 
       const date = new Date(reminderUpdated.scheduled);
+      date.setSeconds(0, 0);
+      const dateFormatted = new Date(date);
 
       // Grava no cache o lembrete alterado
       for (const userToReminderUpdated of reminderUpdated.usersToReminder) {
-        const key = `${date.toISOString()}_${userToReminderUpdated.contact.channel}_${userToReminderUpdated.id}`;
+        const key = `${dateFormatted.toISOString()}_${userToReminderUpdated.contact.channel}_${userToReminderUpdated.id}`;
         const value = {
           id: userToReminderUpdated.id,
           reminder_id: reminderUpdated.id,

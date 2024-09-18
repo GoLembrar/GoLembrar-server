@@ -11,7 +11,15 @@ export class EmailProducerService {
     private readonly rabbitmqService: RabbitMQService,
   ) {}
 
-  public async getScheduledEmailReminders(currentTimeKey: string) {
+  /**
+   * Retrieves scheduled email reminders from the cache and sends them to the RabbitMQ queue.
+   *
+   * @param currentTimeKey - The current time key used to filter cache entries.
+   * @returns The number of processed reminders.
+   */
+  public async getScheduledEmailReminders(
+    currentTimeKey: string,
+  ): Promise<number> {
     const queue = 'email_queue';
     const cacheKey = currentTimeKey + '_' + Channel.EMAIL;
 

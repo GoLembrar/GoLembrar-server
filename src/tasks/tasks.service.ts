@@ -75,13 +75,13 @@ export class TasksService {
   }
 
   async executeTaskToSendEmailQueue(currentTimeFormatted: string) {
-    const tasks =
+    const tasksCount =
       await this.emailProducerService.getScheduledEmailReminders(
         currentTimeFormatted,
       );
 
     this.logger.debug(
-      `Called the send to queue routine at: ${currentTimeFormatted} with ${tasks} reminder(s)`,
+      `Called the send to queue routine at: ${currentTimeFormatted} with ${tasksCount} reminder(s)`,
     );
   }
 }

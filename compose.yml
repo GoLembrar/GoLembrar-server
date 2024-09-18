@@ -43,7 +43,6 @@ services:
     volumes:
       - keydb_cache_data:/var/lib/keydb-persistence:/bitnami
 
-
 networks:
   default:
     driver: bridge

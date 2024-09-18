@@ -62,9 +62,10 @@ export class ReminderController {
     @Res() response: Response,
   ): Promise<Response> {
     createReminderDto.ownerId = request.user['sub'];
-    await this.reminderService.create(createReminderDto);
+    const reminder = await this.reminderService.create(createReminderDto);
     return response.status(HttpStatus.CREATED).json({
       message: 'reminder created',
+      reminder,
     });
   }
 

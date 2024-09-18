@@ -148,11 +148,13 @@ export class EmailService {
         subject: subject,
         html: `<b>${context}</b>`,
       });
+      console.log('Email sent successfully by SMTP');
       return true;
     } catch (smtpError) {
       console.log('SMTP error:', smtpError);
       try {
         await this.mailtrapService.sendEmail(email, subject, context);
+        console.log('Email sent successfully by API');
         return true;
       } catch (apiError) {
         console.log('API error:', apiError);

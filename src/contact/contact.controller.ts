@@ -8,11 +8,18 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Response } from 'express';
 import { AccessTokenGuard } from '../auth/guards/access-token/access-token.guard';
 import { AddRequestUserId } from '../common/decorators/add-request-user-id.decorator';
@@ -102,6 +109,12 @@ export class ContactController {
 
   @Delete('/all/')
   @ApiOperation({ summary: 'Delete all contacts' })
+  @ApiQuery({
+    name: 'ids',
+    description:
+      'Comma-separated list of Contact IDs (for deleting multiple contacts)',
+    required: false,
+  })
   @OkResponse('Contacts response removed successfully', Boolean)
   @UnauthorizedResponse()
   async removeAll(@Req() request: RequestWithUser): Promise<boolean> {
@@ -120,5 +133,19 @@ export class ContactController {
   ): Promise<boolean> {
     const userId = request.user['sub'];
     return await this.contactService.remove(id, userId);
+  }
+
+  @Delete()
+  @ApiOperation({ summary: 'Delete many contacts' })
+  @OkResponse('Contacts response removed successfully', Boolean)
+  @UnauthorizedResponse()
+  async removeMany(
+    @Query('ids') paramsContactids: string[],
+    @Body('ids') bodyContactIds: string[],
+    @Req() request: RequestWithUser,
+  ): Promise<boolean> {
+    const userId = request.user['sub'];
+    const ids = [...paramsContactids, ...bodyContactIds];
+    return await this.contactService.removeMany(ids, userId);
   }
 }
