@@ -17,7 +17,7 @@ Content-Type: application/json
 ###
 
 @token = {{login.response.body.token}}
-
+@refreshToken = {{login.response.body.refreshToken}}
 ###
 
 GET {{host}}/user HTTP/1.1
