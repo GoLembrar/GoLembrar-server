@@ -3,10 +3,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Channel, Contact, Prisma } from '@prisma/client';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
-import { PrismaService } from '../prisma/prisma.service';
-import { Channel, Contact } from '@prisma/client';
 
 @Injectable()
 export class ContactService {
@@ -42,13 +42,23 @@ export class ContactService {
     return contact;
   }
 
-  async findAll(userId: string) {
-    const contacts = await this.prismaService.contact.findMany({
-      where: {
-        userId: userId,
+  async findAll(userId: string, search?: string) {
+    const whereClause: Prisma.ContactWhereInput = {
+      userId,
+    };
+
+    if (search)
+      whereClause.name = {
+        contains: search,
+        mode: 'insensitive',
+      };
+
+    return await this.prismaService.contact.findMany({
+      where: whereClause,
+      orderBy: {
+        name: 'asc',
       },
     });
-    return contacts;
   }
 
   public async findOne(id: string, userId: string): Promise<Contact> {
@@ -171,16 +181,5 @@ export class ContactService {
     });
 
     return true;
-  }
-
-  public async findByName(name: string) {
-    const cleanTerm = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').trim();
-
-    return this.prismaService.$queryRaw<Contact[]>`
-      SELECT *
-      FROM contacts
-      WHERE contacts::text ~* ${cleanTerm}
-      LIMIT 10
-    `;
   }
 }
