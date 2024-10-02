@@ -261,9 +261,47 @@ export class ReminderService {
     const now = new Date().setSeconds(0, 0) + offset;
 
     if (scheduledReminder.getTime() < now) {
-      throw new ForbiddenException(
+      throw new BadRequestException(
         'Não é permitido atualizar um lembrete com a data inferior a data corrente',
       );
+    }
+
+    // Verifica se os contatos informados foram alterados, caso sim, se eles existem no banco
+    if (reminderDto.usersToReminder) {
+      const existingUserContactIds = reminder.usersToReminder.map(
+        (user) => user.contact.id,
+      );
+
+      const areEquals =
+        reminderDto.usersToReminder.length === existingUserContactIds.length &&
+        reminderDto.usersToReminder.every((contactId) =>
+          existingUserContactIds.includes(contactId),
+        );
+
+      if (!areEquals) {
+        const validContacts = await this.prismaService.contact.findMany({
+          where: {
+            id: {
+              in: reminderDto.usersToReminder,
+            },
+          },
+          select: {
+            id: true,
+          },
+        });
+
+        const validContactIds = validContacts.map((contact) => contact.id);
+
+        const invalidContacts = reminderDto.usersToReminder.filter(
+          (id) => !validContactIds.includes(id),
+        );
+
+        if (invalidContacts.length > 0) {
+          throw new BadRequestException(
+            'Não é possível atualizar um lembrete inserindo um contato inexistente',
+          );
+        }
+      }
     }
 
     const reminderUpdated = await this.prismaService.reminder.update({
