@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -7,6 +8,7 @@ import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { Channel, Contact } from '@prisma/client';
+import { isEmailFormatValid } from '../common/utils/isEmailFormatValid';
 
 @Injectable()
 export class ContactService {
@@ -24,11 +26,22 @@ export class ContactService {
 
     if (existingContact) {
       throw new ConflictException(
-        'Contact already exists for this user and identify',
+        'Já existe um contato que possui o mesmo nome e identificador',
       );
     }
 
     const channel = Channel[createData.channel.toUpperCase()];
+
+    if (channel === 'EMAIL') {
+      const emailValidation = isEmailFormatValid(createContactDto.identify);
+
+      if (!emailValidation) {
+        throw new BadRequestException(
+          'O formato de email informado é inválido',
+        );
+      }
+    }
+
     const contact = await this.prismaService.contact.create({
       data: {
         ...createData,

@@ -16,7 +16,6 @@ import {
 import {
   ApiBearerAuth,
   ApiOperation,
-  ApiParam,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
@@ -34,6 +33,7 @@ import { OkResponse } from '../swagger/decorators/ok.decorator';
 import { GetContactResponse } from './swagger/getContactResponse.swagger';
 import { NoContentResponse } from '../swagger/decorators/no-content.decorator';
 import { FindContactByNameDto } from './dto/find-contact-by-name.dto';
+import { BadRequestResponse } from '../swagger/decorators/bad-request.decorator';
 
 @UseGuards(AccessTokenGuard)
 @Controller('contact')
@@ -43,13 +43,14 @@ export class ContactController {
   constructor(private readonly contactService: ContactService) {}
 
   @Post()
-  @HttpCode(201)
+  @HttpCode(HttpStatus.CREATED)
   @UseGuards(AccessTokenGuard)
   @ApiOperation({
     summary: 'Create contact',
     description: 'Creates a new contact for the authenticated user',
   })
   @CreatedResponse('Contact created response successfully', 'contact created')
+  @BadRequestResponse()
   @UnauthorizedResponse()
   public async create(
     @Body() @AddRequestUserId() createContactDto: CreateContactDto,
@@ -97,6 +98,7 @@ export class ContactController {
   @NoContentResponse('Contact updated response successfully')
   @UnauthorizedResponse()
   @NotFoundResponse()
+  @BadRequestResponse()
   async update(
     @Param('id') id: string,
     @Body() @AddRequestUserId() updateContactDto: UpdateContactDto,
@@ -135,7 +137,6 @@ export class ContactController {
     const userId = request.user['sub'];
     return await this.contactService.remove(id, userId);
   }
-
 
   @Delete()
   @ApiOperation({ summary: 'Delete many contacts' })

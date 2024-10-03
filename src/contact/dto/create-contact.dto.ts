@@ -24,6 +24,7 @@ export class CreateContactDto {
 
   @IsNotEmpty()
   @IsString()
+  @MinLength(4)
   @ApiProperty({ example: 'email@email.com' })
   identify: string;
 
