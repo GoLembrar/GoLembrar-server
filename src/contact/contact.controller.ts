@@ -24,7 +24,6 @@ import { AccessTokenGuard } from '../auth/guards/access-token/access-token.guard
 import { AddRequestUserId } from '../common/decorators/add-request-user-id.decorator';
 import { RequestWithUser } from '../common/utils/types/RequestWithUser';
 import { CreatedResponse } from '../swagger/decorators/created.decorator';
-import { NoContentResponse } from '../swagger/decorators/no-content.decorator';
 import { NotFoundResponse } from '../swagger/decorators/not-found.decorator';
 import { OkResponse } from '../swagger/decorators/ok.decorator';
 import { UnauthorizedResponse } from '../swagger/decorators/unauthorized.decorator';
@@ -32,6 +31,7 @@ import { ContactService } from './contact.service';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
 import { GetContactResponse } from './swagger/getContactResponse.swagger';
+import { BadRequestResponse } from '../swagger/decorators/bad-request.decorator';
 
 @UseGuards(AccessTokenGuard)
 @Controller('contact')
@@ -41,13 +41,14 @@ export class ContactController {
   constructor(private readonly contactService: ContactService) {}
 
   @Post()
-  @HttpCode(201)
+  @HttpCode(HttpStatus.CREATED)
   @UseGuards(AccessTokenGuard)
   @ApiOperation({
     summary: 'Create contact',
     description: 'Creates a new contact for the authenticated user',
   })
   @CreatedResponse('Contact created response successfully', 'contact created')
+  @BadRequestResponse()
   @UnauthorizedResponse()
   public async create(
     @Body() @AddRequestUserId() createContactDto: CreateContactDto,
@@ -104,6 +105,7 @@ export class ContactController {
   @NoContentResponse('Contact updated response successfully')
   @UnauthorizedResponse()
   @NotFoundResponse()
+  @BadRequestResponse()
   async update(
     @Param('id') id: string,
     @Body() @AddRequestUserId() updateContactDto: UpdateContactDto,

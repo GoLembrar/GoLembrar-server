@@ -69,25 +69,25 @@ export class UserService {
       throw new NotFoundException('Usuário não encontrado');
     }
 
-    const userEmailExist = await this.prismaService.user.findUnique({
-      where: {
-        email: updateUserDto.email,
-      },
-    });
+    if (updateUserDto.email) {
+      const userEmailExist = await this.prismaService.user.findUnique({
+        where: {
+          email: updateUserDto.email,
+        },
+      });
 
-    if (userEmailExist && userEmailExist.id !== user.id) {
-      throw new ConflictException('Email ja cadastrado');
-    }
-
-    const passwordValidation = isPasswordValid(updateUserDto.password);
-
-    if (!passwordValidation) {
-      throw new BadRequestException(
-        'A senha deve ter entre 6 e 24 caracteres e pelo menos uma letra maiúscula.',
-      );
+      if (userEmailExist && userEmailExist.id !== user.id) {
+        throw new ConflictException('Email já cadastrado');
+      }
     }
 
     if (updateUserDto.password) {
+      const passwordValidation = isPasswordValid(updateUserDto.password);
+      if (!passwordValidation) {
+        throw new BadRequestException(
+          'A senha deve ter entre 6 e 24 caracteres e pelo menos uma letra maiúscula.',
+        );
+      }
       const hashedPassword = await HashUtil.hash(updateUserDto.password);
       updateUserDto.password = hashedPassword;
     }
@@ -99,7 +99,6 @@ export class UserService {
       data: updateUserDto,
     });
   }
-
   async upddatePassword(
     id: string,
     updateUserPasswordDto: UpdateUserPasswordDto,

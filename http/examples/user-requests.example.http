@@ -3,6 +3,21 @@
 @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzEzODEzNjMyLCJleHAiOjE3MTM4MTcyMzJ9.1PiVvLtTjm5cTNKZ1-QEkKXqM4Bjx2Oc9tecADnEhaE
 @tokenRefresh = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzEzODEzNjMyLCJleHAiOjE3MTM4MTcyMzJ9.1PiVvLtTjm5cTNKZ1-QEkKXqM4Bjx2Oc9tecADnEhaE
 
+### user login
+# @name login
+POST {{host}}/auth HTTP/1.1
+Content-Type: application/json
+
+{
+  "email" : "usuario-qualquer@gmail.com",
+  "password" : "senhaForte"
+}
+
+###
+
+@token = {{login.response.body.token}}
+@refreshToken = {{login.response.body.refreshToken}}
+
 ### create one user account
 
 # @name createUser
@@ -41,19 +56,6 @@ GET {{host}}/user
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
-### user login
-# @name login
-POST {{host}}/auth HTTP/1.1
-Content-Type: application/json
-
-{
-  "email" : "usuario-qualquer@gmail.com",
-  "password" : "senhaForte"
-}
-
-###
-
-@token = {{login.response.body.token}}
 
 ###
 
