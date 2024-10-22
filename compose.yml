@@ -39,7 +39,7 @@ services:
       - 6379:6379
     environment:
       - KEYDB_REPLICATION_MODE=master
-      - KEYDB_PASSWORD=${KEYDB_PASSWORD}
+      - KEYDB_PASSWORD=pass123
     volumes:
       - keydb_cache_data:/var/lib/keydb-persistence:/bitnami
 
