@@ -23,16 +23,14 @@ import { Response } from 'express';
 import { AccessTokenGuard } from '../auth/guards/access-token/access-token.guard';
 import { AddRequestUserId } from '../common/decorators/add-request-user-id.decorator';
 import { RequestWithUser } from '../common/utils/types/RequestWithUser';
+import { CreatedResponse } from '../swagger/decorators/created.decorator';
+import { NotFoundResponse } from '../swagger/decorators/not-found.decorator';
+import { OkResponse } from '../swagger/decorators/ok.decorator';
 import { UnauthorizedResponse } from '../swagger/decorators/unauthorized.decorator';
 import { ContactService } from './contact.service';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
-import { NotFoundResponse } from '../swagger/decorators/not-found.decorator';
-import { CreatedResponse } from '../swagger/decorators/created.decorator';
-import { OkResponse } from '../swagger/decorators/ok.decorator';
 import { GetContactResponse } from './swagger/getContactResponse.swagger';
-import { NoContentResponse } from '../swagger/decorators/no-content.decorator';
-import { FindContactByNameDto } from './dto/find-contact-by-name.dto';
 import { BadRequestResponse } from '../swagger/decorators/bad-request.decorator';
 
 @UseGuards(AccessTokenGuard)
@@ -68,11 +66,20 @@ export class ContactController {
 
   @Get()
   @ApiOperation({ summary: 'Get all contacts' })
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    type: String,
+    description: 'Optional search term to filter contacts by name',
+  })
   @OkResponse('Contacts found response successfully', [GetContactResponse])
   @UnauthorizedResponse()
-  async findAll(@Req() request: RequestWithUser) {
+  async findAll(
+    @Req() request: RequestWithUser,
+    @Query('search') search?: string,
+  ) {
     const userId = request.user['sub'];
-    return await this.contactService.findAll(userId);
+    return await this.contactService.findAll(userId, search);
   }
 
   @Get(':id')
@@ -150,18 +157,5 @@ export class ContactController {
     const userId = request.user['sub'];
     const ids = [...paramsContactids, ...bodyContactIds];
     return await this.contactService.removeMany(ids, userId);
-  }
-
-  @Post('search')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({
-    summary: 'Find contacts by name',
-    description:
-      'Pass an string name and get a array of contacts that matches the name ',
-  })
-  @OkResponse('Contact response founds successfully', Boolean)
-  @UnauthorizedResponse()
-  async findByName(@Body() dto: FindContactByNameDto) {
-    return await this.contactService.findByName(dto.name);
   }
 }

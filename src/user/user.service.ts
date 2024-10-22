@@ -2,23 +2,20 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
-  Logger,
   NotFoundException,
   UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { HashUtil } from '../common/utils/hashUtil';
+import { isPasswordValid } from '../common/utils/isPasswordValid';
 import { PrismaService } from './../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { isPasswordValid } from '../common/utils/isPasswordValid';
 
 @Injectable()
 export class UserService {
-  constructor(readonly prismaService: PrismaService) {}
-
-  private readonly logger: Logger = new Logger(UserService.name);
+  constructor(private readonly prismaService: PrismaService) {}
 
   async create(createUserDto: CreateUserDto) {
     const existingUser = await this.prismaService.user.findUnique({

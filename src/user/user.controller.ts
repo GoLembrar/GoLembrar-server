@@ -46,7 +46,7 @@ export class UserController {
   @ConflictResponse()
   public async emailTest(@Res() response: Response) {
     this.emailService.sendEmail(
-      'email@gmail.com',
+      'golembrar@gmail.com',
       'Bem vindo ao goLembrar!!',
       `
 Olá, ${'seu nome aqui'} 👋!<br>
