@@ -1,4 +1,4 @@
-import { applyDecorators, Type } from '@nestjs/common';
+import { applyDecorators, HttpStatus, Type } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 
 export function OkResponse(
@@ -10,6 +10,18 @@ export function OkResponse(
       status: 200,
       description,
       type: body,
+    }),
+  );
+}
+
+export function OkHealthResponse(description: string, example: Record<string, unknown>) {
+  return applyDecorators(
+    ApiResponse({
+      status: HttpStatus.OK,
+      description,
+      schema: {
+        example
+      },
     }),
   );
 }
