@@ -23,7 +23,9 @@ import { Response } from 'express';
 import { AccessTokenGuard } from '../auth/guards/access-token/access-token.guard';
 import { AddRequestUserId } from '../common/decorators/add-request-user-id.decorator';
 import { RequestWithUser } from '../common/utils/types/RequestWithUser';
+import { BadRequestResponse } from '../swagger/decorators/bad-request.decorator';
 import { CreatedResponse } from '../swagger/decorators/created.decorator';
+import { NoContentResponse } from '../swagger/decorators/no-content.decorator';
 import { NotFoundResponse } from '../swagger/decorators/not-found.decorator';
 import { OkResponse } from '../swagger/decorators/ok.decorator';
 import { UnauthorizedResponse } from '../swagger/decorators/unauthorized.decorator';
@@ -31,14 +33,13 @@ import { ContactService } from './contact.service';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
 import { GetContactResponse } from './swagger/getContactResponse.swagger';
-import { BadRequestResponse } from '../swagger/decorators/bad-request.decorator';
 
 @UseGuards(AccessTokenGuard)
 @Controller('contact')
 @ApiTags('contact')
 @ApiBearerAuth('JWT-Token')
 export class ContactController {
-  constructor(private readonly contactService: ContactService) {}
+  constructor(private readonly contactService: ContactService) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -117,7 +118,7 @@ export class ContactController {
     });
   }
 
-  @Delete('/all/')
+  @Delete('all')
   @ApiOperation({ summary: 'Delete all contacts' })
   @ApiQuery({
     name: 'ids',
