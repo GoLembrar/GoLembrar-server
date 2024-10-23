@@ -39,7 +39,7 @@ import { GetContactResponse } from './swagger/getContactResponse.swagger';
 @ApiTags('contact')
 @ApiBearerAuth('JWT-Token')
 export class ContactController {
-  constructor(private readonly contactService: ContactService) { }
+  constructor(private readonly contactService: ContactService) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)

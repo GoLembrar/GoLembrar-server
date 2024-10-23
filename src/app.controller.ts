@@ -16,7 +16,7 @@ export class AppController {
   @ApiTags('health')
   @BadRequestResponse()
   @OkHealthResponse('Status "ok" API is running properly', {
-    status: "ok"
+    status: 'ok',
   })
   @ApiOperation({ summary: 'Check if API is running' })
   public checkHelth(@Res() res: Response) {

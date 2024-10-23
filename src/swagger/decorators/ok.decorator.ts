@@ -14,13 +14,16 @@ export function OkResponse(
   );
 }
 
-export function OkHealthResponse(description: string, example: Record<string, unknown>) {
+export function OkHealthResponse(
+  description: string,
+  example: Record<string, unknown>,
+) {
   return applyDecorators(
     ApiResponse({
       status: HttpStatus.OK,
       description,
       schema: {
-        example
+        example,
       },
     }),
   );
